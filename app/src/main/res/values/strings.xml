@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MusicPlayer</string>
+    <string name="music_frag">Music</string>
+    <string name="playing_frag">Playing</string>
+    <string name="settings_frag">Settings</string>
+    <string name="test_frag">Test</string>
+    <string name="scanPath_editText">Path to scan</string>
+    <string name="add_path">Add path</string>
+    <string name="add_this_directory">Add this directory</string>
+    <string name="to_parent_directory">…</string>
+    <string name="path_picker_close">Close</string>
+    <string name="scan">Scan</string>
+    <string name="clear">Clear</string>
+    <string name="exit">Exit</string>
+    <string name="permission_message">Storage Permission Required</string>
+    <string name="scanPath_empty">Scans all directories if empty</string>
+    <string name="not_accessible">Directory not accessible</string>
+    <string name="all_item_failure">playing failed on all items</string>
+    <string name="notification_channel_name">Todokanai_MusicPlayer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
