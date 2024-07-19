@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.player
 
 import android.content.Context
 import android.media.MediaMetadata
+import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -22,12 +23,12 @@ class MyMediaSession(appContext: Context, tag:String):MediaSessionCompat(appCont
         this.setPlaybackState(playbackState.build())
     }
 
-    fun setMetaData(){
+    fun setMetaData(title:String,artist:String,albumUri:String){
         this.setMetadata(
             MediaMetadataCompat.Builder()
-                .putString(MediaMetadata.METADATA_KEY_TITLE, "null")
-                .putString(MediaMetadata.METADATA_KEY_ARTIST, "null")
-                .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, null)
+                .putString(MediaMetadata.METADATA_KEY_TITLE, title)
+                .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
+                .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, albumUri)
                 .build()
         )
     }

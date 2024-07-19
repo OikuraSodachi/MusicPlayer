@@ -128,7 +128,7 @@ class MusicService : MediaBrowserServiceCompat()   {
         )
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(serviceChannel)
-        mediaSession.setMetaData()
+       // mediaSession.setMetaData()
         MediaButtonReceiver.handleIntent(mediaSession,intent)
 
 
