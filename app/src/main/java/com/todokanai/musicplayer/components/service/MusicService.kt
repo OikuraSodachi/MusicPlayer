@@ -49,7 +49,6 @@ class MusicService : MediaBrowserServiceCompat()   {
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
     private val icons = MyIcons()
 
-
     private val mainOpenIntent by lazy{ Intent(this, MainActivity::class.java)}
     private val mainIntent by lazy { PendingIntent.getActivity(this,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)}
     private val repeatIntent by lazy { PendingIntent.getBroadcast(this, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)}
@@ -99,14 +98,12 @@ class MusicService : MediaBrowserServiceCompat()   {
             currentMusicHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
             }
-
             isShuffledHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
             }
             isLoopingHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
             }
-
             isPlayingHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
             }
@@ -115,7 +112,6 @@ class MusicService : MediaBrowserServiceCompat()   {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        //-------------------------
         val currentMusic = customPlayer.currentMusicHolder.value
         val isLooping = customPlayer.isLoopingHolder.value
         val isShuffled = customPlayer.isShuffledHolder.value
@@ -128,21 +124,13 @@ class MusicService : MediaBrowserServiceCompat()   {
         )
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(serviceChannel)
-       // mediaSession.setMetaData()
         MediaButtonReceiver.handleIntent(mediaSession,intent)
-
 
         val title : String = currentMusic?.title ?: "null"
         val artist: String = currentMusic?.artist ?: "null"
         val albumUri : String = currentMusic?.getAlbumUri().toString()
 
-        mediaSession.setMetadata(
-            MediaMetadataCompat.Builder()
-                .putString(MediaMetadata.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
-                .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, albumUri)
-                .build()
-        )
+        mediaSession.setMetaData_td(title, artist, albumUri)
 
         val notification =
             NotificationCompat.Builder(this, Constants.CHANNEL_ID)       // 알림바에 띄울 알림을 만듬
@@ -164,7 +152,6 @@ class MusicService : MediaBrowserServiceCompat()   {
                 .build()
         notificationManager.notify(1,notification)
         startForeground(1, notification)              // 지정된 알림을 실행
-
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -190,7 +177,6 @@ class MusicService : MediaBrowserServiceCompat()   {
         audioManager.abandonAudioFocus(audioFocusChangeListener)
         mediaSession.release()
         Variables.isServiceOn = false
-
         super.onDestroy()
     }
 }

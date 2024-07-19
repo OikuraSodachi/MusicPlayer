@@ -23,7 +23,7 @@ class MyMediaSession(appContext: Context, tag:String):MediaSessionCompat(appCont
         this.setPlaybackState(playbackState.build())
     }
 
-    fun setMetaData(title:String,artist:String,albumUri:String){
+    fun setMetaData_td(title:String,artist:String,albumUri:String){
         this.setMetadata(
             MediaMetadataCompat.Builder()
                 .putString(MediaMetadata.METADATA_KEY_TITLE, title)
