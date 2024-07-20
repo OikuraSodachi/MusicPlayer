@@ -8,6 +8,9 @@ import java.io.File
 /** 파일탐색기 기능을 위한 class **/
 class FileModule(defaultPath:File) {
 
+
+
+
     /** 현재 보고있는 Directory **/
     private val _currentPath = MutableStateFlow<File>(defaultPath)
     val currentPath : StateFlow<File>

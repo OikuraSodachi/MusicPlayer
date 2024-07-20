@@ -9,8 +9,10 @@ import com.todokanai.musicplayer.data.DataConverter
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.repository.ScanPathRepository
 import com.todokanai.musicplayer.tools.independent.FileModule
+import com.todokanai.musicplayer.tools.independent.getPhysicalStorages_td
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -23,14 +25,18 @@ class PathPickerViewModel @Inject constructor(
     private val spRepository: ScanPathRepository,
 ) : ViewModel() {
 
-
     private val fModule = FileModule(Variables.defaultStorage)
+    val currentPath = fModule.currentPath
     private val converter = DataConverter()
 
-    val currentPath = fModule.currentPath
+    val isStorageSelectView = MutableStateFlow<Boolean>(true)
+
+    fun storageList(context: Context) = getPhysicalStorages_td(context).map{
+        converter.toFileHolderItem(it)
+    }
 
     val fileHolderItemList = fModule.files.map { file ->
-        converter.fileHolderItemList(file,Constants.BY_DEFAULT)
+        DataConverter().fileHolderItemList(file,Constants.BY_DEFAULT)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5),
@@ -43,8 +49,17 @@ class PathPickerViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
+
+    fun toParent(file: File?,context: Context) {
+        if(getPhysicalStorages_td(context).contains(file)){
+            isStorageSelectView.value = true
+        } else {
+            updateCurrentPath(file?.parentFile, context)
+        }
+    }
+
     fun updateCurrentPath(file: File?,context: Context){
-        viewModelScope.launch {
+       // viewModelScope.launch {
             if(file?.listFiles()!=null){
                 fModule.updateCurrentPath(file)
             } else{
@@ -54,7 +69,15 @@ class PathPickerViewModel @Inject constructor(
             file?.listFiles()?.let {
                 fModule.updateCurrentPath(file)
             }
+      //  }
+    }
+
+    fun onSelectStorage(storage:File,context: Context){
+        viewModelScope.launch {
+            updateCurrentPath(storage, context)
+            isStorageSelectView.value = false
         }
+
     }
 
     fun insertScanPath(file: File){

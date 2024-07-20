@@ -28,8 +28,7 @@ class DataConverter() {
         }
     }
 
-    private fun File.toFileHolderItem(): FileHolderItem {
-        val file = this
+    fun toFileHolderItem(file: File): FileHolderItem {
         val lastModified = DateFormat.getDateTimeInstance().format(file.lastModified())
         val size =
             if(file.isDirectory) {
@@ -54,7 +53,7 @@ class DataConverter() {
         val sortedFileHolderItemList = sorter.sortFileList(sortBy,files)
         sortedFileHolderItemList.forEach { file ->
             if(file.isDirectory) {
-                result.add(file.toFileHolderItem())
+                result.add(toFileHolderItem(file))
             }
         }
         return result

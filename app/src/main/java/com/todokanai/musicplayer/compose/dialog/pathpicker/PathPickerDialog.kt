@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.dialog.pathpicker.listview.DirectoryListView
 import com.todokanai.musicplayer.compose.dialog.pathpicker.listview.FileListView
+import com.todokanai.musicplayer.compose.dialog.pathpicker.listview.StorageListView
 import com.todokanai.musicplayer.viewmodel.PathPickerViewModel
 import timber.log.Timber
 
@@ -31,8 +32,8 @@ fun PathPickerDialog(
     val context = LocalContext.current
     val currentPath = viewModel.currentPath.collectAsStateWithLifecycle()
     val dirTree = viewModel.dirTree.collectAsStateWithLifecycle()
-
     val itemList = viewModel.fileHolderItemList.collectAsStateWithLifecycle()
+    val isStorageSelectView = viewModel.isStorageSelectView.collectAsStateWithLifecycle()
 
     AlertDialog(
         modifier = modifier
@@ -40,19 +41,33 @@ fun PathPickerDialog(
         onDismissRequest = {},
         content = {
             Column() {
-                DirectoryListView(
-                    dirTree = dirTree.value,
-                    updateCurrentPath = {viewModel.updateCurrentPath(it,context)}
-                )
+                if(isStorageSelectView.value){
+                    StorageListView(
+                        modifier = Modifier,
+                        itemList = viewModel.storageList(context),
+                        onClick = {viewModel.onSelectStorage(it,context)}
+                    )
+                }else {
+                    DirectoryListView(
+                        dirTree = dirTree.value,
+                        updateCurrentPath = { viewModel.updateCurrentPath(it, context) }
+                    )
 
-                FileListView(
-                    modifier = Modifier
-                        .weight(1f),
-                    itemList = itemList.value,
-                    onClick =  {viewModel.updateCurrentPath(it,context)},
-                    toParent = { viewModel.updateCurrentPath(currentPath.value.parentFile,context)}
-                )
+                    FileListView(
+                        modifier = Modifier
+                            .weight(1f),
+                        itemList = itemList.value,
+                        onClick = { viewModel.updateCurrentPath(it, context) },
+                        toParent = {
+                            viewModel.toParent(
+                                currentPath.value,
+                                context
+                            )
+                        }
+                    )
 
+
+                }
                 Row {
                     Button(
                         onClick = { onDismiss() }

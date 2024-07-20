@@ -2,6 +2,9 @@ package com.todokanai.musicplayer.tools.independent
 
 /** 이 method들은 독립적으로 사용 가능함 */
 
+import android.content.Context
+import android.os.Environment
+import android.os.storage.StorageManager
 import java.io.File
 import java.io.FileInputStream
 import java.text.DecimalFormat
@@ -49,6 +52,24 @@ fun getPhysicalStorage_td(file: File): String {
     } else {
         path.substring(secondSlashIndex + 1)
     }
+}
+
+/** Todokanai
+ *
+ * 기기의 storage 목록 반환 **/
+fun getPhysicalStorages_td(context: Context):Array<File>{
+    val defaultStorage = Environment.getExternalStorageDirectory()
+    val volumes = context.getSystemService(StorageManager::class.java)?.storageVolumes
+    val storageList = mutableListOf<File>(defaultStorage)
+    volumes?.forEach { volume ->
+        if (!volume.isPrimary && volume.isRemovable) {
+            val sdCard = volume.directory
+            if (sdCard != null) {
+                storageList.add(sdCard)
+            }
+        }
+    }
+    return storageList.toTypedArray()
 }
 
 /** files:Array <<File>> 과 하위 경로의 파일의 크기 합 */
