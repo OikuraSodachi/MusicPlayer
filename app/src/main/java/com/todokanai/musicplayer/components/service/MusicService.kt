@@ -3,7 +3,6 @@ package com.todokanai.musicplayer.components.service
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
@@ -42,7 +41,7 @@ class MusicService : MediaBrowserServiceCompat()   {
 
     private lateinit var notificationManager:NotificationManagerCompat
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
-    private val audioManager by lazy{ getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+   // private val audioManager by lazy{ getSystemService(Context.AUDIO_SERVICE) as AudioManager }
     private val noisyReceiver = NoisyReceiver()
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
     private val icons = MyIcons()
@@ -60,6 +59,9 @@ class MusicService : MediaBrowserServiceCompat()   {
 
     @Inject
     lateinit var dsRepo:DataStoreRepository
+
+    @Inject
+    lateinit var audioManager: AudioManager
 
     override fun onCreate() {
         super.onCreate()
