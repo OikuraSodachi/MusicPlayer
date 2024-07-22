@@ -41,7 +41,6 @@ class MusicService : MediaBrowserServiceCompat()   {
 
     private lateinit var notificationManager:NotificationManagerCompat
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
-   // private val audioManager by lazy{ getSystemService(Context.AUDIO_SERVICE) as AudioManager }
     private val noisyReceiver = NoisyReceiver()
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
     private val icons = MyIcons()

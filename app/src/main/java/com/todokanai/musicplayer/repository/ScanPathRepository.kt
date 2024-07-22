@@ -37,6 +37,4 @@ class ScanPathRepository @Inject constructor(private val scanPathDao:ScanPathDao
     suspend fun delete(absolutePath:String) = deleteScanPath(absolutePath)
 
     private suspend fun deleteScanPath(scanPath: String) = scanPathDao.delete(scanPath)
-
-
 }

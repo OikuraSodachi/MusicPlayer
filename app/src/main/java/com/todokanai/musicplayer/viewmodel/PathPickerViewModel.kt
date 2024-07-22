@@ -77,7 +77,6 @@ class PathPickerViewModel @Inject constructor(
             updateCurrentPath(storage, context)
             isStorageSelectView.value = false
         }
-
     }
 
     fun insertScanPath(file: File){

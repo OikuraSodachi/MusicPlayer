@@ -33,9 +33,9 @@ class MainViewModel @Inject constructor(
 
     private val permission by lazy{
         if(Build.VERSION.SDK_INT <=32){
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            arrayOf( Manifest.permission.READ_EXTERNAL_STORAGE)
         } else{
-            Manifest.permission.READ_MEDIA_AUDIO
+            arrayOf( Manifest.permission.READ_MEDIA_AUDIO)
         }
     }
 
@@ -63,18 +63,20 @@ class MainViewModel @Inject constructor(
 
     fun getPermission(activity: Activity){
         viewModelScope.launch {
-            if (!isPermissionGranted_td(activity,permission)) {
-                requestPermission_td(
-                    activity,
-                    arrayOf(permission),
-                    {
-                        Toast.makeText(
-                            activity,
-                            "Storage permission is requires,please allow from settings",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                )
+            permission.forEach {
+                if (!isPermissionGranted_td(activity, it)) {
+                    requestPermission_td(
+                        activity,
+                        arrayOf(it),
+                        {
+                            Toast.makeText(
+                                activity,
+                                "Storage permission is requires,please allow from settings",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    )
+                }
             }
         }
     }

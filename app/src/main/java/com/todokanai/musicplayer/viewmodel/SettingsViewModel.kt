@@ -36,13 +36,13 @@ class SettingsViewModel @Inject constructor(
     fun apply(context: Context){
         viewModelScope.launch {
             val dirsToScan = spRepository.getPathNonFlow()
+            println("dirsToScan: $dirsToScan")
             musicRepo.deleteAll()
             scanMusicList(dirsToScan,context).forEach {music ->
                 musicRepo.insert(music)
             }
             customPlayer.updatePlayList() // unstable(?)
         }
-
     }
     //-----------------
 
