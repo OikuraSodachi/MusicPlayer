@@ -1,7 +1,6 @@
 package com.todokanai.musicplayer.compose.dialog.pathpicker.listview
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,7 @@ fun FileListView(
     onClick: (File) -> Unit,
     toParent: () -> Unit,
 ){
-
+    //val tempList = remember{itemList}
     LazyColumn(
         modifier = modifier
           //  .fillMaxSize()
