@@ -1,5 +1,6 @@
 package com.todokanai.musicplayer.compose.dialog.pathpicker.holder
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.todokanai.musicplayer.compose.MyIcons
+import com.todokanai.musicplayer.myobjects.MyObjects.asyncImageExtension
 import com.todokanai.musicplayer.tools.independent.readableFileSize_td
 import java.io.File
 import java.text.DateFormat
@@ -44,44 +46,36 @@ fun FileHolder(
 
     ConstraintLayout(
         modifier = modifier
-
             .height(60.dp)
             .fillMaxWidth()
     ) {
         val (fileImage, fileName, fileDate, fileSize) = createRefs()
-        /*
-        ImageHolder(
-            modifier = Modifier
-                .constrainAs(fileImage) {
-                    start.linkTo(parent.start)
-                }
-                .aspectRatio(1f, false)
-                .width(50.dp)
-                .fillMaxHeight()
-                .padding(5.dp),
-            isAsyncImage = (fileHolderItem.isAsyncImage),
-            data = file.toUri(),
-            icon = painterResource(id =  fileHolderItem.thumbnail)
-        )
+        val imageModifier = Modifier
+            .constrainAs(fileImage) {
+                start.linkTo(parent.start)
+            }
+            .aspectRatio(1f, false)
+            .width(50.dp)
+            .fillMaxHeight()
+            .padding(5.dp)
 
-         */
-
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(file.toUri())
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            modifier = Modifier
-                .constrainAs(fileImage) {
-                    start.linkTo(parent.start)
-                }
-                .aspectRatio(1f, false)
-                .width(50.dp)
-                .fillMaxHeight()
-                .padding(5.dp),
-            placeholder = painterResource(id = MyIcons().thumbnail(file))
-        )
+        if(asyncImageExtension.contains(file.extension)) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(file.toUri())
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = imageModifier,
+                placeholder = painterResource(id = MyIcons().thumbnail(file))
+            )
+        } else{
+            Image(
+                modifier = imageModifier,
+                painter = painterResource(id = MyIcons().thumbnail(file)),
+                contentDescription = null
+            )
+        }
 
         Text(
             text = sizeText,
@@ -141,5 +135,4 @@ private fun FileHolderPreview(){
         )
     }
 }
-
  */
