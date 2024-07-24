@@ -5,9 +5,9 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.data.DataConverter
-import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.Constants.BY_DEFAULT
 import com.todokanai.musicplayer.repository.ScanPathRepository
+import com.todokanai.musicplayer.tools.FileListSorter
 import com.todokanai.musicplayer.tools.independent.FileModule
 import com.todokanai.musicplayer.tools.independent.getPhysicalStorages_td
 import com.todokanai.musicplayer.variables.Variables
@@ -27,16 +27,13 @@ class PathPickerViewModel @Inject constructor(
 
     private val fModule = FileModule(Variables.defaultStorage)
     val currentPath = fModule.currentPath
-    private val converter = DataConverter()
-
+    private val sorter = FileListSorter()
     val isStorageSelectView = MutableStateFlow<Boolean>(true)
 
-    fun storageList(context: Context) = getPhysicalStorages_td(context).map{
-        converter.toFileHolderItem(it)
-    }
+    fun storageList(context: Context) = getPhysicalStorages_td(context).sortedBy{it.name}
 
-    val fileHolderItemList = fModule.files.map { file ->
-        DataConverter().fileHolderItemList(file,Constants.BY_DEFAULT)
+    val fileItemList = fModule.files.map { files ->
+        sorter.sortFileList(BY_DEFAULT,files)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5),

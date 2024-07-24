@@ -6,24 +6,23 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.todokanai.musicplayer.compose.dialog.pathpicker.holder.FileHolder
-import com.todokanai.musicplayer.data.dataclass.FileHolderItem
 import java.io.File
 
 @Composable
 fun StorageListView(
     modifier: Modifier,
-    itemList:List<FileHolderItem>,
+    itemList:List<File>,
     onClick: (File) -> Unit
 ){
     LazyColumn(
         modifier = modifier
     ){
         items(itemList.size){ index ->
-            val fileHolderItem = itemList[index]
+            val file = itemList[index]
             FileHolder(
                 modifier = Modifier
-                    .clickable (onClick = { onClick(fileHolderItem.file) }),
-                fileHolderItem = fileHolderItem
+                    .clickable (onClick = { onClick(file) }),
+                file = file
             )
             if(index<itemList.lastIndex){
                 Divider()

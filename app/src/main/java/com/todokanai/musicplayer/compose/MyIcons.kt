@@ -1,8 +1,23 @@
 package com.todokanai.musicplayer.compose
 
 import com.todokanai.musicplayer.R
+import java.io.File
 
 class MyIcons() {
+
+    private val thumbnailFolder = R.drawable.ic_baseline_folder_24
+    private val thumbnailPdf = R.drawable.ic_pdf
+    private val thumbnailDefaultFile =R.drawable.ic_baseline_insert_drive_file_24
+    fun thumbnail(file: File): Int {
+        return if (file.isDirectory) {
+            thumbnailFolder
+        } else {
+            when (file.extension) {
+                "pdf" -> { thumbnailPdf }
+                else -> { thumbnailDefaultFile }
+            }
+        }
+    }
 
     val delete = R.drawable.baseline_delete_24
     val prev = R.drawable.baseline_skip_previous_24

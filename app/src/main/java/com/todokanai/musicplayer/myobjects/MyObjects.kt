@@ -1,6 +1,5 @@
 package com.todokanai.musicplayer.myobjects
 
-import android.media.MediaPlayer
 import com.todokanai.musicplayer.data.room.Music
 
 object MyObjects {

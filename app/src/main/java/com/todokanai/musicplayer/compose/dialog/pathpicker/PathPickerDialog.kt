@@ -32,7 +32,7 @@ fun PathPickerDialog(
     val context = LocalContext.current
     val currentPath = viewModel.currentPath.collectAsStateWithLifecycle()
     val dirTree = viewModel.dirTree.collectAsStateWithLifecycle()
-    val itemList = viewModel.fileHolderItemList.collectAsStateWithLifecycle()
+    val itemList = viewModel.fileItemList.collectAsStateWithLifecycle()
     val isStorageSelectView = viewModel.isStorageSelectView.collectAsStateWithLifecycle()
 
     AlertDialog(
