@@ -24,7 +24,6 @@ fun FileListView(
 ){
     LazyColumn(
         modifier = modifier
-          //  .fillMaxSize()
     ) {
         item {
             Text(
@@ -38,16 +37,13 @@ fun FileListView(
         items(itemList.size) { index ->
             val file = itemList[index]
             FileHolder(
-                modifier = Modifier
-                    .clickable (onClick = { onClick(file) }),
+                modifier = Modifier,
+                onClick = { onClick(file) },
                 file = file
             )
             if(index<itemList.lastIndex){
                 Divider()
             }
         }
-
-
     }
-    println("Recomposition: FileListView")
 }

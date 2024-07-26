@@ -20,7 +20,6 @@ import com.todokanai.musicplayer.compose.dialog.pathpicker.listview.DirectoryLis
 import com.todokanai.musicplayer.compose.dialog.pathpicker.listview.FileListView
 import com.todokanai.musicplayer.compose.dialog.pathpicker.listview.StorageListView
 import com.todokanai.musicplayer.viewmodel.PathPickerViewModel
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,8 +64,6 @@ fun PathPickerDialog(
                             )
                         }
                     )
-
-
                 }
                 Row {
                     Button(
@@ -83,7 +80,6 @@ fun PathPickerDialog(
             }
         }
     )
-    Timber.d("Recomposition")
 }
 
 @Preview

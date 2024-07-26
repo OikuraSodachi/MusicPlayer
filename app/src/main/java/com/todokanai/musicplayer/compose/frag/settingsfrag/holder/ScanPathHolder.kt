@@ -1,6 +1,5 @@
 package com.todokanai.musicplayer.compose.frag.settingsfrag.holder
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,7 +17,6 @@ import com.todokanai.musicplayer.compose.presets.image.ImageHolder
 import timber.log.Timber
 
 /** 스캔할 경로 Holder **/
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScanPathHolder(
     modifier:Modifier,

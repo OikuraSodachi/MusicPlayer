@@ -1,6 +1,7 @@
 package com.todokanai.musicplayer.compose.dialog.pathpicker.holder
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,12 +9,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -30,26 +33,29 @@ import java.text.DateFormat
 @Composable
 fun FileHolder(
     modifier: Modifier = Modifier,
+    onClick:(File)->Unit,
     file: File
 ){
     val sizeText =
-        if(file.isDirectory) {
-            val subFiles = file.listFiles()
-            if(subFiles == null){
-                "null"
-            }else {
-                "${subFiles.size} 개"
-            }
+        if (file.isDirectory) {
+        val subFiles = file.listFiles()
+        if (subFiles == null) {
+            "null"
         } else {
-            readableFileSize_td(file.length())
+            "${subFiles.size} 개"
         }
+    } else {
+        readableFileSize_td(file.length())
+    }
 
     ConstraintLayout(
         modifier = modifier
             .height(60.dp)
             .fillMaxWidth()
+            .clickable { onClick(file) }
     ) {
         val (fileImage, fileName, fileDate, fileSize) = createRefs()
+
         val imageModifier = Modifier
             .constrainAs(fileImage) {
                 start.linkTo(parent.start)
@@ -58,7 +64,6 @@ fun FileHolder(
             .width(50.dp)
             .fillMaxHeight()
             .padding(5.dp)
-
         if(asyncImageExtension.contains(file.extension)) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -124,15 +129,15 @@ fun FileHolder(
     }
 }
 
-/*
 @Preview
 @Composable
 private fun FileHolderPreview(){
+    val testFile = File("TestPath")
     Surface {
         FileHolder(
-           // modifier = Modifier,
-            fileHolderItem = FileHolderItem(File("test"), "name", "size", "lastModified", R.drawable.ic_launcher_foreground),
+            modifier = Modifier,
+            onClick = {},
+            file = testFile
         )
     }
 }
- */

@@ -1,6 +1,5 @@
 package com.todokanai.musicplayer.compose.dialog.pathpicker.listview
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
@@ -20,8 +19,8 @@ fun StorageListView(
         items(itemList.size){ index ->
             val file = itemList[index]
             FileHolder(
-                modifier = Modifier
-                    .clickable (onClick = { onClick(file) }),
+                modifier = Modifier,
+                onClick = { onClick(file) },
                 file = file
             )
             if(index<itemList.lastIndex){

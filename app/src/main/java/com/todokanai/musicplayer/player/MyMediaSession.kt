@@ -2,7 +2,6 @@ package com.todokanai.musicplayer.player
 
 import android.content.Context
 import android.media.MediaMetadata
-import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
