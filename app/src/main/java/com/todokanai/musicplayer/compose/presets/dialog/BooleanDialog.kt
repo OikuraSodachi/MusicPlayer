@@ -10,13 +10,12 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BooleanDialog(
-    modifier: Modifier,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
     title: String,
     message: String,
+    modifier: Modifier = Modifier
 ) {
-
     AlertDialog(
         modifier = modifier,
         onDismissRequest = { onCancel() },

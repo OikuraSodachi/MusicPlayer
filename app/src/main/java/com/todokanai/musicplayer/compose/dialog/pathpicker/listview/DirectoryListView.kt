@@ -15,9 +15,9 @@ import java.io.File
  * **/
 @Composable
 fun DirectoryListView(
-    modifier:Modifier = Modifier,
     dirTree: List<File>,
-    updateCurrentPath:(File)->Unit
+    updateCurrentPath:(File)->Unit,
+    modifier:Modifier = Modifier
 ){
     LazyRow(
         modifier = modifier
@@ -27,10 +27,10 @@ fun DirectoryListView(
             val item = dirTree[index]
 
             DirectoryHolder(
-                modifier = Modifier
-                    .fillMaxHeight(),
                 fileName = {item.name},
-                onClick = {updateCurrentPath(item)}
+                onClick = {updateCurrentPath(item)},
+                modifier = Modifier
+                    .fillMaxHeight()
             )
         }
     }

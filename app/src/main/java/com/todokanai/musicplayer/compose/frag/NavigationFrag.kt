@@ -24,8 +24,8 @@ import com.todokanai.musicplayer.myobjects.Constants.FRAG_TEST
 
 @Composable
 fun NavigationFrag(
-    modifier : Modifier,
     fragCode: MutableState<String>,
+    modifier : Modifier = Modifier
 ){
 
     /** Enable TestFragment **/
@@ -79,7 +79,6 @@ fun NavigationFrag(
 @Composable
 private fun NavigationFragPreview(){
     NavigationFrag(
-        modifier = Modifier,
         fragCode = mutableStateOf( FRAG_MUSIC_LIST)
     )
 }

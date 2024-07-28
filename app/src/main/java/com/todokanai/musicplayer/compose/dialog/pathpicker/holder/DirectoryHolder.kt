@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun DirectoryHolder(
-    modifier: Modifier,
     fileName:()->String,
     onClick:()->Unit,
+    modifier: Modifier = Modifier
 ){
     Row(
         modifier = modifier

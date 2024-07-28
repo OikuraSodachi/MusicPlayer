@@ -18,15 +18,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SelectDialog(
-    modifier : Modifier,
-    title:String ?= null,
+    title:String?,
     items: List<Pair<String,()->Unit>>,
     selectedItem:String,
     onDismissRequest:()->Unit,
-    confirmText:String ?=null,
-    dismissText:String ?=null,
-    onConfirm:(()->Unit)? =null,
-    onCancel:(()->Unit)? =null
+    confirmText:String?,
+    dismissText:String?,
+    onConfirm:(()->Unit)?,
+    onCancel:(()->Unit)?,
+    modifier : Modifier = Modifier
 ){
     AlertDialog(
         modifier = modifier,
@@ -89,14 +89,14 @@ fun SelectDialog(
 @Preview
 @Composable
 private fun SelectDialogPreview(){
+    val items = listOf(Pair("Item1",{}),Pair("Item2",{}))
     SelectDialog(
-        modifier = Modifier,
-        title = null,
-        items = listOf(Pair("Item1",{}),Pair("Item2",{})),
+        title = "Title",
+        items = items,
         selectedItem = "Item2",
         onDismissRequest = {},
-        dismissText = "test",
-        confirmText = null,
+        dismissText = "cancel",
+        confirmText = "Confirm",
         onConfirm = {},
         onCancel = {}
     )

@@ -11,10 +11,10 @@ import coil.request.ImageRequest
 
 @Composable
 fun ImageHolder(
-    modifier: Modifier,
     isAsyncImage:Boolean,
     icon: Painter?,
-    data: Uri?
+    data: Uri?,
+    modifier: Modifier = Modifier
 ){
     if(isAsyncImage){
         AsyncImage(

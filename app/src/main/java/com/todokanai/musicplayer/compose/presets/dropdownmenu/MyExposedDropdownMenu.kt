@@ -18,9 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyExposedDropdownMenu(
-    modifier: Modifier,
     contents: List<String>,
-    onItemSelect: (item:String)->Unit
+    onItemSelect: (item:String)->Unit,
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(contents[0]) }
@@ -63,9 +63,9 @@ fun MyExposedDropdownMenu(
 @Preview
 @Composable
 private fun MyExposedDropdownMenuPreview(){
+    val contents = listOf("1","2","3")
     MyExposedDropdownMenu(
-        modifier = Modifier,
-        contents = listOf("1","2","3"),
+        contents = contents,
         onItemSelect = {}
     )
 }

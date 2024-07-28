@@ -9,9 +9,9 @@ import java.io.File
 
 @Composable
 fun StorageListView(
-    modifier: Modifier,
     itemList:List<File>,
-    onClick: (File) -> Unit
+    onClick: (File) -> Unit,
+    modifier: Modifier = Modifier
 ){
     LazyColumn(
         modifier = modifier
@@ -19,9 +19,8 @@ fun StorageListView(
         items(itemList.size){ index ->
             val file = itemList[index]
             FileHolder(
-                modifier = Modifier,
-                onClick = { onClick(file) },
-                file = file
+                file = file,
+                onClick = { onClick(file) }
             )
             if(index<itemList.lastIndex){
                 Divider()

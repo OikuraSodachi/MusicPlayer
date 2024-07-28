@@ -17,10 +17,10 @@ import java.io.File
 /** Recomposition 최적화 Confirm 안된 상태 **/
 @Composable
 fun FileListView(
-    modifier: Modifier,
     itemList:List<File>,
     onClick: (File) -> Unit,
     toParent: () -> Unit,
+    modifier: Modifier = Modifier
 ){
     LazyColumn(
         modifier = modifier
@@ -37,7 +37,6 @@ fun FileListView(
         items(itemList.size) { index ->
             val file = itemList[index]
             FileHolder(
-                modifier = Modifier,
                 onClick = { onClick(file) },
                 file = file
             )

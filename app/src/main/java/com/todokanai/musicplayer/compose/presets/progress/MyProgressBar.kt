@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.dp
  * **/
 @Composable
 fun MyProgressBar(
-    modifier: Modifier = Modifier,
     progress: Float,
+    modifier: Modifier = Modifier,
     progressColor: Color = Color.Red,
     backgroundColor: Color = Color.Red.copy(0.24f),
-    clipShape: Shape = RoundedCornerShape(16.dp)
-) {
+    clipShape: Shape = RoundedCornerShape(16.dp),
+ ) {
     Box(
         modifier = modifier
             .clip(clipShape)

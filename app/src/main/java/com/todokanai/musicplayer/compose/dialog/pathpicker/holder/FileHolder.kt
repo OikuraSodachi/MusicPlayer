@@ -32,9 +32,9 @@ import java.text.DateFormat
 
 @Composable
 fun FileHolder(
-    modifier: Modifier = Modifier,
+    file: File,
     onClick:(File)->Unit,
-    file: File
+    modifier: Modifier = Modifier,
 ){
     val sizeText =
         if (file.isDirectory) {
@@ -135,9 +135,9 @@ private fun FileHolderPreview(){
     val testFile = File("TestPath")
     Surface {
         FileHolder(
-            modifier = Modifier,
+            file = testFile,
             onClick = {},
-            file = testFile
+            modifier = Modifier
         )
     }
 }

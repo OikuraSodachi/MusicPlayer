@@ -24,9 +24,9 @@ import com.todokanai.musicplayer.viewmodel.PathPickerViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PathPickerDialog(
-    modifier: Modifier,
     onDismiss:()->Unit,
-    viewModel: PathPickerViewModel = hiltViewModel()
+    modifier: Modifier = Modifier,
+    viewModel: PathPickerViewModel = hiltViewModel(),
 ){
     val context = LocalContext.current
     val currentPath = viewModel.currentPath.collectAsStateWithLifecycle()
@@ -42,7 +42,6 @@ fun PathPickerDialog(
             Column() {
                 if(isStorageSelectView.value){
                     StorageListView(
-                        modifier = Modifier,
                         itemList = viewModel.storageList(context),
                         onClick = {viewModel.onSelectStorage(it,context)}
                     )
@@ -53,8 +52,6 @@ fun PathPickerDialog(
                     )
 
                     FileListView(
-                        modifier = Modifier
-                            .weight(1f),
                         itemList = itemList.value,
                         onClick = { viewModel.updateCurrentPath(it, context) },
                         toParent = {
@@ -62,7 +59,9 @@ fun PathPickerDialog(
                                 currentPath.value,
                                 context
                             )
-                        }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
                     )
                 }
                 Row {

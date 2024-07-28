@@ -20,10 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 /**  Height 관련 살짝 불안정(?) **/
 @Composable
 fun TextInput(
-    modifier : Modifier,
     defaultText:String,
     onConfirm:(String)->Unit,
-    confirmButton: @Composable (modifier:Modifier) -> Unit
+    confirmButton: @Composable (modifier:Modifier) -> Unit,
+    modifier : Modifier = Modifier
 ){
     var text by remember { mutableStateOf("") }
 
@@ -31,14 +31,13 @@ fun TextInput(
         modifier = modifier
     ){
         TextField(
-            modifier = Modifier,
             value = text,
             placeholder = { Text(defaultText) },
             onValueChange = {text = it},
             singleLine = true
         )
         confirmButton(
-            modifier = Modifier
+            Modifier
                 .clickable{onConfirm(text)}
         )
     }
@@ -47,9 +46,10 @@ fun TextInput(
 /**  Height 관련 살짝 불안정(?) **/
 @Composable
 fun TextInputPreset(
-    modifier : Modifier,
     defaultText:String,
+    inputButtonText:String,
     onConfirm:(String)->Unit,
+    modifier : Modifier = Modifier
 ){
     var text by remember { mutableStateOf("") }
 
@@ -72,7 +72,7 @@ fun TextInputPreset(
             onClick = { onConfirm(text) }
         ) {
             Text(
-                text = "Confirm",
+                text = inputButtonText,
                 maxLines = 1
             )
         }
@@ -84,8 +84,8 @@ fun TextInputPreset(
 private fun TextInputPresetPreview(){
     Surface {
         TextInputPreset(
-            modifier = Modifier,
             defaultText = "defaultText",
+            inputButtonText = "Insert",
             onConfirm = {}
         )
     }
