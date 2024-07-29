@@ -24,8 +24,8 @@ class MusicRepository @Inject constructor(private val musicDao:MusicDao,private 
 
     suspend fun currentMusicNonFlow() = cMusicDao.getCurrentNonFlow()?.toMusic()
 
-    suspend fun upsertCurrentMusic(currentMusic: Music?){
+    suspend fun upsertCurrentMusic(currentMusic: Music){
         cMusicDao.deleteAll()
-        cMusicDao.insert(currentMusic?.toCurrentMusic())
+        cMusicDao.insert(currentMusic.toCurrentMusic())
     }
 }

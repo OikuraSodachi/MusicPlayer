@@ -16,7 +16,7 @@ interface CurrentMusicDao {
     suspend fun getCurrentNonFlow() : CurrentMusic?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(music: CurrentMusic?)
+    suspend fun insert(music: CurrentMusic)
 
     @Delete
     suspend fun delete(music: CurrentMusic)
