@@ -1,31 +1,9 @@
 package com.todokanai.musicplayer.compose.frag.settingsfrag
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.compose.dialog.pathpicker.PathPickerDialog
-import com.todokanai.musicplayer.compose.frag.settingsfrag.holder.ScanPathHolder
 import com.todokanai.musicplayer.viewmodel.SettingsViewModel
-import timber.log.Timber
 
 @Composable
 fun SettingsFrag(
@@ -106,7 +84,6 @@ fun SettingsFrag(
             }
         }
     }
-    Timber.d("Recomposition")
 
      */
 }
