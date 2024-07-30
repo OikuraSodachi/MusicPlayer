@@ -14,7 +14,7 @@ interface UserDao {
     fun getAll() : Flow<List<User>>
 
     @Query("select * from room_user")
-    suspend fun getAllNonFlow() : List<User>
+    suspend fun getAllNonFlow() : Array<User>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user : User)

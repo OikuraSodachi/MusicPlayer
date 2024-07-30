@@ -12,7 +12,7 @@ interface ScanPathDao {
     fun getAll() : Flow<Array<ScanPath>>
 
     @Query("select * from room_scanpath")
-    suspend fun getAllNonFlow() : List<ScanPath>
+    suspend fun getAllNonFlow() : Array<ScanPath>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(scanPath: ScanPath)
@@ -27,6 +27,6 @@ interface ScanPathDao {
     fun getPath():Flow<Array<String>>
 
     @Query("select absolutePath from room_scanpath")
-    suspend fun getPathNonFlow():List<String>
+    suspend fun getPathNonFlow():Array<String>
 
 }

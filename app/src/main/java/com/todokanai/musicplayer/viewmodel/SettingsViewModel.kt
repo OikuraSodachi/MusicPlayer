@@ -23,12 +23,15 @@ class SettingsViewModel @Inject constructor(
     private val musicRepo:MusicRepository,
 ) : ViewModel() {
 
+    /** View로 옮길 것 **/
     val directoryDialog = MutableStateFlow<Boolean>(false)
 
+    /** View로 옮길 것 **/
     fun directoryDialog(){
         directoryDialog.value = true
     }
 
+    /** View로 옮길 것 **/
     fun directoryDialogOff(){
         directoryDialog.value = false
     }
@@ -38,18 +41,15 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             button.isClickable = false
             val dirsToScan = spRepository.getPathNonFlow()
-            println("dirsToScan: $dirsToScan")
-            musicRepo.deleteAll()
-            scanMusicList(dirsToScan,context).forEach {music ->
-                musicRepo.insert(music)
-            }
+            val newList  = scanMusicList(dirsToScan,context).toTypedArray()
+            musicRepo.updateMusicList(newList)
+
             customPlayer.updatePlayList() // unstable(?)
         }.invokeOnCompletion {
             button.isClickable = true
         }
     }
     //-----------------
-
 
     fun deleteScanPath(absolutePath: String){
         viewModelScope.launch {
@@ -64,14 +64,13 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-
     val pathList = spRepository.pathList.map{
         it.toList()
     }
-    private suspend fun scanMusicList(dirsToScan:List<String>,context: Context): List<Music> = withContext(
-        Dispatchers.IO){
-        val result = emptyArray<Music>()
 
+    private suspend fun scanMusicList(dirsToScan:Array<String>,context: Context): Set<Music> = withContext(
+        Dispatchers.IO){
+        var result = emptySet<Music>()
         val proj = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
@@ -80,7 +79,6 @@ class SettingsViewModel @Inject constructor(
             MediaStore.Audio.Media.DURATION,
             MediaStore.MediaColumns.DATA
         )
-
         val cursor = context.contentResolver?.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,   // URI 값을 주면 나머지 데이터 모아옴
             proj,
@@ -88,7 +86,6 @@ class SettingsViewModel @Inject constructor(
             null,
             null
         )
-        val musicList = mutableListOf<Music>()
         while (cursor?.moveToNext() == true) {
             val id = cursor.getString(0)
             val title = cursor.getString(1)
@@ -99,21 +96,17 @@ class SettingsViewModel @Inject constructor(
 
             val music = Music(id, title, artist, albumId, duration, fileDir)
             if(dirsToScan.isEmpty()){
-                result.plus(music)
-                musicList.add(music)
+                result = result.plus(music)
+
             }else{
                 for(a in 1..dirsToScan.size){
                     if(fileDir.startsWith(dirsToScan[a-1])){
-                        musicList.add(music)
+                        result = result.plus(music)
                     }
                 }
             }
         }
         cursor?.close()
-
-        return@withContext musicList.distinct().sortedBy { it.title }
+        return@withContext result
     }
-
-
-
 }

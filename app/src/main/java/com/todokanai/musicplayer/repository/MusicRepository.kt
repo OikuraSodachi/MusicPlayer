@@ -28,4 +28,11 @@ class MusicRepository @Inject constructor(private val musicDao:MusicDao,private 
         cMusicDao.deleteAll()
         cMusicDao.insert(currentMusic.toCurrentMusic())
     }
+
+    suspend fun updateMusicList(newList:Array<Music>){
+        musicDao.deleteAll()
+        newList.forEach {  music ->
+            musicDao.insert(music)
+        }
+    }
 }
