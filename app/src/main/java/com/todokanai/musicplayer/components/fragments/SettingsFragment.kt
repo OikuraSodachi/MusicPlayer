@@ -49,7 +49,7 @@ class SettingsFragment : Fragment() {
                 viewModel.directoryDialog()
             }
             applyBtn.setOnClickListener {
-                viewModel.apply(requireContext())
+                viewModel.apply(requireContext(),applyBtn)
             }
         }
 

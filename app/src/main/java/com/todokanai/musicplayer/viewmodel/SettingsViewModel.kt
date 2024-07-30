@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.viewmodel
 
 import android.content.Context
 import android.provider.MediaStore
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.data.room.Music
@@ -32,9 +33,10 @@ class SettingsViewModel @Inject constructor(
         directoryDialog.value = false
     }
 
-    /** delete 작업 완료후 insert 진행되는거 확인 완료 **/
-    fun apply(context: Context){
+    /** 더 깔끔한 IO 작업 중복 방지 방식은 없는지 고민해볼 것 **/
+    fun apply(context: Context,button: View){
         viewModelScope.launch {
+            button.isClickable = false
             val dirsToScan = spRepository.getPathNonFlow()
             println("dirsToScan: $dirsToScan")
             musicRepo.deleteAll()
@@ -42,6 +44,8 @@ class SettingsViewModel @Inject constructor(
                 musicRepo.insert(music)
             }
             customPlayer.updatePlayList() // unstable(?)
+        }.invokeOnCompletion {
+            button.isClickable = true
         }
     }
     //-----------------
