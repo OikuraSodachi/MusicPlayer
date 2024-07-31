@@ -11,7 +11,6 @@ import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.ScanPathRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,19 +21,6 @@ class SettingsViewModel @Inject constructor(
     private val spRepository:ScanPathRepository,
     private val musicRepo:MusicRepository,
 ) : ViewModel() {
-
-    /** View로 옮길 것 **/
-    val directoryDialog = MutableStateFlow<Boolean>(false)
-
-    /** View로 옮길 것 **/
-    fun directoryDialog(){
-        directoryDialog.value = true
-    }
-
-    /** View로 옮길 것 **/
-    fun directoryDialogOff(){
-        directoryDialog.value = false
-    }
 
     /** 더 깔끔한 IO 작업 중복 방지 방식은 없는지 고민해볼 것 **/
     fun apply(context: Context,button: View){
@@ -57,14 +43,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun clear(){
-        viewModelScope.launch {
-            spRepository.deleteAll()
-            musicRepo.deleteAll()
-        }
-    }
-
-    val pathList = spRepository.pathList.map{
+    val pathList = spRepository.paths.map{
         it.toList()
     }
 

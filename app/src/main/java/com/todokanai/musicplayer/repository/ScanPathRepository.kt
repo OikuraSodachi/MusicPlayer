@@ -2,7 +2,6 @@ package com.todokanai.musicplayer.repository
 
 import com.todokanai.musicplayer.data.room.ScanPath
 import com.todokanai.musicplayer.data.room.ScanPathDao
-import kotlinx.coroutines.flow.map
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,13 +10,7 @@ import javax.inject.Singleton
 class ScanPathRepository @Inject constructor(private val scanPathDao:ScanPathDao){
 
     /** scanPathList에서 absolutePath만 추출한 값 **/
-    val pathList = scanPathDao.getPath()
-
-    val pathListNew = scanPathDao.getAll()
-
-    val pathListTest = pathListNew.map {
-        it.map { it.absolutePath }
-    }
+    val paths = scanPathDao.getPath()
 
     suspend fun getAllNonFlow() = scanPathDao.getAllNonFlow()
 
