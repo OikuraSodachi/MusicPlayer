@@ -93,7 +93,7 @@ class MusicService : MediaBrowserServiceCompat()   {
             customPlayer.initAttributes(this@MusicService,musicRepo.currentMusicNonFlow())
         }
 
-        customPlayer.run{
+        customPlayer.apply{
             currentMusicHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
             }

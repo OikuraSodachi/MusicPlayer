@@ -22,7 +22,7 @@ class MusicRecyclerAdapter(private val onItemClick:(music:MusicHolderItem)->Unit
 
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
         val item = itemList[position]
-        holder.run {
+        holder.apply {
             setMusic(item)
             itemView.setOnClickListener {
                 onItemClick(item)

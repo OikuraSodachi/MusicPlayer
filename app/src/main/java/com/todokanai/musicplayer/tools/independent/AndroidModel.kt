@@ -75,7 +75,7 @@ fun setupTimber_td() {
 
 fun setMediaPlaybackState_td(state:Int,mediaSession:MediaSessionCompat){
     val playbackState = PlaybackStateCompat.Builder()
-        .run {
+        .apply {
             val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
                 PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SET_REPEAT_MODE or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
             } else {

@@ -69,14 +69,12 @@ class CustomPlayer(
         mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
     }
 
-
     /*
     /** NullPointerException 발생함. 이유는 몰?루 **/
     override fun getCurrentPosition(): Int {
         return mediaPlayer.currentPosition
     }
     */
-
 
     // override
     //-------------------------
@@ -164,10 +162,7 @@ class CustomPlayer(
                 this@CustomPlayer.start()
             }
 
-    /** onCompletion() 의 context에 주의 (?). 아직 미검증 상태
-     *
-     * playList 전체에서 IOException 발생시 무한루프 발생함
-     * **/
+    /** onCompletion() 의 context에 주의 (?). 아직 미검증 상태  **/
     private fun setMusicPrimitive(music: Music?,context: Context){
         music?.let {
             val shouldLoop = isLoopingHolder.value
