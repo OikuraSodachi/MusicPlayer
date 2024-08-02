@@ -29,7 +29,7 @@ class MusicListFragment : Fragment() {
         val adapter = MusicRecyclerAdapter { viewModel.onMusicClick(requireActivity(), it) }
 
         binding.run{
-            musicRecyclerView.run {
+            musicRecyclerView.apply {
                 this.adapter = adapter
                 val manager = LinearLayoutManager(context)
                 this.layoutManager = manager

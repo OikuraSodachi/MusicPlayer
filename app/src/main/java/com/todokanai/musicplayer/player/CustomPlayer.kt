@@ -170,7 +170,7 @@ class CustomPlayer(
 
             if (isMusicValid) {
                 reset()
-                mediaPlayer.run {
+                mediaPlayer.apply {
                     setDataSource(context, music.getUri())
                     setOnCompletionListener {
                         if (!isLooping) {

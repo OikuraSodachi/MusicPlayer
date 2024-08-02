@@ -43,7 +43,7 @@ class SettingsFragment : Fragment() {
                     }
                 }
             }
-            scanPathRecyclerView.run{
+            scanPathRecyclerView.apply{
                 this.adapter = adapter
                 this.layoutManager = LinearLayoutManager(context)
             }
