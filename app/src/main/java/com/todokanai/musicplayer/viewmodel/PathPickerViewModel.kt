@@ -46,7 +46,6 @@ class PathPickerViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
-
     fun toParent(file: File?,context: Context) {
         if(getPhysicalStorages_td(context).contains(file)){
             isStorageSelectView.value = true
@@ -56,7 +55,7 @@ class PathPickerViewModel @Inject constructor(
     }
 
     fun updateCurrentPath(file: File?,context: Context){
-       // viewModelScope.launch {
+        viewModelScope.launch {
             if(file?.listFiles()!=null){
                 fModule.updateCurrentPath(file)
             } else{
@@ -66,7 +65,7 @@ class PathPickerViewModel @Inject constructor(
             file?.listFiles()?.let {
                 fModule.updateCurrentPath(file)
             }
-      //  }
+        }
     }
 
     fun onSelectStorage(storage:File,context: Context){

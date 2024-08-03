@@ -49,6 +49,7 @@ fun durationText_td(duration:Int?):String{
 /**
  *  looper.
  *
+ *  Main thread 바깥에서 호출 용도
  */
 fun callHandler_td(
     handler:Handler,
@@ -58,7 +59,6 @@ fun callHandler_td(
 }
 
 /*
-
 /** Logcat Tag 매크로 용도 **/
 fun setupTimber_td() {
     Timber.plant(
@@ -70,7 +70,6 @@ fun setupTimber_td() {
         }
     )
 }
-
  */
 
 fun setMediaPlaybackState_td(state:Int,mediaSession:MediaSessionCompat){
@@ -88,10 +87,8 @@ fun setMediaPlaybackState_td(state:Int,mediaSession:MediaSessionCompat){
 }
 
 fun isPermissionGranted_td(activity: Activity, permission: String):Boolean{
-    val result = ContextCompat.checkSelfPermission(activity,permission)
-    return result == PackageManager.PERMISSION_GRANTED
+    return ContextCompat.checkSelfPermission(activity,permission) == PackageManager.PERMISSION_GRANTED
 }
-
 
 /** requestCode를 111로 냅둬도 무방한게 정말 맞는지 확인 필요
  *

@@ -14,7 +14,6 @@ import com.todokanai.musicplayer.databinding.FragmentMusicListBinding
 import com.todokanai.musicplayer.viewmodel.MusicListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MusicListFragment : Fragment() {
 
@@ -27,13 +26,13 @@ class MusicListFragment : Fragment() {
     ): View? {
 
         val adapter = MusicRecyclerAdapter { viewModel.onMusicClick(requireActivity(), it) }
+        val lManager = LinearLayoutManager(context)
 
         binding.run{
             musicRecyclerView.apply {
                 this.adapter = adapter
-                val manager = LinearLayoutManager(context)
-                this.layoutManager = manager
-                addItemDecoration(DividerItemDecoration(context,manager.orientation))
+                this.layoutManager = lManager
+                addItemDecoration(DividerItemDecoration(context,lManager.orientation))
             }
             swipe.setOnRefreshListener {
                 adapter.notifyDataSetChanged()

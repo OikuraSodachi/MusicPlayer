@@ -75,13 +75,12 @@ class MainActivity : AppCompatActivity() {
                 launchForeground(this@MainActivity, applicationContext, serviceIntent)
             }
         }
-
         testBuildSetting()
     }
+
 
     /** release 버전에서는 제거할 것 **/
     fun testBuildSetting(){
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) //
     }
-
 }
