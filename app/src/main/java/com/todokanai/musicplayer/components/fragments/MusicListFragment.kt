@@ -34,10 +34,12 @@ class MusicListFragment : Fragment() {
                 this.layoutManager = lManager
                 addItemDecoration(DividerItemDecoration(context,lManager.orientation))
             }
+
             swipe.setOnRefreshListener {
                 adapter.notifyDataSetChanged()
                 swipe.isRefreshing = false
             }
+
             /*
             floatingActionButton.run{
                 /*
