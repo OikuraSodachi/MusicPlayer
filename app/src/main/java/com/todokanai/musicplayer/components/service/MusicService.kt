@@ -83,12 +83,13 @@ class MusicService : MediaBrowserServiceCompat()   {
             )
             this@MusicService.sessionToken = sessionToken
         }
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY))
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS))
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY))
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT))
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE))
-        registerReceiver(noisyReceiver,noisyIntentFilter)
+
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
+        registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
         CoroutineScope(Dispatchers.IO).launch {
             customPlayer.initAttributes(this@MusicService,musicRepo.currentMusicNonFlow())
         }
@@ -129,7 +130,9 @@ class MusicService : MediaBrowserServiceCompat()   {
         val artist: String = currentMusic?.artist ?: "null"
         val albumUri : String = currentMusic?.getAlbumUri().toString()
 
-        mediaSession.setMetaData_td(title, artist, albumUri)
+        mediaSession.run {
+            setMetaData_td(title, artist, albumUri)
+        }
 
         val notification =
             NotificationCompat.Builder(this, Constants.CHANNEL_ID)       // 알림바에 띄울 알림을 만듬
@@ -157,7 +160,7 @@ class MusicService : MediaBrowserServiceCompat()   {
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
-        rootHints: Bundle?
+        rootHints: Bundle?,
     ): BrowserRoot? {
         if (clientPackageName == packageName) {
             return BrowserRoot("MediaSessionExperiment", null)
@@ -166,7 +169,7 @@ class MusicService : MediaBrowserServiceCompat()   {
 
     override fun onLoadChildren(
         parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
     ) {
         result.sendResult(mutableListOf())
     }

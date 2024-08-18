@@ -28,7 +28,6 @@ class MediaSessionCallback(
         return requestResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
     }
 
-
     override fun onPlay() {
         onPrepare()
         if (!isAudioFocusGranted()) {
