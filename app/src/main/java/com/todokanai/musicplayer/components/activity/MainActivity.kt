@@ -17,6 +17,7 @@ import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.components.service.MusicService.Companion.serviceIntent
 import com.todokanai.musicplayer.components.view.adapter.FragmentAdapter
 import com.todokanai.musicplayer.databinding.ActivityMainBinding
+import com.todokanai.musicplayer.tools.independent.requestStorageManageAccess_td
 import com.todokanai.musicplayer.variables.Variables.Companion.isServiceOn
 import com.todokanai.musicplayer.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         serviceIntent = Intent(applicationContext,MusicService::class.java)
+
+        requestStorageManageAccess_td(this)
         activityResult =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (!isGranted)

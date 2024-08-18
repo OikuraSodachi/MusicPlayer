@@ -9,7 +9,10 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
+import android.net.Uri
+import android.os.Environment
 import android.os.Handler
+import android.provider.Settings
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.ActivityCompat
@@ -112,5 +115,19 @@ fun requestPermission_td(
             permissions,
             requestCode
         )
+    }
+}
+
+/** Todokanai
+ *
+ * 모든 파일 접근 권한 요청. 권한이 없을 경우에만 요청 띄움
+ * **/
+fun requestStorageManageAccess_td(activity: Activity){
+    if(!Environment.isExternalStorageManager()) {
+        val intent = Intent()
+        intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+        val uri: Uri = Uri.fromParts("package", activity.packageName, null)
+        intent.data = uri
+        activity.startActivity(intent)
     }
 }
