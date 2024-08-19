@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
-import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -40,8 +40,6 @@ class MediaSessionCallback(
     override fun onStop() {
         audioManager.abandonAudioFocus(audioFocusChangeListener)
         mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_STOPPED)
-
-
         context.unregisterReceiver(noisyReceiver)
     }
     override fun onPause() {

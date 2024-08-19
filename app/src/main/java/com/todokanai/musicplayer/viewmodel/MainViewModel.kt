@@ -11,10 +11,10 @@ import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
+import com.todokanai.musicplayer.components.service.MusicService.Companion.mediaSession
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
-import com.todokanai.musicplayer.myobjects.LateInitObjects.mediaSession
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.MyMediaSession
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -47,7 +47,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             mediaSession = MyMediaSession(appContext, "MediaSession")
             customPlayer = CustomPlayer(
-                mediaSession = mediaSession,
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
                 dsRepo = dsRepo,
@@ -60,6 +59,8 @@ class MainViewModel @Inject constructor(
             ContextCompat.startForegroundService(context, intentService)
         }
     }
+
+
 
     fun getPermission(activity: Activity){
         viewModelScope.launch {

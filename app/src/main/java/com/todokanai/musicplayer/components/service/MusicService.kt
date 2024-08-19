@@ -16,19 +16,25 @@ import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
-import com.todokanai.musicplayer.myobjects.LateInitObjects.mediaSession
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
+import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.MyMediaSession
+import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat()   {
     companion object{
         lateinit var serviceIntent : Intent
+        lateinit var customPlayer: CustomPlayer
+        lateinit var mediaSession: MyMediaSession
     }
 
     private lateinit var notificationManager:NotificationManagerCompat
@@ -38,6 +44,9 @@ class MusicService : MediaBrowserServiceCompat()   {
 
     @Inject
     lateinit var dsRepo:DataStoreRepository
+
+    @Inject
+    lateinit var musicRepo:MusicRepository
 
     @Inject
     lateinit var audioManager: AudioManager

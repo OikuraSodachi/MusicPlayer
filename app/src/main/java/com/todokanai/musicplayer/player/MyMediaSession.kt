@@ -15,9 +15,18 @@ import com.todokanai.musicplayer.compose.MyIcons
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 
-class MyMediaSession(appContext: Context, tag:String):MediaSessionCompat(appContext,tag) {
+class MyMediaSession(context: Context, tag:String):MediaSessionCompat(context,tag) {
 
-    val icons = MyIcons()
+    private val icons = MyIcons()
+    val mainOpenIntent = Intent(context, MainActivity::class.java)
+    val mainIntent = PendingIntent.getActivity(context,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
+    val repeatIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)
+    val prevIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_PREVIOUS), PendingIntent.FLAG_IMMUTABLE)
+    val pausePlayIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_PAUSE_PLAY), PendingIntent.FLAG_IMMUTABLE)
+    val nextIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
+    val shuffleIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
+
+
     fun setMediaPlaybackState_td(state:Int){
         val playbackState = PlaybackStateCompat.Builder()
             .apply {
@@ -42,14 +51,6 @@ class MyMediaSession(appContext: Context, tag:String):MediaSessionCompat(appCont
         )
     }
     fun noti(context: Context,player: CustomPlayer): Notification {
-        val mainOpenIntent = Intent(context, MainActivity::class.java)
-        val mainIntent = PendingIntent.getActivity(context,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
-        val repeatIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)
-        val prevIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_PREVIOUS), PendingIntent.FLAG_IMMUTABLE)
-        val pausePlayIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_PAUSE_PLAY), PendingIntent.FLAG_IMMUTABLE)
-        val nextIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
-        val shuffleIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
-
         return NotificationCompat.Builder(context, Constants.CHANNEL_ID)       // 알림바에 띄울 알림을 만듬
             .setContentTitle("null Title Noti") // 알림의 제목
             .setSmallIcon(R.mipmap.ic_launcher_round)

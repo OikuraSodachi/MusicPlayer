@@ -3,12 +3,12 @@ package com.todokanai.musicplayer.components.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_PAUSE_PLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
-import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

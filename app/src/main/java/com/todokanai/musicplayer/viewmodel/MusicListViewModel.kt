@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import com.todokanai.musicplayer.components.service.MusicService.Companion.serviceIntent
 import com.todokanai.musicplayer.data.dataclass.MusicHolderItem
-import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.exit_td
 import dagger.hilt.android.lifecycle.HiltViewModel

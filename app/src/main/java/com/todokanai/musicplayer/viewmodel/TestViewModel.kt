@@ -1,7 +1,7 @@
 package com.todokanai.musicplayer.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

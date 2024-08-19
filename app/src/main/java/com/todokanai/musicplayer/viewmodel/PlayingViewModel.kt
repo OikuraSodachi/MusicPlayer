@@ -3,19 +3,19 @@ package com.todokanai.musicplayer.viewmodel
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
+import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_PAUSE_PLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
-import com.todokanai.musicplayer.myobjects.LateInitObjects
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayingViewModel @Inject constructor() : ViewModel(){
 
-    private val customPlayer = LateInitObjects.customPlayer
+    private val customPlayer = MusicService.customPlayer
 
     val mediaPlayer = customPlayer.mediaPlayer
 

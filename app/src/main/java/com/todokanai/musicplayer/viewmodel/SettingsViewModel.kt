@@ -5,8 +5,8 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.ScanPathRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

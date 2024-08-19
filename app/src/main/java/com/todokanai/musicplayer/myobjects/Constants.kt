@@ -3,6 +3,7 @@ package com.todokanai.musicplayer.myobjects
 object Constants {
 
     const val CHANNEL_ID = "Todokanai_MusicPlayer"
+    const val MEDIA_SESSION_TAG = "MediaSession"
 
     const val FRAG_MUSIC_LIST : String = "MusicListFrag"
     const val FRAG_PLAYING : String = "PlayingFrag"
