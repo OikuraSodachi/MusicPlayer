@@ -14,7 +14,6 @@ import com.todokanai.musicplayer.components.activity.MainActivity
 import com.todokanai.musicplayer.compose.MyIcons
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.LateInitObjects
 
 class MyMediaSession(appContext: Context, tag:String):MediaSessionCompat(appContext,tag) {
 

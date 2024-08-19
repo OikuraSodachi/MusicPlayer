@@ -30,7 +30,7 @@ class CustomPlayer(
     seed: Double,
     playList:List<Music>,
     shuffleMode:Boolean,
-    currentMusic:Music?,
+    val currentMusic:Music?,
     loop:Boolean
 ):MediaPlayer() {
     val mediaPlayer = MediaPlayer()
@@ -141,7 +141,7 @@ class CustomPlayer(
 
     fun initAttributes(
         context: Context,
-        currentMusicFromRoom:Music?
+        //currentMusicFromRoom:Music?
     ){
         this.apply {
             setAudioAttributes(
@@ -152,7 +152,7 @@ class CustomPlayer(
             )
             mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
         }
-        this.setMusic(currentMusicFromRoom,context)
+        this.setMusic(currentMusic,context)
     }
 
     fun pausePlay() =

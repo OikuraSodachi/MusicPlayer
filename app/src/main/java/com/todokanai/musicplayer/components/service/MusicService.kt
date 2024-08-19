@@ -19,14 +19,10 @@ import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
 import com.todokanai.musicplayer.myobjects.LateInitObjects.mediaSession
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
-import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -39,9 +35,6 @@ class MusicService : MediaBrowserServiceCompat()   {
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     private val noisyReceiver = NoisyReceiver()
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-
-    @Inject
-    lateinit var musicRepo:MusicRepository
 
     @Inject
     lateinit var dsRepo:DataStoreRepository
@@ -77,9 +70,8 @@ class MusicService : MediaBrowserServiceCompat()   {
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
         registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
-        CoroutineScope(Dispatchers.IO).launch {
-            customPlayer.initAttributes(this@MusicService,musicRepo.currentMusicNonFlow())
-        }
+
+        customPlayer.initAttributes(this@MusicService)
 
         customPlayer.apply{
             currentMusicHolder.asLiveData().observeForever(){
