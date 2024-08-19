@@ -33,7 +33,7 @@ class MediaSessionCallback(
         if (!isAudioFocusGranted()) {
             return
         }
-        context.registerReceiver(noisyReceiver, noisyIntentFilter)
+        context.registerReceiver(noisyReceiver, noisyIntentFilter, Context.RECEIVER_NOT_EXPORTED)
         mediaSession.isActive = true
         context.sendBroadcast(Intent(Constants.ACTION_PAUSE_PLAY))
     }

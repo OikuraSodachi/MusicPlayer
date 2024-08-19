@@ -2,22 +2,18 @@ package com.todokanai.musicplayer.components.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.components.activity.MainActivity
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
-import com.todokanai.musicplayer.compose.MyIcons
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.customPlayer
@@ -43,15 +39,6 @@ class MusicService : MediaBrowserServiceCompat()   {
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     private val noisyReceiver = NoisyReceiver()
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-    private val icons = MyIcons()
-
-    private val mainOpenIntent by lazy{ Intent(this, MainActivity::class.java)}
-    private val mainIntent by lazy { PendingIntent.getActivity(this,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)}
-    private val repeatIntent by lazy { PendingIntent.getBroadcast(this, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)}
-    private val prevIntent by lazy { PendingIntent.getBroadcast(this, 0, Intent(Constants.ACTION_SKIP_TO_PREVIOUS), PendingIntent.FLAG_IMMUTABLE)}
-    private val pausePlayIntent by lazy { PendingIntent.getBroadcast(this, 0, Intent(Constants.ACTION_PAUSE_PLAY), PendingIntent.FLAG_IMMUTABLE)}
-    private val nextIntent by lazy { PendingIntent.getBroadcast(this, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)}
-    private val shuffleIntent by lazy { PendingIntent.getBroadcast(this, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)}
 
     @Inject
     lateinit var musicRepo:MusicRepository
@@ -113,9 +100,6 @@ class MusicService : MediaBrowserServiceCompat()   {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         val currentMusic = customPlayer.currentMusicHolder.value
-        val isLooping = customPlayer.isLoopingHolder.value
-        val isShuffled = customPlayer.isShuffledHolder.value
-        val isPlaying = customPlayer.isPlayingHolder.value
 
         val serviceChannel = NotificationChannel(
             Constants.CHANNEL_ID,
@@ -126,32 +110,11 @@ class MusicService : MediaBrowserServiceCompat()   {
         manager.createNotificationChannel(serviceChannel)
         MediaButtonReceiver.handleIntent(mediaSession,intent)
 
-        val title : String = currentMusic?.title ?: "null"
-        val artist: String = currentMusic?.artist ?: "null"
-        val albumUri : String = currentMusic?.getAlbumUri().toString()
-
         mediaSession.run {
-            setMetaData_td(title, artist, albumUri)
+            setMetaData_td(currentMusic)
         }
 
-        val notification =
-            NotificationCompat.Builder(this, Constants.CHANNEL_ID)       // 알림바에 띄울 알림을 만듬
-                .setContentTitle("null Title Noti") // 알림의 제목
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .addAction(NotificationCompat.Action(icons.loopingImage(isLooping), "REPEAT", repeatIntent))
-                .addAction(NotificationCompat.Action(icons.prev,"PREV",prevIntent))
-                .addAction(NotificationCompat.Action(icons.pausePlay(isPlaying), "pauseplay", pausePlayIntent))
-                .addAction(NotificationCompat.Action(icons.next,"NEXT",nextIntent))
-                .addAction(NotificationCompat.Action(icons.shuffledImage(isShuffled), "SHUFFLE", shuffleIntent))
-                .setContentIntent(mainIntent)
-                .setStyle(
-                    androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1, 2, 3)     // 확장하지 않은상태 알림에서 쓸 기능의 배열번호
-                        .setMediaSession(mediaSession.sessionToken)
-                )
-                .setOngoing(true)
-                .build()
+        val notification = mediaSession.noti(this,customPlayer)
         notificationManager.notify(1,notification)
         startForeground(1, notification)              // 지정된 알림을 실행
         return super.onStartCommand(intent, flags, startId)
