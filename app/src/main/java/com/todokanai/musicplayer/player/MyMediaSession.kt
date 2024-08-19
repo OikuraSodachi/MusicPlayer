@@ -26,7 +26,6 @@ class MyMediaSession(context: Context, tag:String):MediaSessionCompat(context,ta
     val nextIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
     val shuffleIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
 
-
     fun setMediaPlaybackState_td(state:Int){
         val playbackState = PlaybackStateCompat.Builder()
             .apply {

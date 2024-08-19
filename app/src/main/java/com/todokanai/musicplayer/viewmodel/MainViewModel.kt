@@ -46,7 +46,11 @@ class MainViewModel @Inject constructor(
     ){
         viewModelScope.launch {
             mediaSession = MyMediaSession(appContext, "MediaSession")
+            mediaSession.apply {
+
+            }
             customPlayer = CustomPlayer(
+                mediaSession = mediaSession,
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
                 dsRepo = dsRepo,

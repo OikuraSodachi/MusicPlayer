@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class CustomPlayer(
+    val mediaSession: MyMediaSession,
     val nextIntent:Intent,
     val musicRepo : MusicRepository,
     val dsRepo:DataStoreRepository,
@@ -29,7 +30,7 @@ class CustomPlayer(
     playList:List<Music>,
     shuffleMode:Boolean,
     val currentMusic:Music?,
-    loop:Boolean
+    loop:Boolean,
 ):MediaPlayer() {
     val mediaPlayer = MediaPlayer()
 
@@ -37,7 +38,7 @@ class CustomPlayer(
         CoroutineScope(Dispatchers.Default).launch {
             _isPlayingHolder.value = true
            // mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
-          //  setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
+      //      setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
             mediaPlayer.start()
         }       // CoroutineScope 안할 경우, next/prev 할때 mediaPlayer.currentPosition 값이 1초 늦게 리셋되는 현상 있음
                 // 지금 이 코드가 정상임
