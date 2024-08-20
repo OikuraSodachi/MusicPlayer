@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
@@ -23,7 +22,7 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class CustomPlayer(
-    val mediaSession: MyMediaSession,
+   // val mediaSession: MyMediaSession,
     val nextIntent:Intent,
     val musicRepo : MusicRepository,
     val dsRepo:DataStoreRepository,
@@ -38,7 +37,7 @@ class CustomPlayer(
     override fun start() {
         CoroutineScope(Dispatchers.Default).launch {
             _isPlayingHolder.value = true
-            mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
+          //  mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
       //      setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
             mediaPlayer.start()
         }       // CoroutineScope 안할 경우, next/prev 할때 mediaPlayer.currentPosition 값이 1초 늦게 리셋되는 현상 있음
@@ -48,7 +47,7 @@ class CustomPlayer(
     override fun pause() {
         mediaPlayer.pause()
         _isPlayingHolder.value = false
-        mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
+      //  mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
     //    setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
     }
 
@@ -68,7 +67,7 @@ class CustomPlayer(
 
     override fun release() {
         mediaPlayer.release()
-        mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
+      //  mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
     }
 
     /*

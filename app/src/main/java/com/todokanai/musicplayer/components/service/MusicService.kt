@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
-import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
@@ -21,7 +20,6 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.MyMediaSession
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -39,19 +37,29 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
         /** to be removed **/
         lateinit var customPlayer: CustomPlayer
 
+        /*
         /** to be removed **/
         lateinit var mediaSession: MyMediaSession
+
+         */
+
+        /** temporary getter for player instance. to be removed later. **/
+        lateinit var temp_player_getter:ExoPlayer
 
         lateinit var newMediaSession:MediaSession
         lateinit var newMediaPlayer: ExoPlayer
 
     }
     private lateinit var notifications: Notifications
-
     private lateinit var notificationManager:NotificationManagerCompat
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     private val noisyReceiver = NoisyReceiver()
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+    private val serviceChannel = NotificationChannel(
+        Constants.CHANNEL_ID,
+        getString(R.string.notification_channel_name),
+        NotificationManager.IMPORTANCE_NONE             //  알림의 중요도
+    )
 
     @Inject
     lateinit var dsRepo:DataStoreRepository
@@ -61,8 +69,6 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
 
     @Inject
     lateinit var audioManager: AudioManager
-
-
 
     override fun onCreate() {
         super.onCreate()
@@ -81,7 +87,6 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
             .build()
 
         notifications = Notifications(this,Constants.CHANNEL_ID)
-
 
         registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
@@ -124,29 +129,20 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-       // val currentMusic = customPlayer.currentMusicHolder.value
+        notificationManager.createNotificationChannel(serviceChannel)
 
-        val serviceChannel = NotificationChannel(
-            Constants.CHANNEL_ID,
-            getString(R.string.notification_channel_name),
-            NotificationManager.IMPORTANCE_NONE             //  알림의 중요도
-        )
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(serviceChannel)
-        MediaButtonReceiver.handleIntent(mediaSession,intent)
+        //  MediaButtonReceiver.handleIntent(mediaSession,intent)                // 일단 이건 지우지 말고 Keep
+        // -> mediaSession: android.support.v4.media.session.MediaSessionCompat  // 일단 이건 지우지 말고 Keep
 
-        /*
-        mediaSession.run {
-            setMetaData_td(currentMusic)
-        }
-         */
-
-        val notification = mediaSession.noti(this,customPlayer)
-
-        //val notificationNew = notifications.
-
+       /* val notification = mediaSession.noti(this,customPlayer)
         notificationManager.notify(1,notification)
-        startForeground(1, notification)              // 지정된 알림을 실행
+        startForeground(1, notification)
+        */   // 일단 이건 지우지 말고 Keep
+
+        val notificationNew = notifications.noti_new(this, newMediaSession)
+        notificationManager.notify(1,notificationNew)
+        startForeground(1, notificationNew)
+
         return super.onStartCommand(intent, flags, startId)
     }
 
