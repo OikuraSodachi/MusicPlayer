@@ -5,12 +5,12 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
-import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaSessionService
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
@@ -20,18 +20,25 @@ import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.MyMediaSession
 import com.todokanai.musicplayer.repository.MusicRepository
-import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
+import com.todokanai.musicplayer.tools.Notifications
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+// class MusicService : MediaBrowserServiceCompat()
+
 @AndroidEntryPoint
-class MusicService : MediaBrowserServiceCompat()   {
+class MusicService : MediaSessionService()   {
     companion object{
         lateinit var serviceIntent : Intent
         lateinit var customPlayer: CustomPlayer
         lateinit var mediaSession: MyMediaSession
+
+        lateinit var newMediaSession:MediaSession
+        lateinit var newMediaPlayer: ExoPlayer
+
+        lateinit var notifications: Notifications
     }
 
     private lateinit var notificationManager:NotificationManagerCompat
@@ -48,6 +55,8 @@ class MusicService : MediaBrowserServiceCompat()   {
     @Inject
     lateinit var audioManager: AudioManager
 
+
+
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
@@ -56,19 +65,16 @@ class MusicService : MediaBrowserServiceCompat()   {
         audioFocusChangeListener = MyAudioFocusChangeListener(customPlayer)
         receiver = MusicReceiver()
 
-        mediaSession.apply {
-            setCallback(
-                MediaSessionCallback(
-                    this@MusicService,
-                    this,
-                    audioManager,
-                    audioFocusChangeListener,
-                    noisyReceiver,
-                    noisyIntentFilter
-                )
-            )
-            this@MusicService.sessionToken = sessionToken
-        }
+        /** init newMediaPlayer**/
+        newMediaPlayer = ExoPlayer.Builder(this)
+            .build()
+
+        /** init newMediaSession **/
+        newMediaSession = MediaSession.Builder(this, newMediaPlayer)
+            .build()
+
+        notifications = Notifications(this,Constants.CHANNEL_ID)
+
 
         registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
@@ -95,6 +101,10 @@ class MusicService : MediaBrowserServiceCompat()   {
         }       // observe LiveData
     }
 
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
+        TODO("Not yet implemented")
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         val currentMusic = customPlayer.currentMusicHolder.value
@@ -108,37 +118,25 @@ class MusicService : MediaBrowserServiceCompat()   {
         manager.createNotificationChannel(serviceChannel)
         MediaButtonReceiver.handleIntent(mediaSession,intent)
 
+        /*
         mediaSession.run {
             setMetaData_td(currentMusic)
         }
+         */
 
         val notification = mediaSession.noti(this,customPlayer)
+
+        val notificationNew = notifications.
+
         notificationManager.notify(1,notification)
         startForeground(1, notification)              // 지정된 알림을 실행
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onGetRoot(
-        clientPackageName: String,
-        clientUid: Int,
-        rootHints: Bundle?,
-    ): BrowserRoot? {
-        if (clientPackageName == packageName) {
-            return BrowserRoot("MediaSessionExperiment", null)
-        }
-        return null    }
-
-    override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
-    ) {
-        result.sendResult(mutableListOf())
-    }
-
     override fun onDestroy() {
         customPlayer.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
-        mediaSession.release()
+       // mediaSession.release()
         Variables.isServiceOn = false
         super.onDestroy()
     }
