@@ -8,9 +8,12 @@ import android.media.AudioManager
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import androidx.media.session.MediaButtonReceiver
+import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
@@ -29,7 +32,7 @@ import javax.inject.Inject
 // class MusicService : MediaBrowserServiceCompat()
 
 @AndroidEntryPoint
-class MusicService : MediaSessionService()   {
+class MusicService : MediaSessionService(),MediaSession.Callback   {
     companion object{
         lateinit var serviceIntent : Intent
 
@@ -42,8 +45,8 @@ class MusicService : MediaSessionService()   {
         lateinit var newMediaSession:MediaSession
         lateinit var newMediaPlayer: ExoPlayer
 
-        lateinit var notifications: Notifications
     }
+    private lateinit var notifications: Notifications
 
     private lateinit var notificationManager:NotificationManagerCompat
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
@@ -105,13 +108,23 @@ class MusicService : MediaSessionService()   {
         }       // observe LiveData
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
-        TODO("Not yet implemented")
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
+        newMediaSession.player.prepare()
+        return newMediaSession
+    }
+
+    override fun onAddMediaItems(
+        mediaSession: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        mediaItems: MutableList<MediaItem>
+    ): ListenableFuture<MutableList<MediaItem>> {
+        val updatedMediaItems = mediaItems.map { it.buildUpon().setUri(it.mediaId).build() }.toMutableList()
+        return Futures.immediateFuture(updatedMediaItems)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        val currentMusic = customPlayer.currentMusicHolder.value
+       // val currentMusic = customPlayer.currentMusicHolder.value
 
         val serviceChannel = NotificationChannel(
             Constants.CHANNEL_ID,
@@ -130,7 +143,7 @@ class MusicService : MediaSessionService()   {
 
         val notification = mediaSession.noti(this,customPlayer)
 
-        val notificationNew = notifications.
+        //val notificationNew = notifications.
 
         notificationManager.notify(1,notification)
         startForeground(1, notification)              // 지정된 알림을 실행
