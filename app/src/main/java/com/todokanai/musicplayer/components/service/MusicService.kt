@@ -32,7 +32,11 @@ import javax.inject.Inject
 class MusicService : MediaSessionService()   {
     companion object{
         lateinit var serviceIntent : Intent
+
+        /** to be removed **/
         lateinit var customPlayer: CustomPlayer
+
+        /** to be removed **/
         lateinit var mediaSession: MyMediaSession
 
         lateinit var newMediaSession:MediaSession
