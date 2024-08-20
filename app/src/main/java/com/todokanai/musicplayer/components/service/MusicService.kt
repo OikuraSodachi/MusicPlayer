@@ -20,6 +20,7 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -37,17 +38,9 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
         /** to be removed **/
         lateinit var customPlayer: CustomPlayer
 
-        /*
-        /** to be removed **/
-        lateinit var mediaSession: MyMediaSession
-
-         */
-
-        /** temporary getter for player instance. to be removed later. **/
-        lateinit var temp_player_getter:ExoPlayer
-
         lateinit var newMediaSession:MediaSession
         lateinit var newMediaPlayer: ExoPlayer
+        lateinit var playerStateHolders: PlayerStateHolders
 
     }
     private lateinit var notifications: Notifications
@@ -73,20 +66,24 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
+        fun setLateinits(){
+            notificationManager = NotificationManagerCompat.from(this@MusicService)
+            playerStateHolders = PlayerStateHolders(dsRepo, musicRepo)
+            receiver = MusicReceiver()
 
-        notificationManager = NotificationManagerCompat.from(this@MusicService)
-        audioFocusChangeListener = MyAudioFocusChangeListener(customPlayer)
-        receiver = MusicReceiver()
+            /** init newMediaPlayer**/
+            newMediaPlayer = ExoPlayer.Builder(this)
+                .build()
 
-        /** init newMediaPlayer**/
-        newMediaPlayer = ExoPlayer.Builder(this)
-            .build()
+            /** init newMediaSession **/
+            newMediaSession = MediaSession.Builder(this, newMediaPlayer)
+                .build()
 
-        /** init newMediaSession **/
-        newMediaSession = MediaSession.Builder(this, newMediaPlayer)
-            .build()
+            notifications = Notifications(this,Constants.CHANNEL_ID)
+            audioFocusChangeListener = MyAudioFocusChangeListener(newMediaPlayer)
 
-        notifications = Notifications(this,Constants.CHANNEL_ID)
+        }
+        setLateinits()
 
         registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
@@ -95,8 +92,8 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
         registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
 
+        /*
         customPlayer.initAttributes(this@MusicService)
-
         customPlayer.apply{
             currentMusicHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
@@ -111,6 +108,22 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
                 startForegroundService(serviceIntent)
             }
         }       // observe LiveData
+
+         */
+
+        playerStateHolders.run{
+            currentMusicHolder.asLiveData().observeForever(){
+
+            }
+
+            isLoopingHolder.asLiveData().observeForever(){
+
+            }
+
+            isShuffledHolder.asLiveData().observeForever(){
+
+            }
+        }
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
@@ -147,9 +160,9 @@ class MusicService : MediaSessionService(),MediaSession.Callback   {
     }
 
     override fun onDestroy() {
-        customPlayer.stop()
+        newMediaPlayer.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
-       // mediaSession.release()
+        newMediaSession.release()
         Variables.isServiceOn = false
         super.onDestroy()
     }

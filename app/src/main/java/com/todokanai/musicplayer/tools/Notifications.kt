@@ -11,15 +11,12 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper.MediaStyle
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.activity.MainActivity
-import com.todokanai.musicplayer.compose.MyIcons
 
 class Notifications(context: Context,private val channelID:String) {
-    private val icons = MyIcons()
     val mainOpenIntent = Intent(context, MainActivity::class.java)
     val mainIntent = PendingIntent.getActivity(context,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
 
-    private fun NotificationCompat.Builder.defaultAttr(context: Context):NotificationCompat.Builder{
-
+    private fun NotificationCompat.Builder.defaultAttr():NotificationCompat.Builder{
         this.apply {
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setContentIntent(mainIntent)
@@ -60,10 +57,11 @@ class Notifications(context: Context,private val channelID:String) {
 
      */
 
+    /** 미완성 상태 **/
     @OptIn(UnstableApi::class)
     fun noti_new(context: Context,mediaSession:MediaSession):Notification{
         return NotificationCompat.Builder(context,channelID)
-            .defaultAttr(context)
+            .defaultAttr()
             .setStyle(
                 MediaStyle(mediaSession)
                     .setShowActionsInCompactView(1,2,3)

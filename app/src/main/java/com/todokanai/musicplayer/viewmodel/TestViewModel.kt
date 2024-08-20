@@ -1,20 +1,19 @@
 package com.todokanai.musicplayer.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
+import com.todokanai.musicplayer.data.room.Music
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class TestViewModel @Inject constructor() : ViewModel(){
 
-    private val player = customPlayer
+    lateinit var isLooping : StateFlow<Boolean> // = player.isLoopingHolder
 
-    val isLooping = player.isLoopingHolder
+    lateinit var isShuffled : StateFlow<Boolean> //= player.isShuffledHolder
 
-    val isShuffled = player.isShuffledHolder
+    lateinit var isPlaying : StateFlow<Boolean> //= player.isPlayingHolder
 
-    val isPlaying = player.isPlayingHolder
-
-    val currentMusic = player.currentMusicHolder
+    lateinit var currentMusic : StateFlow<Music?> //player.currentMusicHolder
 }
