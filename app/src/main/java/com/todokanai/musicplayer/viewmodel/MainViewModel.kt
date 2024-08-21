@@ -11,7 +11,12 @@ import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
+import com.todokanai.musicplayer.components.service.MusicService.Companion.mediaSession
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
+import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.MyMediaSession
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.exit_td
 import com.todokanai.musicplayer.tools.independent.isPermissionGranted_td
@@ -40,7 +45,7 @@ class MainViewModel @Inject constructor(
         intentService:Intent
     ){
         viewModelScope.launch {
-            /*
+     //       /*
             mediaSession = MyMediaSession(appContext, "MediaSession")
             mediaSession.apply {
 
@@ -57,7 +62,7 @@ class MainViewModel @Inject constructor(
                 loop = dsRepo.isLooping()
             )
 
-             */
+          //   */
             ContextCompat.startForegroundService(context, intentService)
         }
     }

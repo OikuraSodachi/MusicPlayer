@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_ONE
-import androidx.media3.common.Player.RepeatMode
 import androidx.media3.exoplayer.ExoPlayer
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.room.Music
@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-interface mediaInterface() {
+interface mediaInterface {
 
     fun start()
 
@@ -60,19 +60,29 @@ interface mediaInterface() {
 
             if (isMusicValid) {
                 val mediaItem = MediaItem.fromUri(music.getUri())
-
                 reset()
                 mediaPlayer.apply {
                     //setDataSource(context, music.getUri())
                     setMediaItem(mediaItem)
 
+                    addListener(
+                        object : Player.Listener {
+                            override fun onPlaybackStateChanged(state: Int) {
+                                if (state == Player.STATE_ENDED) {
+                                    context.sendBroadcast(nextIntent)
+                                }
+                            }
+                        }
+                    )
+
+                    /*
                     setOnCompletionListener {
                         if (tempLoop != REPEAT_MODE_ONE) {
                             context.sendBroadcast(nextIntent)
                         }
                     }
+                     */
                     repeatMode = tempLoop
-                    //isLooping = shouldLoop
                     prepare()
                 }
                 CoroutineScope(Dispatchers.IO).launch {

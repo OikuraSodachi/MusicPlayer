@@ -8,9 +8,11 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.player.MyMediaSession
 
 class MediaSessionCallback(
     val context: Context,
+    val mediaSession: MyMediaSession,
     val audioManager:AudioManager,
     val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener,
     val noisyReceiver:BroadcastReceiver,
@@ -31,7 +33,7 @@ class MediaSessionCallback(
             return
         }
         context.registerReceiver(noisyReceiver, noisyIntentFilter, Context.RECEIVER_NOT_EXPORTED)
-        //  mediaSession.isActive = true  // 일단 이건 지우지 말고 Keep
+        mediaSession.isActive = true  // 일단 이건 지우지 말고 Keep
         // -> mediaSession: android.support.v4.media.session.MediaSessionCompat  // 일단 이건 지우지 말고 Keep
 
         context.sendBroadcast(Intent(Constants.ACTION_PAUSE_PLAY))
