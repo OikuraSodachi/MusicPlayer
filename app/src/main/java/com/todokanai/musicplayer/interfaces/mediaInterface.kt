@@ -3,6 +3,7 @@ package com.todokanai.musicplayer.interfaces
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Player.RepeatMode
@@ -58,9 +59,12 @@ interface mediaInterface() {
                 }
 
             if (isMusicValid) {
+                val mediaItem = MediaItem.fromUri(music.getUri())
+
                 reset()
                 mediaPlayer.apply {
-                    setDataSource(context, music.getUri())
+                    //setDataSource(context, music.getUri())
+                    setMediaItem(mediaItem)
 
                     setOnCompletionListener {
                         if (tempLoop != REPEAT_MODE_ONE) {

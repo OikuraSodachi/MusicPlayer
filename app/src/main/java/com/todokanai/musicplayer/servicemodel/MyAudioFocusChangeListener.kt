@@ -25,7 +25,7 @@ class MyAudioFocusChangeListener(private val mediaPlayer: ExoPlayer) : AudioMana
             AudioManager.AUDIOFOCUS_GAIN -> {
                 if (!mediaPlayer.isPlaying) {
                     //mediaPlayer.start()
-                    mediaPlayer.play()  // Todo: MediaPlayer.start() 와 ExoPlayer.play()가 서로 correspondent 한지 체크 필요
+                    mediaPlayer.play()  // Todo: MediaPlayer.start() 와 ExoPlayer.play()가 서로 대응하는지 체크 필요
                     mediaPlayer.volume = Constants.FULL_VOLUME
                 }
             }
