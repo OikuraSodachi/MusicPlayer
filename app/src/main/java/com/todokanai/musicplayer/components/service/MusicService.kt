@@ -5,14 +5,12 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import androidx.annotation.OptIn
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
+import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaSessionService
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
@@ -29,21 +27,12 @@ import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-// class MusicService : MediaBrowserServiceCompat()
-
 @AndroidEntryPoint
-class MusicService : MediaSessionService(){
+class MusicService : MediaBrowserServiceCompat(){
     companion object{
         lateinit var serviceIntent : Intent
-
-        /** to be removed **/
         lateinit var customPlayer: CustomPlayer
         lateinit var mediaSession: MyMediaSession
-
-        lateinit var newMediaSession: MediaSession
-        lateinit var newMediaPlayer: ExoPlayer
-       // lateinit var playerStateHolders: PlayerStateHolders
-
     }
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
@@ -67,27 +56,14 @@ class MusicService : MediaSessionService(){
     @Inject
     lateinit var audioManager: AudioManager
 
-    @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
         fun setLateinits(){
             notificationManager = NotificationManagerCompat.from(this@MusicService)
-         //   playerStateHolders = PlayerStateHolders(dsRepo, musicRepo)
             receiver = MusicReceiver()
-
-            /** init newMediaPlayer**/
-            newMediaPlayer = ExoPlayer.Builder(this)
-                .build()
-
-            /** init newMediaSession **/
-            newMediaSession = MediaSession.Builder(this, newMediaPlayer)
-                .build()
-
             notifications = Notifications(this,Constants.CHANNEL_ID)
-            audioFocusChangeListener = MyAudioFocusChangeListener(newMediaPlayer)
-
-
+            audioFocusChangeListener = MyAudioFocusChangeListener(customPlayer)
         }
         setLateinits()
         mediaSession.apply {
@@ -101,12 +77,7 @@ class MusicService : MediaSessionService(){
                     noisyIntentFilter
                 )
             )
-           // this@MusicService.sessionToken = sessionToken
-        }
-
-        newMediaSession.apply {
-
-
+            this@MusicService.sessionToken = sessionToken
         }
 
         registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
@@ -116,8 +87,8 @@ class MusicService : MediaSessionService(){
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
         registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
 
-        customPlayer.initAttributes(this@MusicService)
         customPlayer.apply{
+            initAttributes(this@MusicService)
             currentMusicHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
             }
@@ -131,80 +102,40 @@ class MusicService : MediaSessionService(){
                 startForegroundService(serviceIntent)
             }
         }       // observe LiveData
-
-
-        /*
-        playerStateHolders.run{
-            currentMusicHolder.asLiveData().observeForever(){
-
-            }
-
-            isLoopingHolder.asLiveData().observeForever(){
-
-            }
-
-            isShuffledHolder.asLiveData().observeForever(){
-
-            }
-        }
-
-         */
     }
 
-    /*
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
-        rootHints: Bundle?,
+        rootHints: Bundle?
     ): BrowserRoot? {
         if (clientPackageName == packageName) {
             return BrowserRoot("MediaSessionExperiment", null)
         }
-        return null    }
+        return null
+    }
 
     override fun onLoadChildren(
         parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         result.sendResult(mutableListOf())
     }
 
-     */
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val currentMusic = customPlayer.currentMusicHolder.value
-
         notificationManager.createNotificationChannel(serviceChannel)
-
         MediaButtonReceiver.handleIntent(mediaSession,intent)                // 일단 이건 지우지 말고 Keep
-        mediaSession.run {
-            setMetaData_td(currentMusic)
-        }
         val notification = mediaSession.noti(this,customPlayer)
-       // val notification = mediaSession.noti_new(this,customPlayer, newMediaSession,0)
-
         notificationManager.notify(1,notification)
         startForeground(1, notification)
-
-        /*
-        val notificationNew = notifications.noti_new(this, newMediaSession)
-        notificationManager.notify(1,notificationNew)
-        startForeground(1, notificationNew)
-
-         */
-
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
-        newMediaPlayer.stop()
+        customPlayer.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
-        newMediaSession.release()
+        mediaSession.release()
         Variables.isServiceOn = false
         super.onDestroy()
-    }
-
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
-        return newMediaSession
     }
 }

@@ -39,7 +39,6 @@ class CustomPlayer(
         CoroutineScope(Dispatchers.Default).launch {
             _isPlayingHolder.value = true
             setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
-            //      setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
             mediaPlayer.start()
         }       // CoroutineScope 안할 경우, next/prev 할때 mediaPlayer.currentPosition 값이 1초 늦게 리셋되는 현상 있음
         // 지금 이 코드가 정상임
@@ -50,15 +49,12 @@ class CustomPlayer(
         mediaPlayer.pause()
         _isPlayingHolder.value = false
         setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
-    //    setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
     }
 
     override fun reset() {
         mediaPlayer.reset()
         _isPlayingHolder.value = false
         setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
-
-        //  setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
     }
 
 
@@ -145,9 +141,7 @@ class CustomPlayer(
         }
     }
 
-    fun initAttributes(
-        context: Context,
-    ){
+    fun initAttributes(context: Context) {
         this.apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -155,10 +149,9 @@ class CustomPlayer(
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
-         //   setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
             setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
+            this.setMusic(currentMusic,context)
         }
-        this.setMusic(currentMusic,context)
     }
 
     fun pausePlay() =
@@ -200,7 +193,8 @@ class CustomPlayer(
         try {
             setMusicPrimitive(
                 music = music,
-                context = context)
+                context = context
+            )
         } catch(e:Exception){
             println(e.stackTrace)
             i++

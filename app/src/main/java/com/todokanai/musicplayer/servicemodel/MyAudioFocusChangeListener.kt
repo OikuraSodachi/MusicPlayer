@@ -1,11 +1,11 @@
 package com.todokanai.musicplayer.servicemodel
 
 import android.media.AudioManager
-import androidx.media3.exoplayer.ExoPlayer
+import android.media.MediaPlayer
 import com.todokanai.musicplayer.myobjects.Constants
 
 /** Singleton 상태 **/
-class MyAudioFocusChangeListener(private val mediaPlayer: ExoPlayer) : AudioManager.OnAudioFocusChangeListener{
+class MyAudioFocusChangeListener(private val mediaPlayer: MediaPlayer) : AudioManager.OnAudioFocusChangeListener{
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_LOSS -> {
@@ -20,13 +20,18 @@ class MyAudioFocusChangeListener(private val mediaPlayer: ExoPlayer) : AudioMana
                 mediaPlayer.pause()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                mediaPlayer.volume = Constants.DUCK_VOLUME
+                mediaPlayer.setVolume(
+                    Constants.DUCK_VOLUME,
+                    Constants.DUCK_VOLUME
+                )
             }
             AudioManager.AUDIOFOCUS_GAIN -> {
                 if (!mediaPlayer.isPlaying) {
-                    //mediaPlayer.start()
-                    mediaPlayer.play()  // Todo: MediaPlayer.start() 와 ExoPlayer.play()가 서로 대응하는지 체크 필요
-                    mediaPlayer.volume = Constants.FULL_VOLUME
+                    mediaPlayer.start()
+                    mediaPlayer.setVolume(
+                        Constants.FULL_VOLUME,
+                        Constants.FULL_VOLUME
+                    )
                 }
             }
         }

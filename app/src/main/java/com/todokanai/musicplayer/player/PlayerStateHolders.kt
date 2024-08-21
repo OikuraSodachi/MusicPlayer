@@ -8,11 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
-import javax.inject.Singleton
 
 
 /** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
-@Singleton
 class PlayerStateHolders @Inject constructor( dsRepo:DataStoreRepository, musicRepo:MusicRepository) {
 
     val currentMusicHolder = musicRepo.currentMusic.stateIn(

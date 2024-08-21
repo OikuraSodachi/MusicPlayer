@@ -39,17 +39,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private val applyPlaybackState = true
+
     fun launchForeground(
         context:Context,
         appContext: Context,
         intentService:Intent
     ){
         viewModelScope.launch {
-     //       /*
             mediaSession = MyMediaSession(appContext, "MediaSession")
-            mediaSession.apply {
 
-            }
+            fun playbackStateSetter(state:Int) =
+                if(applyPlaybackState) {
+                    mediaSession.setMediaPlaybackState_td(state)
+                }else{
+
+                }
             customPlayer = CustomPlayer(
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
@@ -59,16 +64,11 @@ class MainViewModel @Inject constructor(
                 shuffleMode = dsRepo.isShuffled(),
                 currentMusic = musicRepo.currentMusicNonFlow(),
                 loop = dsRepo.isLooping(),
-                //setMediaPlaybackState_td = { mediaSession.setMediaPlaybackState_td(it)},
-                setMediaPlaybackState_td = {}
+                setMediaPlaybackState_td = { playbackStateSetter(it)},
             )
-
-          //   */
             ContextCompat.startForegroundService(context, intentService)
         }
     }
-
-
 
     fun getPermission(activity: Activity){
         viewModelScope.launch {
