@@ -53,6 +53,7 @@ android {
 dependencies {
     implementation("androidx.media3:media3-session:1.4.0")
     implementation("androidx.media3:media3-exoplayer:1.4.0")
+    implementation("androidx.media3:media3-ui:1.4.0")
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     val roomVersion = "2.6.1"
     val glideVersion = "4.13.0"

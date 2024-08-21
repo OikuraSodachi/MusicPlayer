@@ -51,7 +51,6 @@ class MainViewModel @Inject constructor(
 
             }
             customPlayer = CustomPlayer(
-                mediaSession = mediaSession,
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
                 dsRepo = dsRepo,
@@ -59,7 +58,9 @@ class MainViewModel @Inject constructor(
                 playList = musicRepo.getAllNonFlow(),
                 shuffleMode = dsRepo.isShuffled(),
                 currentMusic = musicRepo.currentMusicNonFlow(),
-                loop = dsRepo.isLooping()
+                loop = dsRepo.isLooping(),
+                //setMediaPlaybackState_td = { mediaSession.setMediaPlaybackState_td(it)},
+                setMediaPlaybackState_td = {}
             )
 
           //   */

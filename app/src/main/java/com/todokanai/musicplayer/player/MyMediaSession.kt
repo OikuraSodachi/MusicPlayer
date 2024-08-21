@@ -8,7 +8,11 @@ import android.media.MediaMetadata
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaStyleNotificationHelper.MediaStyle
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.activity.MainActivity
 import com.todokanai.musicplayer.compose.MyIcons
@@ -67,4 +71,47 @@ class MyMediaSession(appContext: Context, tag:String):MediaSessionCompat(appCont
             .setOngoing(true)
             .build()
     }
+
+
+    @OptIn(UnstableApi::class)
+    fun noti_new(context: Context,player: CustomPlayer,newSession:MediaSession,state:Int): Notification {
+        val playbackState = PlaybackStateCompat.Builder()
+            .apply {
+                val actions = if (true) {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SET_REPEAT_MODE or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                } else {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SET_REPEAT_MODE or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                }
+                setActions(actions)
+            }
+            .setState(state,PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,0f)
+        this.setPlaybackState(playbackState.build())
+
+        val mainOpenIntent = Intent(context, MainActivity::class.java)
+        val mainIntent = PendingIntent.getActivity(context,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
+        val repeatIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)
+        val prevIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_PREVIOUS), PendingIntent.FLAG_IMMUTABLE)
+        val pausePlayIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_PAUSE_PLAY), PendingIntent.FLAG_IMMUTABLE)
+        val nextIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
+        val shuffleIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
+        return NotificationCompat.Builder(context, Constants.CHANNEL_ID)       // 알림바에 띄울 알림을 만듬
+            .setContentTitle("null Title Noti") // 알림의 제목
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .addAction(NotificationCompat.Action(icons.loopingImage(player.isLoopingHolder.value), "REPEAT", repeatIntent))
+            .addAction(NotificationCompat.Action(icons.prev,"PREV",prevIntent))
+            .addAction(NotificationCompat.Action(icons.pausePlay(player.isPlayingHolder.value), "pauseplay", pausePlayIntent))
+            .addAction(NotificationCompat.Action(icons.next,"NEXT",nextIntent))
+            .addAction(NotificationCompat.Action(icons.shuffledImage(player.isShuffledHolder.value), "SHUFFLE", shuffleIntent))
+            .setContentIntent(mainIntent)
+            .setStyle(
+
+                MediaStyle(newSession)
+                    .setShowActionsInCompactView(1, 2, 3)     // 확장하지 않은상태 알림에서 쓸 기능의 배열번호
+                   // .setMediaSession(this.sessionToken)
+            )
+            .setOngoing(true)
+            .build()
+    }
+
 }

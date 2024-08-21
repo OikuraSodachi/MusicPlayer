@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class CustomPlayer(
-    val mediaSession: MyMediaSession,
     val nextIntent:Intent,
     val musicRepo : MusicRepository,
     val dsRepo:DataStoreRepository,
@@ -31,15 +30,15 @@ class CustomPlayer(
     playList:List<Music>,
     shuffleMode:Boolean,
     val currentMusic:Music?,
-    loop:Boolean
+    loop:Boolean,
+    val setMediaPlaybackState_td:(Int)->Unit
 ): MediaPlayer() {
     val mediaPlayer = MediaPlayer()
 
     override fun start() {
         CoroutineScope(Dispatchers.Default).launch {
             _isPlayingHolder.value = true
-
-            mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
+            setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
             //      setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
             mediaPlayer.start()
         }       // CoroutineScope 안할 경우, next/prev 할때 mediaPlayer.currentPosition 값이 1초 늦게 리셋되는 현상 있음
@@ -50,14 +49,14 @@ class CustomPlayer(
     override fun pause() {
         mediaPlayer.pause()
         _isPlayingHolder.value = false
-        mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
+        setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
     //    setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
     }
 
     override fun reset() {
         mediaPlayer.reset()
         _isPlayingHolder.value = false
-        mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
+        setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
 
         //  setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
     }
@@ -73,7 +72,7 @@ class CustomPlayer(
 
     override fun release() {
         mediaPlayer.release()
-        mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
+        setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
     }
 
     /*
@@ -157,7 +156,7 @@ class CustomPlayer(
                     .build()
             )
          //   setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
-            mediaSession.setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
+            setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
         }
         this.setMusic(currentMusic,context)
     }
