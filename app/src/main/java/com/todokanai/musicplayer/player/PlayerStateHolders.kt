@@ -7,11 +7,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 
-/** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
-class PlayerStateHolders @Inject constructor( dsRepo:DataStoreRepository, musicRepo:MusicRepository) {
+/** Dummy Data **/
+///** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
+class PlayerStateHolders ( dsRepo:DataStoreRepository, musicRepo:MusicRepository) {
 
     val currentMusicHolder = musicRepo.currentMusic.stateIn(
         scope = CoroutineScope(Dispatchers.Default),

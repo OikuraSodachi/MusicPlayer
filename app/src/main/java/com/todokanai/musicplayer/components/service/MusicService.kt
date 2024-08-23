@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaControllerCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import androidx.media.MediaBrowserServiceCompat
@@ -33,6 +34,7 @@ class MusicService : MediaBrowserServiceCompat(){
         lateinit var serviceIntent : Intent
         lateinit var customPlayer: CustomPlayer
         lateinit var mediaSession: MyMediaSession
+   //     lateinit var mediaController:MediaControllerCompat
     }
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
@@ -64,6 +66,7 @@ class MusicService : MediaBrowserServiceCompat(){
             receiver = MusicReceiver()
             notifications = Notifications(this,Constants.CHANNEL_ID)
             audioFocusChangeListener = MyAudioFocusChangeListener(customPlayer)
+       //     mediaController = MediaControllerCompat(this, mediaSession.sessionToken)
         }
         setLateinits()
         mediaSession.apply {
@@ -125,6 +128,8 @@ class MusicService : MediaBrowserServiceCompat(){
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         notificationManager.createNotificationChannel(serviceChannel)
         MediaButtonReceiver.handleIntent(mediaSession,intent)                // 일단 이건 지우지 말고 Keep
+
+        //mediaController
         val notification = mediaSession.noti(this,customPlayer)
         notificationManager.notify(1,notification)
         startForeground(1, notification)
