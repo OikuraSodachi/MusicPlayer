@@ -42,6 +42,7 @@
         <activity
             android:name=".components.activity.MainActivity"
             android:exported="true"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.MusicPlayer">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

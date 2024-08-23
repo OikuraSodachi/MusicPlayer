@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         }.attach()
 
         viewModel.run {
-          //  onBackPressedOverride(this@MainActivity)
+            onBackPressedOverride(this@MainActivity)
             getPermission(this@MainActivity)
             if(!isServiceOn) {
                 launchForeground(this@MainActivity, applicationContext, serviceIntent)

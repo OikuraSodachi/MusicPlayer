@@ -88,6 +88,7 @@ class MainViewModel @Inject constructor(
     /** 뒤로가기 버튼 override **/
     fun onBackPressedOverride(activity: ComponentActivity){
         activity.onBackPressedDispatcher.addCallback {
+            activity.finish()
         }
     }
 }
