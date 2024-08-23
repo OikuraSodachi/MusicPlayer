@@ -8,15 +8,14 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.player.MyMediaSession
 
 class MediaSessionCallback(
-    val context: Context,
-    val mediaSession: MyMediaSession,
-    val audioManager:AudioManager,
-    val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener,
-    val noisyReceiver:BroadcastReceiver,
-    val noisyIntentFilter:IntentFilter,
+    private val context: Context,
+    private val mediaSession: MediaSessionCompat,
+    private val audioManager:AudioManager,
+    private val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener,
+    private val noisyReceiver:BroadcastReceiver,
+    private val noisyIntentFilter:IntentFilter,
 ) : MediaSessionCompat.Callback() {
 
     private fun isAudioFocusGranted(): Boolean {
@@ -33,8 +32,7 @@ class MediaSessionCallback(
             return
         }
         context.registerReceiver(noisyReceiver, noisyIntentFilter, Context.RECEIVER_NOT_EXPORTED)
-        mediaSession.isActive = true  // 일단 이건 지우지 말고 Keep
-        // -> mediaSession: android.support.v4.media.session.MediaSessionCompat  // 일단 이건 지우지 말고 Keep
+        mediaSession.isActive = true
 
         context.sendBroadcast(Intent(Constants.ACTION_PAUSE_PLAY))
     }

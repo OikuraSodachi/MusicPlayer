@@ -15,9 +15,8 @@ class SeekBarListener(
             onProgressChange(mediaPlayer.currentPosition)
             //Also updates the textView because the coroutine only runs every 1 second
          //   progressText.text = SimpleDateFormat("mm:ss").format(mediaPlayer.currentPosition)
-        } else {
-
-        }    }
+        }
+    }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
     }

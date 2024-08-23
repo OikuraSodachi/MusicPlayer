@@ -28,7 +28,7 @@ data class Music(
         )
     }
 
-    fun durationText():String{
+    private fun durationText():String{
         return if(duration / (1000 * 60 * 60) <= 0){
             SimpleDateFormat("mm:ss").format(duration)
         } else{

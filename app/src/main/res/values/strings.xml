@@ -12,11 +12,10 @@
     <string name="scan">Scan</string>
     <string name="clear">Clear</string>
     <string name="exit">Exit</string>
-    <string name="permission_message">Storage Permission Required</string>
+    <string name="permission_message">Storage permission is requires,please allow from settings</string>
     <string name="scanPath_empty">Scans all directories if empty</string>
     <string name="not_accessible">Directory not accessible</string>
     <string name="all_item_failure">playing failed on all items</string>
     <string name="notification_channel_name">Todokanai_MusicPlayer</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

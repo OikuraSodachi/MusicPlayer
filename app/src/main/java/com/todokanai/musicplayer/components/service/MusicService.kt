@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import androidx.media.MediaBrowserServiceCompat
@@ -19,7 +19,6 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.MyMediaSession
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -33,8 +32,7 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         lateinit var serviceIntent : Intent
         lateinit var customPlayer: CustomPlayer
-        lateinit var mediaSession: MyMediaSession
-   //     lateinit var mediaController:MediaControllerCompat
+        lateinit var mediaSession: MediaSessionCompat
     }
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
@@ -66,7 +64,6 @@ class MusicService : MediaBrowserServiceCompat(){
             receiver = MusicReceiver()
             notifications = Notifications(this,Constants.CHANNEL_ID)
             audioFocusChangeListener = MyAudioFocusChangeListener(customPlayer)
-       //     mediaController = MediaControllerCompat(this, mediaSession.sessionToken)
         }
         setLateinits()
         mediaSession.apply {
@@ -127,10 +124,10 @@ class MusicService : MediaBrowserServiceCompat(){
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         notificationManager.createNotificationChannel(serviceChannel)
-        MediaButtonReceiver.handleIntent(mediaSession,intent)                // 일단 이건 지우지 말고 Keep
+        MediaButtonReceiver.handleIntent(mediaSession,intent)
 
-        //mediaController
-        val notification = mediaSession.noti(this,customPlayer)
+        val notification = notifications.noti(this, customPlayer,mediaSession)
+
         notificationManager.notify(1,notification)
         startForeground(1, notification)
         return super.onStartCommand(intent, flags, startId)
