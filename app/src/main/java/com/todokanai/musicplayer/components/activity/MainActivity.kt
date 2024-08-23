@@ -2,7 +2,6 @@ package com.todokanai.musicplayer.components.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -72,18 +71,11 @@ class MainActivity : AppCompatActivity() {
         }.attach()
 
         viewModel.run {
-            onBackPressedOverride(this@MainActivity)
+          //  onBackPressedOverride(this@MainActivity)
             getPermission(this@MainActivity)
             if(!isServiceOn) {
                 launchForeground(this@MainActivity, applicationContext, serviceIntent)
             }
         }
-        testBuildSetting()
-    }
-
-
-    /** release 버전에서는 제거할 것 **/
-    fun testBuildSetting(){
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) //
     }
 }
