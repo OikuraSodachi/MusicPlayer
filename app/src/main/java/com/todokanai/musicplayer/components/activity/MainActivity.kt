@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.components.activity
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -71,11 +72,17 @@ class MainActivity : AppCompatActivity() {
         }.attach()
 
         viewModel.run {
-            onBackPressedOverride(this@MainActivity)
             getPermission(this@MainActivity)
             if(!isServiceOn) {
                 launchForeground(this@MainActivity, applicationContext, serviceIntent)
             }
+        }
+        /** 뒤로가기 버튼 override
+         *
+         *  (홈 버튼을 사용하여) Activity를 명시적으로 살려둘 경우 외에는 onDestroy 호출
+         * **/
+        onBackPressedDispatcher.addCallback {
+            finish()
         }
     }
 }
