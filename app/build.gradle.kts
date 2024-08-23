@@ -73,7 +73,7 @@ dependencies {
 
     implementation ("androidx.legacy:legacy-support-v4:1.0.0")
 
-    debugImplementation ("androidx.compose.ui:ui-tooling")
+    debugImplementation ("androidx.compose.ui:ui-tooling")      // compose preview
     implementation ("androidx.compose.ui:ui:1.6.8")
     implementation ("androidx.compose.material3:material3:1.2.1")
 
