@@ -51,23 +51,17 @@ android {
 }
 
 dependencies {
-    implementation("androidx.media3:media3-session:1.4.0")
-    implementation("androidx.media3:media3-exoplayer:1.4.0")
-    implementation("androidx.media3:media3-ui:1.4.0")
+
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     val roomVersion = "2.6.1"
     val glideVersion = "4.13.0"
 
     implementation (composeBom)
-   // testImplementation (composeBom)
 
     implementation ("androidx.core:core-ktx:1.9.0")
     implementation ("androidx.lifecycle:lifecycle-common:2.8.4")
     implementation ("androidx.activity:activity-compose:1.9.1")
 
-    //testImplementation ("junit:junit:4.13.2")
- //   androidTestImplementation ("androidx.test.ext:junit:1.1.5")
-  //  androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.4")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")     // enable ConstraintLayout
     implementation ("com.google.android.material:material:1.12.0")

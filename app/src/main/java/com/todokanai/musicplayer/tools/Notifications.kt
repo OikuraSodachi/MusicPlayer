@@ -1,14 +1,9 @@
 package com.todokanai.musicplayer.tools
 
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaStyleNotificationHelper.MediaStyle
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.activity.MainActivity
 
@@ -57,6 +52,7 @@ class Notifications(context: Context,private val channelID:String) {
 
      */
 
+    /*
     /** 미완성 상태 **/
     @OptIn(UnstableApi::class)
     fun noti_new(context: Context,mediaSession:MediaSession):Notification{
@@ -68,4 +64,6 @@ class Notifications(context: Context,private val channelID:String) {
             )
             .build()
     }
+
+     */
 }

@@ -1,5 +1,6 @@
 package com.todokanai.musicplayer.interfaces
 
+/*
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
@@ -18,9 +19,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+
+ */
 /** Dummy Data **/
 interface mediaInterface {
 
+    /*
     fun start()
 
     fun pause()
@@ -152,4 +156,6 @@ interface mediaInterface {
             return musicList.sortedBy { it.title }
         }
     }
+
+     */
 }
