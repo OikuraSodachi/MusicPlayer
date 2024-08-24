@@ -16,6 +16,7 @@ import com.todokanai.musicplayer.player.CustomPlayer
 
 class Notifications(context: Context,private val channelID:String) {
     private val icons = MyIcons()
+
     private val mainOpenIntent = Intent(context, MainActivity::class.java)
     private val mainIntent = PendingIntent.getActivity(context,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
     private val repeatIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)
