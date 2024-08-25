@@ -5,6 +5,7 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
 import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -74,6 +75,42 @@ class SettingsViewModel @Inject constructor(
             val fileDir = cursor.getString(5)
 
             val music = Music(id, title, artist, albumId, duration, fileDir)
+            if(dirsToScan.isEmpty()){
+                result = result.plus(music)
+
+            }else{
+                for(a in 1..dirsToScan.size){
+                    if(fileDir.startsWith(dirsToScan[a-1])){
+                        result = result.plus(music)
+                    }
+                }
+            }
+        }
+        cursor?.close()
+        return@withContext result
+    }
+
+    private suspend fun scanMediaItemList(dirsToScan: Array<String>, context: Context):Set<MediaItem> = withContext(Dispatchers.Main
+    ){
+        var result = emptySet<MediaItem>()
+        val proj = arrayOf(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),
+            MediaStore.MediaColumns.DATA
+        )
+
+        val cursor = context.contentResolver?.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            proj,
+            null,
+            null,
+            null
+        )
+
+        while (cursor?.moveToNext() == true) {
+            val uri = cursor.getString(0)
+            val fileDir = cursor.getString(1)
+
+            val music = MediaItem.fromUri(uri)
             if(dirsToScan.isEmpty()){
                 result = result.plus(music)
 

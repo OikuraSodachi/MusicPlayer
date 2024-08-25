@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.data.room
 
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.media3.common.MediaItem
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -54,5 +55,9 @@ data class Music(
             this.durationText(),
             this.getAlbumUri()
         )
+    }
+
+    fun toMediaItem(): MediaItem{
+        return MediaItem.fromUri(this.getUri())
     }
 }
