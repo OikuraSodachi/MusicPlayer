@@ -1,7 +1,6 @@
 package com.todokanai.musicplayer.components.fragments
 
 import android.icu.text.SimpleDateFormat
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,18 +33,16 @@ class PlayingFragment : Fragment() {
         val seekBarListener = SeekBarListener(
             getCurrentPosition = {viewModel.currentPosition()},
             onProgressChange = {
-                binding.songCurrentProgress.text = viewModel.currentPosition().format_td()
+                binding.songCurrentProgress.text = SimpleDateFormat("mm:ss").format(viewModel.currentPosition())
             },
             seekTo = {viewModel.seekTo(it)}
         )
 
-        fun seekBarSet(mediaPlayer: MediaPlayer, seekBar: SeekBar) {
-
-            /** Todo: 이거 아마 livedata로 대체해야 할지도? **/
+        fun seekBarSet(seekBar: SeekBar) {
             lifecycleScope.launch {
-                while (mediaPlayer.isPlaying) {
+                while (viewModel.isPlayingHolder.value) {
                     binding.seekBar.progress = viewModel.currentPosition()
-                    binding.songCurrentProgress.text = binding.seekBar.progress.format_td()
+                    binding.songCurrentProgress.text = SimpleDateFormat("mm:ss").format(binding.seekBar.progress)
                     delay(1000)
                 }
             }
@@ -67,14 +64,14 @@ class PlayingFragment : Fragment() {
                         seekBar.max = viewModel.mediaPlayer.duration
                         playerImage.setImageURI(it.getAlbumUri())
                         artist.text = it.artist
-                        songTotalTime.text = it.duration.format_td()
+                        songTotalTime.text = SimpleDateFormat("mm:ss").format(it.duration)
                         title.text = it.title
                     }
                 }
             }
             isPlayingHolder.asLiveData().observe(viewLifecycleOwner){
                 binding.playPauseButton.setImageResource(icons.pausePlayIcon(it))
-                seekBarSet(viewModel.mediaPlayer,binding.seekBar)
+                seekBarSet(binding.seekBar)
             }
 
             isRepeatingHolder.asLiveData().observe(viewLifecycleOwner){
@@ -86,6 +83,4 @@ class PlayingFragment : Fragment() {
         }
         return binding.root
     }
-
-    private fun Int.format_td() = SimpleDateFormat("mm:ss").format(this)
 }

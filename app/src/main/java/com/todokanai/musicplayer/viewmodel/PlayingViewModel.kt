@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.viewmodel
 
 import android.content.Context
 import android.content.Intent
+import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.ViewModel
 import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_PAUSE_PLAY
@@ -28,8 +29,14 @@ class PlayingViewModel @Inject constructor() : ViewModel(){
     val currentMusicHolder = customPlayer.currentMusicHolder
     //----------------
 
+
     fun currentPosition():Int{
         return mediaPlayer.currentPosition
+    }
+
+    fun currentPositionText():String{
+        return SimpleDateFormat("mm:ss").format(mediaPlayer.currentPosition)
+
     }
     fun seekTo(progress:Int){
         mediaPlayer.seekTo(progress)
