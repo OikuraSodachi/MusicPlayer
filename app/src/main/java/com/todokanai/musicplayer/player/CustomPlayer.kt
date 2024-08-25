@@ -214,10 +214,6 @@ class CustomPlayer(
         this.start()
     }
 
-    fun prev_Original(context: Context,currentMusic: Music,playList: List<Music>){
-        this.launchMusic(context, getCircularPrev(playList,playList.indexOf(currentMusic)) as Music)
-    }
-
     fun prev(context: Context,currentMusic: Music? = currentMusicHolder.value,playList: List<Music> = playListHolder.value){
         currentMusic?.let {
             this.launchMusic(
@@ -225,9 +221,6 @@ class CustomPlayer(
                 getCircularPrev(playList, playList.indexOf(currentMusic)) as Music
             )
         }
-    }
-    fun next_Original(context: Context,currentMusic: Music,playList: List<Music>){
-        this.launchMusic(context, getCircularNext(playList,playList.indexOf(currentMusic)) as Music)
     }
 
     fun next(context: Context,currentMusic: Music? = currentMusicHolder.value,playList: List<Music> = playListHolder.value){
