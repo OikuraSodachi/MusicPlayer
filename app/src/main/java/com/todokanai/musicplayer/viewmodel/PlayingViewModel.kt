@@ -26,6 +26,14 @@ class PlayingViewModel @Inject constructor() : ViewModel(){
     val isRepeatingHolder = customPlayer.isLoopingHolder
 
     val currentMusicHolder = customPlayer.currentMusicHolder
+    //----------------
+
+    fun currentPosition():Int{
+        return mediaPlayer.currentPosition
+    }
+    fun seekTo(progress:Int){
+        mediaPlayer.seekTo(progress)
+    }
 
     fun pausePlay(context:Context) = context.sendBroadcast(Intent(ACTION_PAUSE_PLAY))
 

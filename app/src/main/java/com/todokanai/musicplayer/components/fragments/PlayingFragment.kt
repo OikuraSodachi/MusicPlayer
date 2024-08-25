@@ -31,23 +31,22 @@ class PlayingFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-
         val seekBarListener = SeekBarListener(
-            mediaPlayer = viewModel.mediaPlayer,
+            getCurrentPosition = {viewModel.currentPosition()},
             onProgressChange = {
-                binding.songCurrentProgress.text = SimpleDateFormat("mm:ss").format(viewModel.mediaPlayer.currentPosition)
-            }
+                binding.songCurrentProgress.text = viewModel.currentPosition().format_td()
+            },
+            seekTo = {viewModel.seekTo(it)}
         )
 
         fun seekBarSet(mediaPlayer: MediaPlayer, seekBar: SeekBar) {
             lifecycleScope.launch {
-                    while (mediaPlayer.isPlaying) {
-                        binding.seekBar.progress = mediaPlayer.currentPosition
-                        binding.songCurrentProgress.text =
-                            SimpleDateFormat("mm:ss").format(binding.seekBar.progress)
-                        delay(1000)
-                    }
+                while (mediaPlayer.isPlaying) {
+                    binding.seekBar.progress = viewModel.currentPosition()
+                    binding.songCurrentProgress.text = binding.seekBar.progress.format_td()
+                    delay(1000)
                 }
+            }
             seekBar.setOnSeekBarChangeListener(seekBarListener)
         }
 
@@ -66,7 +65,7 @@ class PlayingFragment : Fragment() {
                         seekBar.max = viewModel.mediaPlayer.duration
                         playerImage.setImageURI(it.getAlbumUri())
                         artist.text = it.artist
-                        songTotalTime.text = SimpleDateFormat("mm:ss").format(it.duration)
+                        songTotalTime.text = it.duration.format_td()
                         title.text = it.title
                     }
                 }
@@ -85,4 +84,6 @@ class PlayingFragment : Fragment() {
         }
         return binding.root
     }
+
+    private fun Int.format_td() = SimpleDateFormat("mm:ss").format(this)
 }
