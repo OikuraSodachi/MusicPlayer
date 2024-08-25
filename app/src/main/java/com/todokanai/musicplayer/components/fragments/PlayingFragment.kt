@@ -61,7 +61,7 @@ class PlayingFragment : Fragment() {
             currentMusicHolder.asLiveData().observe(viewLifecycleOwner){
                 it?.let {
                     binding.run {
-                        seekBar.max = viewModel.mediaPlayer.duration
+                        seekBar.max = viewModel.duration()
                         playerImage.setImageURI(it.getAlbumUri())
                         artist.text = it.artist
                         songTotalTime.text = SimpleDateFormat("mm:ss").format(it.duration)
