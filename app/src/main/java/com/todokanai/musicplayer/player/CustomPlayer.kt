@@ -214,12 +214,29 @@ class CustomPlayer(
         this.start()
     }
 
-    fun prev(context: Context,currentMusic: Music,playList: List<Music>){
+    fun prev_Original(context: Context,currentMusic: Music,playList: List<Music>){
         this.launchMusic(context, getCircularPrev(playList,playList.indexOf(currentMusic)) as Music)
     }
 
-    fun next(context: Context,currentMusic: Music,playList: List<Music>){
+    fun prev(context: Context,currentMusic: Music? = currentMusicHolder.value,playList: List<Music> = playListHolder.value){
+        currentMusic?.let {
+            this.launchMusic(
+                context,
+                getCircularPrev(playList, playList.indexOf(currentMusic)) as Music
+            )
+        }
+    }
+    fun next_Original(context: Context,currentMusic: Music,playList: List<Music>){
         this.launchMusic(context, getCircularNext(playList,playList.indexOf(currentMusic)) as Music)
+    }
+
+    fun next(context: Context,currentMusic: Music? = currentMusicHolder.value,playList: List<Music> = playListHolder.value){
+        currentMusic?.let {
+            this.launchMusic(
+                context,
+                getCircularNext(playList, playList.indexOf(currentMusic)) as Music
+            )
+        }
     }
 
     fun repeat(){
@@ -230,7 +247,7 @@ class CustomPlayer(
         }
     }
 
-    fun shuffle(wasShuffled:Boolean){
+    fun shuffle(wasShuffled:Boolean = isShuffledHolder.value){
         _playListHolder.value = modifiedPlayList(
             playListHolder.value,!wasShuffled,
             seedHolder.value

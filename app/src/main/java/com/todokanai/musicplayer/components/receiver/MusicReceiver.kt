@@ -17,9 +17,6 @@ class MusicReceiver  : BroadcastReceiver() {
     private val player by lazy{customPlayer}
 
     override fun onReceive(context: Context, intent: Intent) {
-        val playList = player.playListHolder.value
-        val currentMusic = player.currentMusicHolder.value
-        val isShuffled = player.isShuffledHolder.value
 
         when (intent.action) {
             ACTION_REPLAY -> {
@@ -27,25 +24,19 @@ class MusicReceiver  : BroadcastReceiver() {
             }
 
             ACTION_SKIP_TO_PREVIOUS -> {
-                currentMusic?.let {
-                    player.prev(context, it, playList)
-                }
+                player.prev(context)
             }
 
             ACTION_PAUSE_PLAY -> {
-                currentMusic?.let {
-                    player.pausePlay()
-                }
+                player.pausePlay()
             }
 
             ACTION_SKIP_TO_NEXT -> {
-                currentMusic?.let {
-                    player.next(context, it, playList)
-                }
+                player.next(context)
             }
 
             ACTION_SHUFFLE -> {
-                player.shuffle(isShuffled)
+                player.shuffle()
             }
         }
     }
