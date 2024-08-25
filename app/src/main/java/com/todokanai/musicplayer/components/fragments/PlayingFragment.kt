@@ -40,6 +40,8 @@ class PlayingFragment : Fragment() {
         )
 
         fun seekBarSet(mediaPlayer: MediaPlayer, seekBar: SeekBar) {
+
+            /** Todo: 이거 아마 livedata로 대체해야 할지도? **/
             lifecycleScope.launch {
                 while (mediaPlayer.isPlaying) {
                     binding.seekBar.progress = viewModel.currentPosition()
