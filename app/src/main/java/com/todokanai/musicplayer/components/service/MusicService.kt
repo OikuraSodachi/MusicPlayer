@@ -16,6 +16,7 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
+import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.player.CustomPlayer
@@ -23,9 +24,11 @@ import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
+import com.todokanai.musicplayer.tools.independent.setMediaPlaybackState_td
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat(){
@@ -33,6 +36,12 @@ class MusicService : MediaBrowserServiceCompat(){
         lateinit var serviceIntent : Intent
         lateinit var customPlayer: CustomPlayer
         lateinit var mediaSession: MediaSessionCompat
+        var mSeed by Delegates.notNull<Double>()
+        lateinit var mPlayList:List<Music>
+        var mCurrentMusic : Music? = null
+        var mShuffled by Delegates.notNull<Boolean>()
+        var mLoop by Delegates.notNull<Boolean>()
+
     }
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
@@ -60,6 +69,19 @@ class MusicService : MediaBrowserServiceCompat(){
         super.onCreate()
         Variables.isServiceOn = true
         fun setLateinits(){
+            mediaSession = MediaSessionCompat(this, "MediaSession")
+            customPlayer = CustomPlayer(
+                nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
+                musicRepo = musicRepo,
+                dsRepo = dsRepo,
+                seed = mSeed,
+                playList = mPlayList,
+                shuffleMode = mShuffled,
+                currentMusic = mCurrentMusic,
+                loop = mLoop,
+                setMediaPlaybackState_td = { mediaSession.setMediaPlaybackState_td(it) }
+            )
+
             notificationManager = NotificationManagerCompat.from(this@MusicService)
             receiver = MusicReceiver()
             notifications = Notifications(this,Constants.CHANNEL_ID)

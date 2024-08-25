@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.run {
             getPermission(this@MainActivity)
             if(!isServiceOn) {
-                launchForeground(this@MainActivity, applicationContext, serviceIntent)
+                launchForeground(this@MainActivity, serviceIntent)
             }
         }
         /** 뒤로가기 버튼 override
