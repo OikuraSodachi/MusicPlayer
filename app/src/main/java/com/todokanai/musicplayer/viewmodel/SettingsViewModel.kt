@@ -4,12 +4,12 @@ import android.content.Context
 import android.provider.MediaStore
 import android.view.View
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.ScanPathRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -24,13 +24,11 @@ class SettingsViewModel @Inject constructor(
 
     /** 더 깔끔한 IO 작업 중복 방지 방식은 없는지 고민해볼 것 **/
     fun apply(context: Context,button: View){
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             button.isClickable = false
             val dirsToScan = spRepository.getPathNonFlow()
             val newList  = scanMusicList(dirsToScan,context).toTypedArray()
             musicRepo.updateMusicList(newList)
-
-           // customPlayer.updatePlayList() // unstable(?)
         }.invokeOnCompletion {
             button.isClickable = true
         }
@@ -38,7 +36,7 @@ class SettingsViewModel @Inject constructor(
     //-----------------
 
     fun deleteScanPath(absolutePath: String){
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             spRepository.delete(absolutePath)
         }
     }

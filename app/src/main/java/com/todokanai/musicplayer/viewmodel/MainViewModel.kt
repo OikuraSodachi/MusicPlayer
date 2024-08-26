@@ -21,6 +21,8 @@ import com.todokanai.musicplayer.tools.independent.exit_td
 import com.todokanai.musicplayer.tools.independent.isPermissionGranted_td
 import com.todokanai.musicplayer.tools.independent.requestPermission_td
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -43,7 +45,7 @@ class MainViewModel @Inject constructor(
         context:Context,
         intentService:Intent
     ){
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             //-------------
             // customPlayer 초기 parameter
             runBlocking {
