@@ -57,6 +57,7 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     val roomVersion = "2.6.1"
     val glideVersion = "4.13.0"
+    val daggerVersion = "2.49"
 
     implementation (composeBom)
 
@@ -89,7 +90,7 @@ dependencies {
 
     implementation ("com.github.bumptech.glide:glide:$glideVersion")
     annotationProcessor ("com.github.bumptech.glide:compiler:$glideVersion")
-    implementation ("com.google.dagger:hilt-android:2.44")
-    kapt ("com.google.dagger:hilt-android-compiler:2.44")
+    implementation ("com.google.dagger:hilt-android:$daggerVersion")
+    kapt ("com.google.dagger:hilt-android-compiler:$daggerVersion")
     implementation ("androidx.datastore:datastore-preferences:1.1.0-alpha01")       // enable DataStore
 }
