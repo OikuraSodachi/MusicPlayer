@@ -15,31 +15,23 @@ import com.todokanai.musicplayer.tools.independent.getCircularPrev
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class CustomPlayer(
     val nextIntent:Intent,
     val musicRepo : MusicRepository,
     val dsRepo:DataStoreRepository,
-    seed: Double,
-    playList:List<Music>,
-    shuffleMode:Boolean,
-    val currentMusic:Music?,
-    loop:Boolean,
-    val setMediaPlaybackState_td:(Int)->Unit
+    val setMediaPlaybackState_td:(Int)->Unit,
+    val stateHolders:PlayerStateHolders
 ): MediaPlayer() {
     val mediaPlayer = MediaPlayer()
 
     override fun start() {
         CoroutineScope(Dispatchers.Default).launch {
-            _isPlayingHolder.value = true
             setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
             mediaPlayer.start()
+            _isPlayingHolder.value = mediaPlayer.isPlaying
         }       // CoroutineScope 안할 경우, next/prev 할때 mediaPlayer.currentPosition 값이 1초 늦게 리셋되는 현상 있음
         // 지금 이 코드가 정상임
     }
@@ -47,14 +39,14 @@ class CustomPlayer(
 
     override fun pause() {
         mediaPlayer.pause()
-        _isPlayingHolder.value = false
+        _isPlayingHolder.value = mediaPlayer.isPlaying
         setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
     }
 
     override fun reset() {
         mediaPlayer.reset()
-        _isPlayingHolder.value = false
-        setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
+        _isPlayingHolder.value = mediaPlayer.isPlaying
+        setMediaPlaybackState_td(PlaybackStateCompat.STATE_STOPPED)
     }
 
 
@@ -81,67 +73,20 @@ class CustomPlayer(
     // override
     //-------------------------
 
-    private val initialPlayListNew = modifiedPlayList(playList,shuffleMode,seed)
+    val seedHolder = stateHolders.seedHolder
 
-    val seedHolder = dsRepo.seed.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = seed
-    )
+    val currentMusicHolder = stateHolders.currentMusicHolder
 
-    private val _playListHolder = MutableStateFlow<List<Music>>(initialPlayListNew)
-    val playListHolder: StateFlow<List<Music>> = _playListHolder
-
-    val currentMusicHolder = musicRepo.currentMusic.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = currentMusic
-    )
-
-    val isLoopingHolder = dsRepo.isLooping.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = loop
-    )
+    val isLoopingHolder = stateHolders.isLoopingHolder
 
     private val _isPlayingHolder = MutableStateFlow(false)
     val isPlayingHolder : StateFlow<Boolean> = _isPlayingHolder
 
-    val isShuffledHolder = dsRepo.isShuffled.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = shuffleMode
-    )
+    val isShuffledHolder = stateHolders.isShuffledHolder
 
-    /**  currently not in use
-     *
-     * Room에서 끌어오는 형태로 바꾼 다음, playListHolder의 역할을 playListHolderNew에 옮길 것**/
-    val musicListHolder = MutableStateFlow(playList)
+    val playListHolder = stateHolders.playListHolder
 
-    /** currently not in use **/
-    val playListHolderNew = combine(
-        musicListHolder,
-        isShuffledHolder,
-        seedHolder
-    ){ musicList,shuffled, seed ->
-        modifiedPlayList(musicList,shuffled,seed)
-    }.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialPlayListNew
-    )
-
-    fun updatePlayList(){
-        val isShuffled = isShuffledHolder.value
-        CoroutineScope(Dispatchers.IO).launch {
-            _playListHolder.value = modifiedPlayList(
-                musicRepo.getAllNonFlow(), isShuffled,
-                seedHolder.value
-            )
-        }
-    }
-
-    fun initAttributes(context: Context) {
+    fun initAttributes(initialMusic:Music?,context: Context) {
         this.apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -149,8 +94,8 @@ class CustomPlayer(
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
-            setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
-            this.setMusic(currentMusic,context)
+            setMediaPlaybackState_td(PlaybackStateCompat.STATE_STOPPED)
+            this.setMusic(initialMusic,context)
         }
     }
 
@@ -241,22 +186,9 @@ class CustomPlayer(
     }
 
     fun shuffle(wasShuffled:Boolean = isShuffledHolder.value){
-        _playListHolder.value = modifiedPlayList(
-            playListHolder.value,!wasShuffled,
-            seedHolder.value
-        )
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveIsShuffled(!wasShuffled)
             dsRepo.saveRandomSeed(seedHolder.value)
-        }
-    }
-
-    /** 수정된 playList: List<Music> 을 반환**/
-    private fun modifiedPlayList(musicList:List<Music>, isShuffled:Boolean, seed:Double):List<Music>{
-        if(isShuffled){
-            return musicList.shuffled(Random(seed.toLong()))
-        } else{
-            return musicList.sortedBy { it.title }
         }
     }
 }

@@ -22,6 +22,7 @@ import com.todokanai.musicplayer.tools.independent.isPermissionGranted_td
 import com.todokanai.musicplayer.tools.independent.requestPermission_td
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,11 +46,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             //-------------
             // customPlayer 초기 parameter
-            mSeed = dsRepo.getSeed()
-            mPlayList = musicRepo.getAllNonFlow()
-            mShuffled = dsRepo.isShuffled()
-            mCurrentMusic = musicRepo.currentMusicNonFlow()
-            mLoop = dsRepo.isLooping()
+            runBlocking {
+                mSeed = dsRepo.getSeed()
+                mPlayList = musicRepo.getAllNonFlow()
+                mShuffled = dsRepo.isShuffled()
+                mCurrentMusic = musicRepo.currentMusicNonFlow()
+                mLoop = dsRepo.isLooping()
+            }
             //-----------
             ContextCompat.startForegroundService(context, intentService)
         }

@@ -20,6 +20,7 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -74,12 +75,15 @@ class MusicService : MediaBrowserServiceCompat(){
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
                 dsRepo = dsRepo,
-                seed = mSeed,
-                playList = mPlayList,
-                shuffleMode = mShuffled,
-                currentMusic = mCurrentMusic,
-                loop = mLoop,
-                setMediaPlaybackState_td = { mediaSession.setMediaPlaybackState_td(it) }
+                setMediaPlaybackState_td = { mediaSession.setMediaPlaybackState_td(it) },
+                stateHolders = PlayerStateHolders(
+                    dsRepo,
+                    musicRepo,
+                    mSeed,
+                    mPlayList,
+                    mLoop,
+                    mShuffled
+                )
             )
 
             notificationManager = NotificationManagerCompat.from(this@MusicService)
@@ -110,7 +114,7 @@ class MusicService : MediaBrowserServiceCompat(){
         registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
 
         customPlayer.apply{
-            initAttributes(this@MusicService)
+            initAttributes(mCurrentMusic,this@MusicService)
             currentMusicHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
             }
@@ -122,6 +126,10 @@ class MusicService : MediaBrowserServiceCompat(){
             }
             isPlayingHolder.asLiveData().observeForever(){
                 startForegroundService(serviceIntent)
+            }
+            stateHolders.playListHolder.asLiveData().observeForever(){
+                println("list: ${it.map{it.title}}")
+
             }
         }       // observe LiveData
     }
@@ -163,3 +171,180 @@ class MusicService : MediaBrowserServiceCompat(){
         super.onDestroy()
     }
 }
+
+/*
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
+import android.support.v4.media.session.MediaSessionCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.asLiveData
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.DefaultMediaNotificationProvider
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaSessionService
+import com.todokanai.musicplayer.R
+import com.todokanai.musicplayer.components.receiver.MusicReceiver
+import com.todokanai.musicplayer.components.receiver.NoisyReceiver
+import com.todokanai.musicplayer.data.datastore.DataStoreRepository
+import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.exoplayer.Temp
+import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
+import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.PlayerStateHolders
+import com.todokanai.musicplayer.repository.MusicRepository
+import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
+import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
+import com.todokanai.musicplayer.tools.Notifications
+import com.todokanai.musicplayer.tools.independent.setMediaPlaybackState_td
+import com.todokanai.musicplayer.variables.Variables
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlin.properties.Delegates
+
+@UnstableApi
+@AndroidEntryPoint
+class MusicService : MediaSessionService(){
+    companion object{
+        lateinit var serviceIntent : Intent
+        lateinit var customPlayer: CustomPlayer
+        lateinit var mediaSession: MediaSessionCompat
+
+        lateinit var newMediaSession:MediaSession
+        lateinit var newPlayer:ExoPlayer
+
+        var mSeed by Delegates.notNull<Double>()
+        lateinit var mPlayList:List<Music>
+        var mCurrentMusic : Music? = null
+        var mShuffled by Delegates.notNull<Boolean>()
+        var mLoop by Delegates.notNull<Boolean>()
+
+    }
+    lateinit var notiProvider:DefaultMediaNotificationProvider
+
+    private lateinit var notifications: Notifications
+    private lateinit var notificationManager:NotificationManagerCompat
+    private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
+
+    private val temp = Temp()
+    private val noisyReceiver = NoisyReceiver()
+    private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+    private val serviceChannel by lazy {
+        NotificationChannel(
+            Constants.CHANNEL_ID,
+            getString(R.string.notification_channel_name),
+            NotificationManager.IMPORTANCE_NONE             //  알림의 중요도
+        )
+    }
+
+    @Inject
+    lateinit var dsRepo:DataStoreRepository
+
+    @Inject
+    lateinit var musicRepo:MusicRepository
+
+    @Inject
+    lateinit var audioManager: AudioManager
+
+    override fun onCreate() {
+        super.onCreate()
+        Variables.isServiceOn = true
+        fun setLateinits(){
+
+            mediaSession = MediaSessionCompat(this, "MediaSession")
+            customPlayer = CustomPlayer(
+                nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
+                musicRepo = musicRepo,
+                dsRepo = dsRepo,
+                currentMusic = mCurrentMusic,
+                setMediaPlaybackState_td = { mediaSession.setMediaPlaybackState_td(it) },
+                stateHolders = PlayerStateHolders(dsRepo,musicRepo)
+            )
+
+            notificationManager = NotificationManagerCompat.from(this@MusicService)
+            receiver = MusicReceiver()
+            notifications = Notifications(this,Constants.CHANNEL_ID)
+            audioFocusChangeListener = MyAudioFocusChangeListener(customPlayer)
+
+            newPlayer = ExoPlayer.Builder(this)
+                .build()
+            newMediaSession = MediaSession.Builder(this, newPlayer)
+                .build()
+
+            notiProvider = DefaultMediaNotificationProvider.Builder(this)
+                .build()
+        }
+        setLateinits()
+        mediaSession.apply {
+            setCallback(
+                MediaSessionCallback(
+                    this@MusicService,
+                    this,
+                    audioManager,
+                    audioFocusChangeListener,
+                    noisyReceiver,
+                    noisyIntentFilter
+                )
+            )
+        }
+
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
+        registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
+
+        customPlayer.apply{
+            initAttributes(this@MusicService)
+            currentMusicHolder.asLiveData().observeForever(){
+                startForegroundService(serviceIntent)
+            }
+            isShuffledHolder.asLiveData().observeForever(){
+                startForegroundService(serviceIntent)
+            }
+            isLoopingHolder.asLiveData().observeForever(){
+                startForegroundService(serviceIntent)
+            }
+            isPlayingHolder.asLiveData().observeForever(){
+                startForegroundService(serviceIntent)
+            }
+        }       // observe LiveData
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        notificationManager.createNotificationChannel(serviceChannel)
+
+
+        val notification = notiProvider.createNotification(
+            newMediaSession,
+            temp.commandButtons_td(),
+            temp.actionFactory_td(),
+            temp.callback_td(notificationManager)
+            )
+
+
+        startForeground(1, notification)
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onDestroy() {
+        customPlayer.stop()
+        audioManager.abandonAudioFocus(audioFocusChangeListener)
+        mediaSession.release()
+        Variables.isServiceOn = false
+        super.onDestroy()
+    }
+
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
+        return  newMediaSession
+    }
+}
+
+ */

@@ -6,7 +6,6 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
-import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.ScanPathRepository
@@ -31,7 +30,7 @@ class SettingsViewModel @Inject constructor(
             val newList  = scanMusicList(dirsToScan,context).toTypedArray()
             musicRepo.updateMusicList(newList)
 
-            customPlayer.updatePlayList() // unstable(?)
+           // customPlayer.updatePlayList() // unstable(?)
         }.invokeOnCompletion {
             button.isClickable = true
         }
