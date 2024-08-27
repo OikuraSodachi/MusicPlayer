@@ -30,11 +30,8 @@ class CustomPlayer(
     val mediaPlayer = MediaPlayer()
 
     override fun start() {
-        CoroutineScope(Dispatchers.Default).launch {
-            mediaPlayer.start()
-            _isPlayingHolder.value = mediaPlayer.isPlaying
-        }       // CoroutineScope 안할 경우, next/prev 할때 mediaPlayer.currentPosition 값이 1초 늦게 리셋되는 현상 있음
-        // 지금 이 코드가 정상임
+        mediaPlayer.start()
+        _isPlayingHolder.value = mediaPlayer.isPlaying
     }
 
     override fun pause() {
@@ -58,6 +55,12 @@ class CustomPlayer(
 
     override fun release() {
         mediaPlayer.release()
+    }
+
+    override fun stop() {
+        mediaPlayer.stop()
+        _isPlayingHolder.value = mediaPlayer.isPlaying
+        super.stop()
     }
 
     /*
