@@ -7,5 +7,6 @@ class Variables {
     companion object{
         val defaultStorage: File = Environment.getExternalStorageDirectory()
         var isServiceOn = false
+        val isTestBuild = true
     }
 }

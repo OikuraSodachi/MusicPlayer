@@ -49,6 +49,4 @@ class MyIcons() {
         } else {
             repeatAll
         }
-
-
 }

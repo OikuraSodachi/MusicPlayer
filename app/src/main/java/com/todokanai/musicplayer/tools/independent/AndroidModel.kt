@@ -131,22 +131,3 @@ fun requestStorageManageAccess_td(activity: Activity){
         activity.startActivity(intent)
     }
 }
-
-/**
- *  MediaSessionCompat의 PlaybackState Setter
- *
- *  playback position 관련해서는 미검증 상태
- */
-fun MediaSessionCompat.setMediaPlaybackState_td(state:Int){
-    val playbackState = PlaybackStateCompat.Builder()
-        .apply {
-            val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
-                PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SET_REPEAT_MODE or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
-            } else {
-                PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SET_REPEAT_MODE or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
-            }
-            setActions(actions)
-        }
-        .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
-    this.setPlaybackState(playbackState.build())
-}

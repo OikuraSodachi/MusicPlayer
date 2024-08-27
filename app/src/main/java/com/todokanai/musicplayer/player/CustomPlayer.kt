@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
 import com.todokanai.musicplayer.R
+import com.todokanai.musicplayer.compose.MyIcons
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext
 import com.todokanai.musicplayer.tools.independent.getCircularPrev
@@ -22,31 +25,26 @@ class CustomPlayer(
     val nextIntent:Intent,
     val musicRepo : MusicRepository,
     val dsRepo:DataStoreRepository,
-    val setMediaPlaybackState_td:(Int)->Unit,
     val stateHolders:PlayerStateHolders
 ): MediaPlayer() {
     val mediaPlayer = MediaPlayer()
 
     override fun start() {
         CoroutineScope(Dispatchers.Default).launch {
-            setMediaPlaybackState_td(PlaybackStateCompat.STATE_PLAYING)
             mediaPlayer.start()
             _isPlayingHolder.value = mediaPlayer.isPlaying
         }       // CoroutineScope 안할 경우, next/prev 할때 mediaPlayer.currentPosition 값이 1초 늦게 리셋되는 현상 있음
         // 지금 이 코드가 정상임
     }
 
-
     override fun pause() {
         mediaPlayer.pause()
         _isPlayingHolder.value = mediaPlayer.isPlaying
-        setMediaPlaybackState_td(PlaybackStateCompat.STATE_PAUSED)
     }
 
     override fun reset() {
         mediaPlayer.reset()
         _isPlayingHolder.value = mediaPlayer.isPlaying
-        setMediaPlaybackState_td(PlaybackStateCompat.STATE_STOPPED)
     }
 
 
@@ -60,7 +58,6 @@ class CustomPlayer(
 
     override fun release() {
         mediaPlayer.release()
-        setMediaPlaybackState_td(PlaybackStateCompat.STATE_NONE)
     }
 
     /*
@@ -94,7 +91,6 @@ class CustomPlayer(
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
-            setMediaPlaybackState_td(PlaybackStateCompat.STATE_STOPPED)
             this.setMusic(initialMusic,context)
         }
     }
@@ -191,4 +187,45 @@ class CustomPlayer(
             dsRepo.saveRandomSeed(seedHolder.value)
         }
     }
+
+    /**
+     *  MediaSessionCompat의 PlaybackState Setter
+     *
+     *  playback position 관련해서는 미검증 상태
+     */
+    fun MediaSessionCompat.setMediaPlaybackState_td(isLooping :Boolean,isShuffled :Boolean){
+        val icons = MyIcons()
+        fun state() = if(mediaPlayer.isPlaying){
+            PlaybackStateCompat.STATE_PLAYING
+        }else{
+            PlaybackStateCompat.STATE_PAUSED
+        }
+        val temp = state()
+        fun repeatIcon() = icons.loopingImage(isLooping)
+        fun shuffleIcon() = icons.shuffledImage(isShuffled)
+        val playbackState = PlaybackStateCompat.Builder()
+            .apply {
+                val actions = if (temp == PlaybackStateCompat.STATE_PLAYING) {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                            PlaybackStateCompat.ACTION_PAUSE or
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                } else {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                            PlaybackStateCompat.ACTION_PLAY or
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                }
+                addCustomAction(Constants.ACTION_REPLAY,"Replay", repeatIcon())
+                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon())
+                setActions(actions)
+            }
+            .setState(temp, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
+        this.setPlaybackState(playbackState.build())
+    }
+
 }

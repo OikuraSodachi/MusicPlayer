@@ -65,4 +65,16 @@ class MediaSessionCallback(
         context.sendBroadcast(Intent(Constants.ACTION_REPLAY))
         super.onSetRepeatMode(repeatMode)
     }
+
+    override fun onCustomAction(action: String?, extras: Bundle?) {
+        when(action){
+            Constants.ACTION_REPLAY ->{
+                context.sendBroadcast(Intent(Constants.ACTION_REPLAY))
+            }
+            Constants.ACTION_SHUFFLE ->{
+                context.sendBroadcast(Intent(Constants.ACTION_SHUFFLE))
+            }
+        }
+        super.onCustomAction(action, extras)
+    }
 }

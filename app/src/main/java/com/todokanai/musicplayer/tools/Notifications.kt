@@ -11,8 +11,8 @@ import androidx.core.app.NotificationCompat
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.activity.MainActivity
 import com.todokanai.musicplayer.compose.MyIcons
+import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.player.CustomPlayer
 
 class Notifications(context: Context,private val channelID:String) {
     private val icons = MyIcons()
@@ -25,13 +25,14 @@ class Notifications(context: Context,private val channelID:String) {
     private val nextIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
     private val shuffleIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
 
-    /**API level < 33 **/
-    fun noti(context: Context, player: CustomPlayer, mediaSession:MediaSessionCompat): Notification {
-        val currentMusic = player.currentMusicHolder.value
-        val looping = player.isLoopingHolder.value
-        val shuffled = player.isShuffledHolder.value
-        val isPlaying = player.isPlayingHolder.value
-
+    fun noti(
+        context: Context,
+        mediaSession:MediaSessionCompat,
+        isPlaying:Boolean,
+        isLooping:Boolean,
+        isShuffled:Boolean,
+        currentMusic: Music?
+    ): Notification {
         mediaSession.apply{
             setMetadata(
                 MediaMetadataCompat.Builder()
@@ -40,17 +41,21 @@ class Notifications(context: Context,private val channelID:String) {
                     .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, currentMusic?.getAlbumUri().toString())
                     .build()
             )
-        }
+        }       // title,artist,albumArt
 
         return NotificationCompat.Builder(context, channelID)       // 알림바에 띄울 알림을 만듬
             .setContentTitle("null Title Noti") // 알림의 제목
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .addAction(NotificationCompat.Action(icons.loopingImage(looping), "REPEAT", repeatIntent))
+            //----------------------------------------------------------------------------------------------------------\
+            /**API level < 33 일 때만 적용되는 구간 **/
+            .addAction(NotificationCompat.Action(icons.loopingImage(isLooping), "REPEAT", repeatIntent))
             .addAction(NotificationCompat.Action(icons.prev,"PREV",prevIntent))
             .addAction(NotificationCompat.Action(icons.pausePlay(isPlaying), "pauseplay", pausePlayIntent))
             .addAction(NotificationCompat.Action(icons.next,"NEXT",nextIntent))
-            .addAction(NotificationCompat.Action(icons.shuffledImage(shuffled), "SHUFFLE", shuffleIntent))
+            .addAction(NotificationCompat.Action(icons.shuffledImage(isShuffled), "SHUFFLE", shuffleIntent))
+            //
+            //----------------------------------------------------------------------------------------------------------
             .setContentIntent(mainIntent)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()

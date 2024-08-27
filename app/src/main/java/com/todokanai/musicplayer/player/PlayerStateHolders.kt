@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlin.random.Random
 
-
-/** Dummy Data **/
-///** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
+/** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
 class PlayerStateHolders (
     dsRepo:DataStoreRepository,
     musicRepo:MusicRepository,
@@ -22,7 +20,6 @@ class PlayerStateHolders (
     initialLoop:Boolean,
     initialShuffle:Boolean
 ) {
-
     val currentMusicHolder = musicRepo.currentMusic.stateIn(
         scope = CoroutineScope(Dispatchers.Default),
         started = SharingStarted.WhileSubscribed(5),
@@ -46,7 +43,6 @@ class PlayerStateHolders (
         started = SharingStarted.WhileSubscribed(5),
         initialValue = initialSeed
     )
-    val musicsHolder = musicRepo.getAll
 
     val playListHolder =
         combine(
