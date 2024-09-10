@@ -122,6 +122,28 @@ class MusicService : MediaBrowserServiceCompat(){
 
         customPlayer.apply{
             initAttributes(mCurrentMusic,this@MusicService)
+
+            /*
+            CoroutineScope(Dispatchers.Default).launch {
+                currentMusicHolder.collect(){
+                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+                }
+                isShuffledHolder.collect(){
+                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+
+                }
+                isLoopingHolder.collect(){
+                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+
+                }
+                isPlayingHolder.collect(){
+                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+
+                }
+            }
+
+             */
+
             currentMusicHolder.asLiveData().observeForever(){
                 updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
             }
