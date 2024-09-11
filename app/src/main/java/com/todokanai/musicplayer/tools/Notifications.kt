@@ -13,6 +13,7 @@ import com.todokanai.musicplayer.components.activity.MainActivity
 import com.todokanai.musicplayer.compose.MyIcons
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 
 class Notifications(context: Context,private val channelID:String) {
     private val icons = MyIcons()
@@ -36,12 +37,16 @@ class Notifications(context: Context,private val channelID:String) {
         mediaSession.apply{
             setMetadata(
                 MediaMetadataCompat.Builder()
-                    .putString(MediaMetadata.METADATA_KEY_TITLE, currentMusic?.title ?: "null title")
-                    .putString(MediaMetadata.METADATA_KEY_ARTIST, currentMusic?.artist ?: "null artist")
+                    .putString(MediaMetadata.METADATA_KEY_TITLE, currentMusic?.title ?: context.getString(R.string.null_title))
+                    .putString(MediaMetadata.METADATA_KEY_ARTIST, currentMusic?.artist ?: context.getString(R.string.null_artist))
                     .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, currentMusic?.getAlbumUri().toString())
                     .build()
             )
         }       // title,artist,albumArt
+
+        if(isTestBuild) {
+            println("current: ${currentMusic?.title ?: context.getString(R.string.null_title)}")
+        }
 
         return NotificationCompat.Builder(context, channelID)       // 알림바에 띄울 알림을 만듬
             .setContentTitle("null Title Noti") // 알림의 제목

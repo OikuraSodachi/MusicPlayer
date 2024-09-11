@@ -230,5 +230,4 @@ class CustomPlayer(
             .setState(temp, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         this.setPlaybackState(playbackState.build())
     }
-
 }

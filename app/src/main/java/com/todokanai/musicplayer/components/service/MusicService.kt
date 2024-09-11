@@ -122,41 +122,22 @@ class MusicService : MediaBrowserServiceCompat(){
 
         customPlayer.apply{
             initAttributes(mCurrentMusic,this@MusicService)
-
-            /*
-            CoroutineScope(Dispatchers.Default).launch {
-                currentMusicHolder.collect(){
-                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
-                }
-                isShuffledHolder.collect(){
-                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
-
-                }
-                isLoopingHolder.collect(){
-                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
-
-                }
-                isPlayingHolder.collect(){
-                    updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
-
-                }
-            }
-
-             */
-
             currentMusicHolder.asLiveData().observeForever(){
                 updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
             }
-            isShuffledHolder.asLiveData().observeForever(){
+            isPlayingHolder.asLiveData().observeForever(){
                 updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+
             }
             isLoopingHolder.asLiveData().observeForever(){
                 updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
 
             }
-            isPlayingHolder.asLiveData().observeForever(){
+            isShuffledHolder.asLiveData().observeForever(){
                 updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+
             }
+
             if(isTestBuild) {
                 stateHolders.playListHolder.asLiveData().observeForever() {
                     println("list: ${it.map { it.title }}")
