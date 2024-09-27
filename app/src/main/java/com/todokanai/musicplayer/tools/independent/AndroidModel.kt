@@ -4,6 +4,7 @@ package com.todokanai.musicplayer.tools.independent
  * 독립적으로 사용 가능하고, Android 의존성 있는 함수 모음
  */
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,6 +13,7 @@ import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
+import android.os.storage.StorageManager
 import android.provider.Settings
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -130,4 +132,23 @@ fun requestStorageManageAccess_td(activity: Activity){
         intent.data = uri
         activity.startActivity(intent)
     }
+}
+
+
+/** Todokanai
+ *
+ * 기기의 storage 목록 반환 **/
+fun getPhysicalStorages_td(context: Context):Array<File>{
+    val defaultStorage = Environment.getExternalStorageDirectory()
+    val volumes = context.getSystemService(StorageManager::class.java)?.storageVolumes
+    val storageList = mutableListOf<File>(defaultStorage)
+    volumes?.forEach { volume ->
+        if (!volume.isPrimary && volume.isRemovable) {
+            val sdCard = volume.directory
+            if (sdCard != null) {
+                storageList.add(sdCard)
+            }
+        }
+    }
+    return storageList.toTypedArray()
 }

@@ -24,9 +24,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.musicplayer.compose.MyIcons
 import com.todokanai.musicplayer.myobjects.MyObjects.asyncImageExtension
-import com.todokanai.musicplayer.tools.independent.readableFileSize_td
 import java.io.File
 import java.text.DateFormat
 
@@ -45,7 +45,7 @@ fun FileHolder(
             "${subFiles.size} 개"
         }
     } else {
-        readableFileSize_td(file.length())
+        file.length().readableFileSize_td()
     }
 
     ConstraintLayout(

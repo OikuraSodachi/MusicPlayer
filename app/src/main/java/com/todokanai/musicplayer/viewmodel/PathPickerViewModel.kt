@@ -32,7 +32,7 @@ class PathPickerViewModel @Inject constructor(
 
     fun storageList(context: Context) = getPhysicalStorages_td(context).sortedBy{it.name}
 
-    val fileItemList = fModule.files.map { files ->
+    val fileItemList = fModule.listFiles.map { files ->
         sorter.sortFileList(BY_DEFAULT,files)
     }.stateIn(
         scope = viewModelScope,
