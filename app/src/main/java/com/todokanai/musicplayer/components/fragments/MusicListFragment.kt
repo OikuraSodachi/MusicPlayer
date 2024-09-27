@@ -19,14 +19,28 @@ class MusicListFragment : Fragment() {
 
     private val binding by lazy{FragmentMusicListBinding.inflate(layoutInflater)}
     private val viewModel:MusicListViewModel by viewModels()
+    private val lManager by lazy{LinearLayoutManager(context)}
+
+    /** adapter를 lazy 또는 lateinit var 로 선언하면 Swipe를 포함한 RecyclerView가 적용되지 않는 현상 있음
+     *  아마 view의 LifeCycle 관련 문제이지 않을까 추측
+     *  로그에 찍힌 내용: "No adapter attached; skipping layout"
+     * **/
+    private val adapterTest by lazy{MusicRecyclerAdapter(
+        onItemClick = {viewModel.onMusicClick(requireActivity(),it)},
+        itemFlow = viewModel.itemList,
+        lifecycleOwner = viewLifecycleOwner
+    )}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
-        val adapter = MusicRecyclerAdapter { viewModel.onMusicClick(requireActivity(), it) }
-        val lManager = LinearLayoutManager(context)
+        val adapter = MusicRecyclerAdapter(
+            onItemClick = {viewModel.onMusicClick(requireActivity(),it)},
+            itemFlow = viewModel.itemList,
+            lifecycleOwner = viewLifecycleOwner
+        )
 
         binding.run{
             musicRecyclerView.apply {
