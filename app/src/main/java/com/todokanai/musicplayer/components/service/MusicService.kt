@@ -21,6 +21,7 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -72,7 +73,7 @@ class MusicService : MediaBrowserServiceCompat(){
         super.onCreate()
         Variables.isServiceOn = true
         fun setLateinits(){
-            mediaSession = MediaSessionCompat(this, "MediaSession")
+            mediaSession = MediaSessionCompat(this, getString(R.string.mediaSession_tag))
             customPlayer = CustomPlayer(
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
@@ -84,7 +85,8 @@ class MusicService : MediaBrowserServiceCompat(){
                     mSeed,
                     mPlayList,
                     mLoop,
-                    mShuffled
+                    mShuffled,
+                    dummyMusic
                 )
             )
 
@@ -152,7 +154,7 @@ class MusicService : MediaBrowserServiceCompat(){
         rootHints: Bundle?
     ): BrowserRoot? {
         if (clientPackageName == packageName) {
-            return BrowserRoot("MediaSessionExperiment", null)
+            return BrowserRoot(getString(R.string.browserRoot_Id), null)
         }
         return null
     }

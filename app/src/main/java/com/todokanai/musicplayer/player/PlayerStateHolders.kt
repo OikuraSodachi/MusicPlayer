@@ -2,7 +2,6 @@ package com.todokanai.musicplayer.player
 
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +17,8 @@ class PlayerStateHolders (
     initialSeed:Double,
     initialPlayList:List<Music>,
     initialLoop:Boolean,
-    initialShuffle:Boolean
+    initialShuffle:Boolean,
+    dummyMusic: Music
 ) {
     val currentMusicHolder = musicRepo.currentMusic.stateIn(
         scope = CoroutineScope(Dispatchers.Default),
