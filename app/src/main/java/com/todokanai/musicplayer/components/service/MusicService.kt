@@ -13,7 +13,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
 import com.todokanai.musicplayer.compose.MyIcons
@@ -55,7 +54,7 @@ class MusicService : MediaBrowserServiceCompat(){
     private val serviceChannel by lazy {
         NotificationChannel(
             Constants.CHANNEL_ID,
-            getString(R.string.notification_channel_name),
+            Constants.NOTIFICATION_CHANNEL_NAME,
             NotificationManager.IMPORTANCE_NONE             //  알림의 중요도
         )
     }
@@ -73,7 +72,7 @@ class MusicService : MediaBrowserServiceCompat(){
         super.onCreate()
         Variables.isServiceOn = true
         fun setLateinits(){
-            mediaSession = MediaSessionCompat(this, getString(R.string.mediaSession_tag))
+            mediaSession = MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)
             customPlayer = CustomPlayer(
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
@@ -154,7 +153,7 @@ class MusicService : MediaBrowserServiceCompat(){
         rootHints: Bundle?
     ): BrowserRoot? {
         if (clientPackageName == packageName) {
-            return BrowserRoot(getString(R.string.browserRoot_Id), null)
+            return BrowserRoot(Constants.BROWSER_ROOT_ID, null)
         }
         return null
     }

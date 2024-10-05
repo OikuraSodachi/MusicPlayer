@@ -16,11 +16,7 @@
     <string name="scanPath_empty">Scans all directories if empty</string>
     <string name="not_accessible">Directory not accessible</string>
     <string name="all_item_failure">playing failed on all items</string>
-    <string name="notification_channel_name">Todokanai_MusicPlayer</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="null_title">Null Title</string>
     <string name="null_artist">Null Artist</string>
-
-    <string name="mediaSession_tag">MediaSession</string>
-    <string name="browserRoot_Id">MediaSessionExperiment</string>
 </resources>
