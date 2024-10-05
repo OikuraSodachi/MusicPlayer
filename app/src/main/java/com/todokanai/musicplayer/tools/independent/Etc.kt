@@ -1,6 +1,6 @@
 package com.todokanai.musicplayer.tools.independent
 
-fun getCircularNext(list:List<Any>, currentIndex:Int):Any{
+fun <Type:Any> getCircularNext_td(list:List<Type>, currentIndex:Int):Type{
     return if(currentIndex == list.size-1){
         list.first()
     } else{
@@ -8,7 +8,7 @@ fun getCircularNext(list:List<Any>, currentIndex:Int):Any{
     }
 }
 
-fun getCircularPrev(list:List<Any>,currentIndex: Int):Any{
+fun <Type:Any> getCircularPrev_td(list:List<Type>,currentIndex:Int):Type{
     return if(currentIndex == 0){
         list.last()
     } else{

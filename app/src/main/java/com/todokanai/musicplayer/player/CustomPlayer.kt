@@ -13,8 +13,8 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.repository.MusicRepository
-import com.todokanai.musicplayer.tools.independent.getCircularNext
-import com.todokanai.musicplayer.tools.independent.getCircularPrev
+import com.todokanai.musicplayer.tools.independent.getCircularNext_td
+import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -144,7 +144,7 @@ class CustomPlayer(
             i++
             if(i!=playList.size) {
                 setMusicPrimitive(
-                    music = getCircularNext(playList, playList.indexOf(music)) as Music,
+                    music = getCircularNext_td(playList, playList.indexOf(music)),
                     context = context
                 )
             } else{
@@ -162,7 +162,7 @@ class CustomPlayer(
         currentMusic?.let {
             this.launchMusic(
                 context,
-                getCircularPrev(playList, playList.indexOf(currentMusic)) as Music
+                getCircularPrev_td(playList,playList.indexOf(currentMusic))
             )
         }
     }
@@ -171,7 +171,7 @@ class CustomPlayer(
         currentMusic?.let {
             this.launchMusic(
                 context,
-                getCircularNext(playList, playList.indexOf(currentMusic)) as Music
+                getCircularNext_td(playList, playList.indexOf(currentMusic))
             )
         }
     }
