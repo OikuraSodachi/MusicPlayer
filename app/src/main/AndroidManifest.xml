@@ -27,7 +27,6 @@
             android:name=".components.receiver.MusicReceiver"
             android:enabled="true"
             android:exported="true" />
-
         <service
             android:name=".components.service.MusicService"
             android:enabled="true"
