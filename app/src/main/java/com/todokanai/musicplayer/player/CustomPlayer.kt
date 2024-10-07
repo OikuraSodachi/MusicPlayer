@@ -8,7 +8,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.compose.MyIcons
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
@@ -73,18 +73,25 @@ class CustomPlayer(
     // override
     //-------------------------
 
-    val seedHolder = stateHolders.seedHolder
+    val seedHolder = stateHolders.seedHolder_new
 
-    val currentMusicHolder = stateHolders.currentMusicHolder
+    val currentMusicHolder = stateHolders.currentMusicHolder_new
 
-    val isLoopingHolder = stateHolders.isLoopingHolder
+    val isLoopingHolder = stateHolders.isLoopingHolder_new
 
     private val _isPlayingHolder = MutableStateFlow(false)
     val isPlayingHolder : StateFlow<Boolean> = _isPlayingHolder
 
-    val isShuffledHolder = stateHolders.isShuffledHolder
+    val isShuffledHolder = stateHolders.isShuffledHolder_new
 
     val playListHolder = stateHolders.playListHolder
+
+    /*
+    fun isPlaying_td() = isPlaying
+    fun isLooping_td() = isLoopingHolder.value
+    fun isShuffled_td() = isShuffledHolder.value
+    
+     */
 
     fun initAttributes(initialMusic:Music?,context: Context) {
         this.apply {
@@ -124,6 +131,7 @@ class CustomPlayer(
                     isLooping = shouldLoop
                     prepare()
                 }
+                stateHolders.currentMusicHolder_new.value = music
                 CoroutineScope(Dispatchers.IO).launch {
                     musicRepo.upsertCurrentMusic(it)
                 }
@@ -180,11 +188,14 @@ class CustomPlayer(
         val shouldLoop = !mediaPlayer.isLooping
         mediaPlayer.isLooping = shouldLoop
         CoroutineScope(Dispatchers.IO).launch{
+            stateHolders.isLoopingHolder_new.value = shouldLoop
             dsRepo.saveIsLooping(shouldLoop)
         }
     }
 
     fun shuffle(wasShuffled:Boolean = isShuffledHolder.value){
+        stateHolders.isShuffledHolder_new.value = !wasShuffled
+
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveIsShuffled(!wasShuffled)
             dsRepo.saveRandomSeed(seedHolder.value)
@@ -197,7 +208,7 @@ class CustomPlayer(
      *  playback position 관련해서는 미검증 상태
      */
     fun MediaSessionCompat.setMediaPlaybackState_td(isLooping :Boolean,isShuffled :Boolean){
-        val icons = MyIcons()
+        val icons = IconsRepository()
         fun state() = if(mediaPlayer.isPlaying){
             PlaybackStateCompat.STATE_PLAYING
         }else{

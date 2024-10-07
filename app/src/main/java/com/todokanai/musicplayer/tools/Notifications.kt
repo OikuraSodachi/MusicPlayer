@@ -1,23 +1,25 @@
 package com.todokanai.musicplayer.tools
 
 import android.app.Notification
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.media.MediaMetadata
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.components.activity.MainActivity
-import com.todokanai.musicplayer.compose.MyIcons
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 
 class Notifications(context: Context,private val channelID:String) {
-    private val icons = MyIcons()
-
+    private val icons = IconsRepository()
+    /*
     private val mainOpenIntent = Intent(context, MainActivity::class.java)
     private val mainIntent = PendingIntent.getActivity(context,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
     private val repeatIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)
@@ -25,6 +27,8 @@ class Notifications(context: Context,private val channelID:String) {
     private val pausePlayIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_PAUSE_PLAY), PendingIntent.FLAG_IMMUTABLE)
     private val nextIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
     private val shuffleIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
+
+     */
 
     fun noti(
         context: Context,

@@ -25,7 +25,7 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
-import com.todokanai.musicplayer.compose.MyIcons
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.myobjects.MyObjects.asyncImageExtension
 import java.io.File
 import java.text.DateFormat
@@ -72,12 +72,12 @@ fun FileHolder(
                     .build(),
                 contentDescription = null,
                 modifier = imageModifier,
-                placeholder = painterResource(id = MyIcons().thumbnail(file))
+                placeholder = painterResource(id = IconsRepository().thumbnail(file))
             )
         } else{
             Image(
                 modifier = imageModifier,
-                painter = painterResource(id = MyIcons().thumbnail(file)),
+                painter = painterResource(id = IconsRepository().thumbnail(file)),
                 contentDescription = null
             )
         }

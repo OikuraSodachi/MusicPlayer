@@ -1,9 +1,12 @@
 package com.todokanai.musicplayer.compose
 
 import com.todokanai.musicplayer.R
+import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
 import java.io.File
 
-class MyIcons() {
+class IconsRepository() {
+
+    val player by lazy{customPlayer}
 
     private val thumbnailFolder = R.drawable.ic_baseline_folder_24
     private val thumbnailPdf = R.drawable.ic_pdf
@@ -29,24 +32,26 @@ class MyIcons() {
     val repeat = R.drawable.baseline_repeat_one_24
     val repeatAll = R.drawable.baseline_repeat_24
 
-    fun pausePlay(isPlaying:Boolean) =
+    fun pausePlay(isPlaying:Boolean = player.isPlaying) =
         if(isPlaying){
             pause
         } else{
             play
         }
 
-    fun shuffledImage(isShuffled:Boolean) =
+    fun shuffledImage(isShuffled:Boolean = player.isShuffledHolder.value) =
         if(isShuffled){
             shuffle
         } else{
             nonShuffle
         }
 
-    fun loopingImage(isLooping:Boolean) =
+    fun loopingImage(isLooping:Boolean = player.isLoopingHolder.value) =
         if(isLooping){
             repeat
         } else {
             repeatAll
         }
+
+    fun currentMusic() = player.currentMusicHolder.value
 }

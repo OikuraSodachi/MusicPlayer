@@ -1,5 +1,6 @@
 package com.todokanai.musicplayer.components.receiver
 
+import android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -17,7 +18,6 @@ class MusicReceiver  : BroadcastReceiver() {
     private val player by lazy{customPlayer}
 
     override fun onReceive(context: Context, intent: Intent) {
-
         when (intent.action) {
             ACTION_REPLAY -> {
                 player.repeat()
@@ -39,5 +39,6 @@ class MusicReceiver  : BroadcastReceiver() {
                 player.shuffle()
             }
         }
+        context.sendBroadcast(Intent(ACTION_APPWIDGET_UPDATE))
     }
 }

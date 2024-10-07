@@ -15,7 +15,7 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
-import com.todokanai.musicplayer.compose.MyIcons
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
@@ -79,7 +79,6 @@ class MusicService : MediaBrowserServiceCompat(){
                 dsRepo = dsRepo,
               //  mediaSession = mediaSession,
                 stateHolders = PlayerStateHolders(
-                    dsRepo,
                     musicRepo,
                     mSeed,
                     mPlayList,
@@ -197,7 +196,7 @@ class MusicService : MediaBrowserServiceCompat(){
      *  playback position 관련해서는 미검증 상태
      */
     fun MediaSessionCompat.setMediaPlaybackState_td(isLooping:Boolean,isPlaying:Boolean,isShuffled:Boolean){
-        val icons = MyIcons()
+        val icons = IconsRepository()
         fun state() = if(isPlaying){
             PlaybackStateCompat.STATE_PLAYING
         }else{

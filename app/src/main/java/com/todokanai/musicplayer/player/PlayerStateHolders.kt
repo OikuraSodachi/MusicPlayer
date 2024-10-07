@@ -1,10 +1,10 @@
 package com.todokanai.musicplayer.player
 
-import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -12,7 +12,6 @@ import kotlin.random.Random
 
 /** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
 class PlayerStateHolders (
-    dsRepo:DataStoreRepository,
     musicRepo:MusicRepository,
     initialSeed:Double,
     initialPlayList:List<Music>,
@@ -20,35 +19,17 @@ class PlayerStateHolders (
     initialShuffle:Boolean,
     dummyMusic: Music
 ) {
-    val currentMusicHolder = musicRepo.currentMusic.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = dummyMusic
-    )
 
-    val isLoopingHolder = dsRepo.isLooping.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialLoop
-    )
-
-    val isShuffledHolder = dsRepo.isShuffled.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialShuffle
-    )
-
-    val seedHolder = dsRepo.seed.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialSeed
-    )
+    val currentMusicHolder_new = MutableStateFlow<Music>(dummyMusic)
+    val isLoopingHolder_new = MutableStateFlow<Boolean>(initialLoop)
+    val isShuffledHolder_new = MutableStateFlow<Boolean>(initialShuffle)
+    val seedHolder_new = MutableStateFlow<Double>(initialSeed)
 
     val playListHolder =
         combine(
             musicRepo.getAll,
-            dsRepo.isShuffled,
-            dsRepo.seed
+            isShuffledHolder_new,
+            seedHolder_new
         ){ musics ,shuffled,seed ->
             modifiedPlayList(musics.sortedBy{it.title},shuffled,seed)
         }.stateIn(
@@ -64,5 +45,8 @@ class PlayerStateHolders (
             return musicList.sortedBy { it.title }
         }
     }
+
+    //--------------
+
 
 }
