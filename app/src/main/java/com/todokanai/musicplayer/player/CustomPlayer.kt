@@ -4,14 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
@@ -43,7 +39,6 @@ class CustomPlayer(
         mediaPlayer.reset()
         _isPlayingHolder.value = mediaPlayer.isPlaying
     }
-
 
     override fun isPlaying(): Boolean {
         return mediaPlayer.isPlaying
@@ -85,13 +80,6 @@ class CustomPlayer(
     val isShuffledHolder = stateHolders.isShuffledHolder_new
 
     val playListHolder = stateHolders.playListHolder
-
-    /*
-    fun isPlaying_td() = isPlaying
-    fun isLooping_td() = isLoopingHolder.value
-    fun isShuffled_td() = isShuffledHolder.value
-    
-     */
 
     fun initAttributes(initialMusic:Music?,context: Context) {
         this.apply {
@@ -200,45 +188,5 @@ class CustomPlayer(
             dsRepo.saveIsShuffled(!wasShuffled)
             dsRepo.saveRandomSeed(seedHolder.value)
         }
-    }
-
-    /**
-     *  MediaSessionCompat의 PlaybackState Setter
-     *
-     *  playback position 관련해서는 미검증 상태
-     */
-    fun MediaSessionCompat.setMediaPlaybackState_td(isLooping :Boolean,isShuffled :Boolean){
-        val icons = IconsRepository()
-        fun state() = if(mediaPlayer.isPlaying){
-            PlaybackStateCompat.STATE_PLAYING
-        }else{
-            PlaybackStateCompat.STATE_PAUSED
-        }
-        val temp = state()
-        fun repeatIcon() = icons.loopingImage(isLooping)
-        fun shuffleIcon() = icons.shuffledImage(isShuffled)
-        val playbackState = PlaybackStateCompat.Builder()
-            .apply {
-                val actions = if (temp == PlaybackStateCompat.STATE_PLAYING) {
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                            PlaybackStateCompat.ACTION_PAUSE or
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
-                } else {
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                            PlaybackStateCompat.ACTION_PLAY or
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
-                }
-                addCustomAction(Constants.ACTION_REPLAY,"Replay", repeatIcon())
-                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon())
-                setActions(actions)
-            }
-            .setState(temp, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
-        this.setPlaybackState(playbackState.build())
     }
 }

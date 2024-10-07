@@ -45,8 +45,4 @@ class PlayerStateHolders (
             return musicList.sortedBy { it.title }
         }
     }
-
-    //--------------
-
-
 }

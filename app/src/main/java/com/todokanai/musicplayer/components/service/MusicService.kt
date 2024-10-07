@@ -44,7 +44,6 @@ class MusicService : MediaBrowserServiceCompat(){
         var mCurrentMusic : Music? = null
         var mShuffled by Delegates.notNull<Boolean>()
         var mLoop by Delegates.notNull<Boolean>()
-
     }
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
@@ -77,7 +76,6 @@ class MusicService : MediaBrowserServiceCompat(){
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
                 dsRepo = dsRepo,
-              //  mediaSession = mediaSession,
                 stateHolders = PlayerStateHolders(
                     musicRepo,
                     mSeed,
