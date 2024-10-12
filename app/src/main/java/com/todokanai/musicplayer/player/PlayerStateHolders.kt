@@ -19,7 +19,7 @@ class PlayerStateHolders (
     initialShuffle:Boolean,
     dummyMusic: Music
 ) {
-
+    val isPlayingHolder_new = MutableStateFlow<Boolean>(false)
     val currentMusicHolder_new = MutableStateFlow<Music>(dummyMusic)
     val isLoopingHolder_new = MutableStateFlow<Boolean>(initialLoop)
     val isShuffledHolder_new = MutableStateFlow<Boolean>(initialShuffle)

@@ -35,4 +35,5 @@ class MusicRepository @Inject constructor(private val musicDao:MusicDao,private 
             musicDao.insert(music)
         }
     }
+
 }

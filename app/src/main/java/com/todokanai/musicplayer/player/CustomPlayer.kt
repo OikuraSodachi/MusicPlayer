@@ -8,12 +8,12 @@ import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.interfaces.MediaInterface
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -21,23 +21,23 @@ class CustomPlayer(
     val nextIntent:Intent,
     val musicRepo : MusicRepository,
     val dsRepo:DataStoreRepository,
-    val stateHolders:PlayerStateHolders
-): MediaPlayer() {
+    val stateHolders:PlayerStateHolders,
+): MediaPlayer(),MediaInterface {
     val mediaPlayer = MediaPlayer()
 
     override fun start() {
         mediaPlayer.start()
-        _isPlayingHolder.value = mediaPlayer.isPlaying
+        stateHolders.isPlayingHolder_new.value = mediaPlayer.isPlaying
     }
 
     override fun pause() {
         mediaPlayer.pause()
-        _isPlayingHolder.value = mediaPlayer.isPlaying
+        stateHolders.isPlayingHolder_new.value = mediaPlayer.isPlaying
     }
 
     override fun reset() {
         mediaPlayer.reset()
-        _isPlayingHolder.value = mediaPlayer.isPlaying
+        stateHolders.isPlayingHolder_new.value = mediaPlayer.isPlaying
     }
 
     override fun isPlaying(): Boolean {
@@ -54,7 +54,7 @@ class CustomPlayer(
 
     override fun stop() {
         mediaPlayer.stop()
-        _isPlayingHolder.value = mediaPlayer.isPlaying
+        stateHolders.isPlayingHolder_new.value = mediaPlayer.isPlaying
         super.stop()
     }
 
@@ -68,18 +68,17 @@ class CustomPlayer(
     // override
     //-------------------------
 
-    val seedHolder = stateHolders.seedHolder_new
+    override val seedHolder : StateFlow<Double> = stateHolders.seedHolder_new
 
-    val currentMusicHolder = stateHolders.currentMusicHolder_new
+    override val currentMusicHolder : StateFlow<Music> = stateHolders.currentMusicHolder_new
 
-    val isLoopingHolder = stateHolders.isLoopingHolder_new
+    override val isLoopingHolder : StateFlow<Boolean> = stateHolders.isLoopingHolder_new
 
-    private val _isPlayingHolder = MutableStateFlow(false)
-    val isPlayingHolder : StateFlow<Boolean> = _isPlayingHolder
+    override val isPlayingHolder : StateFlow<Boolean> = stateHolders.isPlayingHolder_new
 
-    val isShuffledHolder = stateHolders.isShuffledHolder_new
+    override val isShuffledHolder = stateHolders.isShuffledHolder_new
 
-    val playListHolder = stateHolders.playListHolder
+    override val playListHolder = stateHolders.playListHolder
 
     fun initAttributes(initialMusic:Music?,context: Context) {
         this.apply {
@@ -93,7 +92,7 @@ class CustomPlayer(
         }
     }
 
-    fun pausePlay() =
+    override fun pausePlayAction() =
             if (mediaPlayer.isPlaying) {
                 this@CustomPlayer.pause()
             } else {
@@ -149,30 +148,30 @@ class CustomPlayer(
         }
     }
 
-    fun launchMusic(context: Context,music: Music){
+    override fun launchMusic(context: Context, music: Music){
         this.setMusic(music,context)
         this.start()
     }
 
-    fun prev(context: Context,currentMusic: Music? = currentMusicHolder.value,playList: List<Music> = playListHolder.value){
-        currentMusic?.let {
-            this.launchMusic(
-                context,
-                getCircularPrev_td(playList,playList.indexOf(currentMusic))
-            )
-        }
+    override fun prevAction(context: Context){
+        val currentMusic = currentMusicHolder.value
+        val playList = playListHolder.value
+        this.launchMusic(
+            context,
+            getCircularPrev_td(playList,playList.indexOf(currentMusic))
+        )
     }
 
-    fun next(context: Context,currentMusic: Music? = currentMusicHolder.value,playList: List<Music> = playListHolder.value){
-        currentMusic?.let {
-            this.launchMusic(
-                context,
-                getCircularNext_td(playList, playList.indexOf(currentMusic))
-            )
-        }
+    override fun nextAction(context: Context){
+        val currentMusic = currentMusicHolder.value
+        val playList = playListHolder.value
+        this.launchMusic(
+            context,
+            getCircularNext_td(playList, playList.indexOf(currentMusic))
+        )
     }
 
-    fun repeat(){
+    override fun repeatAction(){
         val shouldLoop = !mediaPlayer.isLooping
         mediaPlayer.isLooping = shouldLoop
         CoroutineScope(Dispatchers.IO).launch{
@@ -181,7 +180,8 @@ class CustomPlayer(
         }
     }
 
-    fun shuffle(wasShuffled:Boolean = isShuffledHolder.value){
+    override fun shuffleAction(){
+        val wasShuffled:Boolean = isShuffledHolder.value
         stateHolders.isShuffledHolder_new.value = !wasShuffled
 
         CoroutineScope(Dispatchers.IO).launch {

@@ -20,23 +20,23 @@ class MusicReceiver  : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             ACTION_REPLAY -> {
-                player.repeat()
+                player.repeatAction()
             }
 
             ACTION_SKIP_TO_PREVIOUS -> {
-                player.prev(context)
+                player.prevAction(context)
             }
 
             ACTION_PAUSE_PLAY -> {
-                player.pausePlay()
+                player.pausePlayAction()
             }
 
             ACTION_SKIP_TO_NEXT -> {
-                player.next(context)
+                player.nextAction(context)
             }
 
             ACTION_SHUFFLE -> {
-                player.shuffle()
+                player.shuffleAction()
             }
         }
         context.sendBroadcast(Intent(ACTION_APPWIDGET_UPDATE))
