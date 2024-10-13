@@ -1,6 +1,7 @@
 package com.todokanai.musicplayer.player
 
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.interfaces.AutoRoomManager
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,18 @@ class PlayerStateHolders (
 ) {
     val isPlayingHolder_new = MutableStateFlow<Boolean>(false)
     val currentMusicHolder_new = MutableStateFlow<Music>(dummyMusic)
+
+    val currentMusicHolderTest = CurrentMusicHolderTest(MutableStateFlow<Music>(dummyMusic),musicRepo)
+
+    class CurrentMusicHolderTest(override val holder: MutableStateFlow<Music>,val musicRepo: MusicRepository) :AutoRoomManager<Music>{
+
+        override suspend fun roomBackup(value: Music) {
+            musicRepo.upsertCurrentMusic(value)
+        }
+
+    }
+
+
     val isLoopingHolder_new = MutableStateFlow<Boolean>(initialLoop)
     val isShuffledHolder_new = MutableStateFlow<Boolean>(initialShuffle)
     val seedHolder_new = MutableStateFlow<Double>(initialSeed)

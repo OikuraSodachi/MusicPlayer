@@ -119,6 +119,7 @@ class CustomPlayer(
                     prepare()
                 }
                 stateHolders.currentMusicHolder_new.value = music
+              //  stateHolders.currentMusicHolderTest.setValue(music)
                 CoroutineScope(Dispatchers.IO).launch {
                     musicRepo.upsertCurrentMusic(it)
                 }
