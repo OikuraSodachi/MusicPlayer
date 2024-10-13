@@ -75,9 +75,9 @@ class MusicService : MediaBrowserServiceCompat(){
             customPlayer = CustomPlayer(
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
                 musicRepo = musicRepo,
-                dsRepo = dsRepo,
                 stateHolders = PlayerStateHolders(
                     musicRepo,
+                    dsRepo,
                     mSeed,
                     mPlayList,
                     mLoop,
