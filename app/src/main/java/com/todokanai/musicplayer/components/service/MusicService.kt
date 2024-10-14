@@ -18,6 +18,7 @@ import com.todokanai.musicplayer.components.receiver.NoisyReceiver
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
@@ -36,7 +37,8 @@ import kotlin.properties.Delegates
 @AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat(){
     companion object{
-        lateinit var serviceIntent : Intent
+        val serviceIntent = Intent(appContext,MusicService::class.java)
+
         lateinit var customPlayer: CustomPlayer
         lateinit var mediaSession: MediaSessionCompat
         var mSeed by Delegates.notNull<Double>()
@@ -74,7 +76,6 @@ class MusicService : MediaBrowserServiceCompat(){
             mediaSession = MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)
             customPlayer = CustomPlayer(
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
-                musicRepo = musicRepo,
                 stateHolders = PlayerStateHolders(
                     musicRepo,
                     dsRepo,

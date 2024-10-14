@@ -20,7 +20,7 @@
         android:theme="@style/Theme.MusicPlayer"
         tools:targetApi="32">
         <receiver
-            android:name=".MusicPlayerWidget"
+            android:name=".widgets.MusicPlayerWidget"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

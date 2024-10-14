@@ -8,13 +8,11 @@ import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.MediaInterface
-import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 
 class CustomPlayer(
     val nextIntent:Intent,
-    val musicRepo : MusicRepository,
     val stateHolders:PlayerStateHolders,
 ): MediaPlayer(),MediaInterface {
     val mediaPlayer = MediaPlayer()

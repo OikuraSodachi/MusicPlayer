@@ -1,6 +1,5 @@
 package com.todokanai.musicplayer.components.activity
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -13,7 +12,6 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.fragments.MusicListFragment
 import com.todokanai.musicplayer.components.fragments.PlayingFragment
 import com.todokanai.musicplayer.components.fragments.SettingsFragment
-import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.components.service.MusicService.Companion.serviceIntent
 import com.todokanai.musicplayer.components.view.adapter.FragmentAdapter
 import com.todokanai.musicplayer.databinding.ActivityMainBinding
@@ -32,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        serviceIntent = Intent(applicationContext,MusicService::class.java)
 
         requestStorageManageAccess_td(this)
         activityResult =
