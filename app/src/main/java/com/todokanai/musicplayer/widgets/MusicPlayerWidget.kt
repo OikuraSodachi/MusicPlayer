@@ -35,12 +35,23 @@ class MusicPlayerWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray,
     ) {
-        val views = widgetViews
-        println("widget : onUpdate")
+       // println("widget : onUpdate")
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
-            updateMyAppWidget(appWidgetManager, it,views)
-        }
+            println("widget : updateAppWidget")
+            val currentMusic = customPlayer.currentMusicHolder.value
+            println("widget : currentMusic = ${currentMusic.title}")
+            // Construct the RemoteViews object
+            val albumUri = currentMusic.getAlbumUri()
+            widgetViews.run {
+                setTextViewText(R.id.widget_titleText,currentMusic.title)
+                setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage())
+                setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay())
+                setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage())
+                setImageViewUri(R.id.widget_imageView, albumUri)   // Todo: updateMyAppWidget의 매 실행마다 이미지가 직전 이미지로 바뀌고 있음. setImageViewUri 내부 구조 확인해야 할듯?
+            }
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(it, widgetViews)        }
     }
 
     override fun onEnabled(context: Context) {
@@ -68,33 +79,10 @@ class MusicPlayerWidget : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        println("widget : onReceive")
+       // println("widget : onReceive")
         if (context != null) {
             onUpdate(context, appWidgetManager, appWidgetManager.getAppWidgetIds(ComponentName(appContext,MusicPlayerWidget::class.java)))
         }
         super.onReceive(context, intent)
-    }
-
-
-
-    private fun updateMyAppWidget(
-        appWidgetManager: AppWidgetManager,
-        appWidgetId: Int,
-        views: RemoteViews,
-    ) {
-        println("widget : updateAppWidget")
-        val currentMusic = customPlayer.currentMusicHolder.value
-       // val icons = IconsRepository()
-        // Construct the RemoteViews object
-        val albumUri = currentMusic.getAlbumUri()
-        views.run {
-            setTextViewText(R.id.widget_titleText,currentMusic.title)
-            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage())
-            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay())
-            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage())
-            setImageViewUri(R.id.widget_imageView, albumUri)   // Todo: updateMyAppWidget의 매 실행마다 이미지가 직전 이미지로 바뀌고 있음
-        }
-        // Instruct the widget manager to update the widget
-       // appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 }
