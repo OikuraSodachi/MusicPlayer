@@ -42,9 +42,10 @@ class MusicPlayerWidget : AppWidgetProvider() {
             updateMyAppWidget(appWidgetManager, it,views)
         }
     }
-     */
+    */
 
     override fun onEnabled(context: Context) {
+        println("widget:onEnabled")
         // Enter relevant functionality for when the first widget is created
         val views = widgetViews
         // Construct the RemoteViews object
@@ -87,6 +88,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         currentMusic: Music
     ) {
         println("updateAppWidget")
+
         val icons = IconsRepository()
         // Construct the RemoteViews object
         val albumUri = currentMusic.getAlbumUri()
