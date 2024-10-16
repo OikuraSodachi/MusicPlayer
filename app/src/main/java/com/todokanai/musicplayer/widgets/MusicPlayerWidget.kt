@@ -29,18 +29,21 @@ class MusicPlayerWidget : AppWidgetProvider() {
         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(appContext)
     }
     private val icons = IconsRepository()
+    private val player by lazy{ customPlayer}
 
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray,
     ) {
-       // println("widget : onUpdate")
+        val currentMusic = player.currentMusicHolder.value
+
+        // println("widget : onUpdate")
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
             println("widget : updateAppWidget")
-            val currentMusic = customPlayer.currentMusicHolder.value
-            println("widget : currentMusic = ${currentMusic.title}")
+         //   val currentMusic = player.currentMusicHolder.value
+           // println("widget : currentMusic = ${currentMusic.title}")
             // Construct the RemoteViews object
             val albumUri = currentMusic.getAlbumUri()
             widgetViews.run {
@@ -49,6 +52,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
                 setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay())
                 setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage())
                 setImageViewUri(R.id.widget_imageView, albumUri)   // Todo: updateMyAppWidget의 매 실행마다 이미지가 직전 이미지로 바뀌고 있음. setImageViewUri 내부 구조 확인해야 할듯?
+
             }
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(it, widgetViews)        }

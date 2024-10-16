@@ -167,7 +167,6 @@ class CustomPlayer(
     }
 
     override fun shuffleAction(){
-        val wasShuffled:Boolean = isShuffledHolder.value
-        stateHolders.setShuffle(!wasShuffled)
+        stateHolders.setShuffle(!isShuffled())
     }
 }
