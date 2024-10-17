@@ -37,13 +37,10 @@ class MusicPlayerWidget : AppWidgetProvider() {
         appWidgetIds: IntArray,
     ) {
         val currentMusic = player.currentMusicHolder.value
-
-        // println("widget : onUpdate")
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
             println("widget : updateAppWidget")
-         //   val currentMusic = player.currentMusicHolder.value
-           // println("widget : currentMusic = ${currentMusic.title}")
+
             // Construct the RemoteViews object
             val albumUri = currentMusic.getAlbumUri()
             widgetViews.run {
@@ -75,11 +72,6 @@ class MusicPlayerWidget : AppWidgetProvider() {
             setOnClickPendingIntent(R.id.widget_shuffleBtn, shuffleIntent)
             setOnClickPendingIntent(R.id.widget_background, mainIntent)
         }
-    }
-
-    override fun onDisabled(context: Context) {
-        // Enter relevant functionality for when the last widget is disabled
-        println("widget : onDisabled")
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
