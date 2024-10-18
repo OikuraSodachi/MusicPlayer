@@ -64,10 +64,6 @@ class MusicPlayerWidget : AppWidgetProvider() {
         }
     }
 
-    override fun onDisabled(context: Context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
     override fun onReceive(context: Context?, intent: Intent?) {
         println("onReceive: Widget")
         context?.let {
