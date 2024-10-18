@@ -3,29 +3,33 @@ package com.todokanai.musicplayer.viewmodel
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
-import com.todokanai.musicplayer.components.service.MusicService
+import com.todokanai.musicplayer.interfaces.PlayerStateObserver
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_PAUSE_PLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
+import com.todokanai.musicplayer.player.MyPlayerStateObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayingViewModel @Inject constructor() : ViewModel(){
 
-    private val customPlayer = MusicService.customPlayer
+   // private val customPlayer = MusicService.customPlayer
+
+    private val customPlayer : PlayerStateObserver = MyPlayerStateObserver()
+    val stateObserver : PlayerStateObserver = MyPlayerStateObserver()
 
     private val mediaPlayer = customPlayer.mediaPlayer
 
-    val isPlayingHolder = customPlayer.isPlayingHolder
+    val isPlayingHolder = customPlayer.isPlayingHolder()
 
-    val isShuffledHolder = customPlayer.isShuffledHolder
+    val isShuffledHolder = customPlayer.isShuffledHolder()
 
-    val isRepeatingHolder = customPlayer.isLoopingHolder
+    val isRepeatingHolder = customPlayer.isLoopingHolder()
 
-    val currentMusicHolder = customPlayer.currentMusicHolder
+    val currentMusicHolder = customPlayer.currentMusicHolder()
     //----------------
 
     fun duration() = mediaPlayer.duration
