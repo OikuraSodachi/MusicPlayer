@@ -40,6 +40,7 @@ class MusicService : MediaBrowserServiceCompat(){
         val serviceIntent = Intent(appContext,MusicService::class.java)
 
         lateinit var customPlayer: CustomPlayer
+        lateinit var stateHolders: PlayerStateHolders
         lateinit var mediaSession: MediaSessionCompat
         var mSeed by Delegates.notNull<Double>()
         lateinit var mPlayList:List<Music>
@@ -74,17 +75,19 @@ class MusicService : MediaBrowserServiceCompat(){
         Variables.isServiceOn = true
         fun setLateinits(){
             mediaSession = MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)
+            stateHolders = PlayerStateHolders(
+                musicRepo,
+                dsRepo,
+                mSeed,
+                mPlayList,
+                mLoop,
+                mShuffled,
+                dummyMusic
+            )
+
             customPlayer = CustomPlayer(
                 nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
-                stateHolders = PlayerStateHolders(
-                    musicRepo,
-                    dsRepo,
-                    mSeed,
-                    mPlayList,
-                    mLoop,
-                    mShuffled,
-                    dummyMusic
-                )
+                //stateHolders = stateHolders
             )
 
             notificationManager = NotificationManagerCompat.from(this@MusicService)
@@ -119,6 +122,7 @@ class MusicService : MediaBrowserServiceCompat(){
             startForegroundService(serviceIntent)
         }
 
+        // playerStateObserver.apply ....  Todo: 여기부터
         customPlayer.apply{
             initAttributes(mCurrentMusic,this@MusicService)
             currentMusicHolder.asLiveData().observeForever(){
