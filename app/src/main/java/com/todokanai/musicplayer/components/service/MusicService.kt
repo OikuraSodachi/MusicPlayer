@@ -22,6 +22,7 @@ import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
+import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -61,6 +62,8 @@ class MusicService : MediaBrowserServiceCompat(){
         )
     }
 
+    private val player by lazy{getPlayer}
+
     @Inject
     lateinit var dsRepo:DataStoreRepository
 
@@ -92,7 +95,7 @@ class MusicService : MediaBrowserServiceCompat(){
             notificationManager = NotificationManagerCompat.from(this@MusicService)
             receiver = MusicReceiver()
             notifications = Notifications(this,Constants.CHANNEL_ID)
-            audioFocusChangeListener = MyAudioFocusChangeListener(customPlayer)
+            audioFocusChangeListener = MyAudioFocusChangeListener(player)
         }
         setLateinits()
         mediaSession.apply {
@@ -122,7 +125,7 @@ class MusicService : MediaBrowserServiceCompat(){
         }
 
         // playerStateObserver.apply ....  Todo: 여기부터
-        customPlayer.apply{
+        player.apply{
             initAttributes(mCurrentMusic,this@MusicService)
             currentMusicHolder.asLiveData().observeForever(){
                 updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
@@ -173,10 +176,10 @@ class MusicService : MediaBrowserServiceCompat(){
         val notification = notifications.noti(
             context = this,
             mediaSession = mediaSession,
-            isPlaying = customPlayer.isPlayingHolder.value,
-            isLooping = customPlayer.isLoopingHolder.value,
-            isShuffled = customPlayer.isShuffledHolder.value,
-            currentMusic = customPlayer.currentMusicHolder.value
+            isPlaying = player.isPlayingHolder.value,
+            isLooping = player.isLoopingHolder.value,
+            isShuffled = player.isShuffledHolder.value,
+            currentMusic = player.currentMusicHolder.value
         )
 
         notificationManager.notify(1,notification)
@@ -185,7 +188,7 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     override fun onDestroy() {
-        customPlayer.stop()
+        player.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
         mediaSession.release()
         Variables.isServiceOn = false

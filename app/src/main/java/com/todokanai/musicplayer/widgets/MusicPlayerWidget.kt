@@ -7,10 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
+import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
@@ -28,7 +28,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(appContext)
     }
     private val icons = IconsRepository()
-    private val customPlayer = MusicService.customPlayer
+    private val customPlayer by lazy {getPlayer}
 
     /*
     override fun onUpdate(
