@@ -82,6 +82,7 @@ class CustomPlayer(
             )
             this.setMusic(initialMusic,context)
         }
+        // 대충 initial value set
     }
 
     fun pausePlayAction() =

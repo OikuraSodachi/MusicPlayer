@@ -97,8 +97,10 @@ class PlayerStateHolders (
         }
     }
 
-    fun <Type:Any> MutableStateFlow<Type>.setValue_td(value:Type,save:()->Unit){
+    fun <Type:Any> MutableStateFlow<Type>.setValue_td(value:Type,save:(value:Type)->Unit){
         this.value = value
-
+        CoroutineScope(Dispatchers.IO).launch {
+            save(value)
+        }
     }
 }
