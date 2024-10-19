@@ -86,8 +86,7 @@ class MusicService : MediaBrowserServiceCompat(){
             )
 
             customPlayer = CustomPlayer(
-                nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT),
-                //stateHolders = stateHolders
+                stateHolders = stateHolders
             )
 
             notificationManager = NotificationManagerCompat.from(this@MusicService)

@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
+import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
@@ -28,6 +28,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(appContext)
     }
     private val icons = IconsRepository()
+    private val customPlayer = MusicService.customPlayer
 
     /*
     override fun onUpdate(

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.todokanai.musicplayer.components.service.MusicService.Companion.customPlayer
+import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.components.service.MusicService.Companion.serviceIntent
 import com.todokanai.musicplayer.data.dataclass.MusicHolderItem
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MusicListViewModel @Inject constructor(musicRepo : MusicRepository) : ViewModel(){
 
-    private val player by lazy{customPlayer}
+    private val player by lazy{MusicService.customPlayer}
 
     /** list of music ( not playList ) **/
 
