@@ -39,7 +39,6 @@ import kotlin.properties.Delegates
 class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
-
         lateinit var customPlayer: CustomPlayer
         lateinit var mediaSession: MediaSessionCompat
         var mSeed by Delegates.notNull<Double>()
