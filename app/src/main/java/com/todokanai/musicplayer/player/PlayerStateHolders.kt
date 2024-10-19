@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.player
 
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.interfaces.MediaInterface
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +23,9 @@ class PlayerStateHolders (
     initialLoop:Boolean,
     initialShuffle:Boolean,
     dummyMusic: Music
-) {
+) :MediaInterface{
     private val _isPlayingHolder_new = MutableStateFlow<Boolean>(false)
-    val isPlayingHolder_new : StateFlow<Boolean>
+    override val isPlayingHolder: StateFlow<Boolean>
         get() = _isPlayingHolder_new
 
     fun setIsPlaying(isPlaying:Boolean){
@@ -32,7 +33,7 @@ class PlayerStateHolders (
     }
 
     private val _currentMusicHolder_new = MutableStateFlow<Music>(dummyMusic)
-    val currentMusicHolder_new : StateFlow<Music>
+    override val currentMusicHolder : StateFlow<Music>
         get() = _currentMusicHolder_new
 
     fun setCurrentMusic(music: Music){
@@ -43,7 +44,7 @@ class PlayerStateHolders (
     }
 
     private val _isLoopingHolder_new = MutableStateFlow<Boolean>(initialLoop)
-    val isLoopingHolder_new : StateFlow<Boolean>
+    override val isLoopingHolder : StateFlow<Boolean>
         get() = _isLoopingHolder_new
 
     fun setIsLooping(isLooping:Boolean){
@@ -54,7 +55,7 @@ class PlayerStateHolders (
     }
 
     private val _isShuffledHolder_new = MutableStateFlow<Boolean>(initialShuffle)
-    val isShuffledHolder_new : StateFlow<Boolean>
+    override val isShuffledHolder : StateFlow<Boolean>
         get() = _isShuffledHolder_new
 
     fun setShuffle(isShuffled:Boolean){
@@ -65,7 +66,7 @@ class PlayerStateHolders (
     }
 
     private val _seedHolder_new = MutableStateFlow<Double>(initialSeed)
-    val seedHolder_new : StateFlow<Double>
+    override val seedHolder : StateFlow<Double>
         get() = _seedHolder_new
 
     fun setSeed(seed: Double){
@@ -75,11 +76,11 @@ class PlayerStateHolders (
         }
     }
 
-    val playListHolder =
+    override val playListHolder =
         combine(
             musicRepo.getAll,
-            isShuffledHolder_new,
-            seedHolder_new
+            isShuffledHolder,
+            seedHolder
         ){ musics ,shuffled,seed ->
             modifiedPlayList(musics.sortedBy{it.title},shuffled,seed)
         }.stateIn(

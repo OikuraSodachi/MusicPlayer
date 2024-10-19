@@ -8,14 +8,13 @@ import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.service.MusicService
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.interfaces.MediaInterface
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 
 class CustomPlayer(
     val nextIntent:Intent,
   // val stateHolders:PlayerStateHolders,
-): MediaPlayer(),MediaInterface {
+): MediaPlayer(){
     val mediaPlayer = MediaPlayer()
     val stateHolders by lazy{MusicService.stateHolders}
 
@@ -62,17 +61,17 @@ class CustomPlayer(
     // override
     //-------------------------
 
-    override val seedHolder = stateHolders.seedHolder_new
+    val seedHolder = stateHolders.seedHolder
 
-    override val currentMusicHolder = stateHolders.currentMusicHolder_new
+    val currentMusicHolder = stateHolders.currentMusicHolder
 
-    override val isLoopingHolder = stateHolders.isLoopingHolder_new
+    val isLoopingHolder = stateHolders.isLoopingHolder
 
-    override val isPlayingHolder = stateHolders.isPlayingHolder_new
+    val isPlayingHolder = stateHolders.isPlayingHolder
 
-    override val isShuffledHolder = stateHolders.isShuffledHolder_new
+    val isShuffledHolder = stateHolders.isShuffledHolder
 
-    override val playListHolder = stateHolders.playListHolder
+    val playListHolder = stateHolders.playListHolder
 
     fun initAttributes(initialMusic:Music?,context: Context) {
         this.apply {
@@ -86,7 +85,7 @@ class CustomPlayer(
         }
     }
 
-    override fun pausePlayAction() =
+    fun pausePlayAction() =
             if (mediaPlayer.isPlaying) {
                 this@CustomPlayer.pause()
             } else {
@@ -139,12 +138,12 @@ class CustomPlayer(
         }
     }
 
-    override fun launchMusic(context: Context, music: Music){
+    fun launchMusic(context: Context, music: Music){
         this.setMusic(music,context)
         this.start()
     }
 
-    override fun prevAction(context: Context){
+    fun prevAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
         this.launchMusic(
@@ -153,7 +152,7 @@ class CustomPlayer(
         )
     }
 
-    override fun nextAction(context: Context){
+    fun nextAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
         this.launchMusic(
@@ -162,13 +161,15 @@ class CustomPlayer(
         )
     }
 
-    override fun repeatAction(){
+    fun repeatAction(){
         val shouldLoop = !mediaPlayer.isLooping
         mediaPlayer.isLooping = shouldLoop
         stateHolders.setIsLooping(shouldLoop)
     }
 
-    override fun shuffleAction(){
-        stateHolders.setShuffle(!isShuffled())
+    fun shuffleAction() {
+        val wasShuffled = isShuffledHolder.value
+        stateHolders.setShuffle(!wasShuffled)
     }
+
 }
