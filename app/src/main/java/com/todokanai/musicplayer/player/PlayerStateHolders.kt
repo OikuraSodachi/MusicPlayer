@@ -77,6 +77,7 @@ class PlayerStateHolders (
         }
     }
 
+    /** Todo: MusicRepo.getAll (Room을 observe) 대신 musicListHolder( Array<Music>)를 사용하도록 변경할것  **/
     override val playListHolder =
         combine(
             musicRepo.getAll,

@@ -139,7 +139,7 @@ class MusicService : MediaBrowserServiceCompat(){
             }
 
             if(isTestBuild) {
-                stateHolders.playListHolder.asLiveData().observeForever() {
+                player.playListHolder.asLiveData().observeForever() {
                     println("list: ${it.map { it.title }}")
                 }
             }
