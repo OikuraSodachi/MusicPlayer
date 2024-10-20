@@ -14,9 +14,12 @@ object MyObjects {
     val asyncImageExtension = arrayOf("jpg","mp4","m4a")
     val dummyMusic = Music("none","dummyMusic",null,null, 360000,"empty")
 
+  //  private val customPlayer = CustomPlayer()
     /** customPlayer refactoring 편의를 위해 getter를 한군데로 묶음 **/
     val getPlayer : CustomPlayer
         get() = MusicService.customPlayer
+
+
 
     val mainOpenIntent = Intent(appContext, MainActivity::class.java)
     val mainIntent = PendingIntent.getActivity(appContext,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)

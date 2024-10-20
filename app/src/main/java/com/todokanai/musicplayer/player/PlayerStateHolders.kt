@@ -3,6 +3,7 @@ package com.todokanai.musicplayer.player
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.MediaInterface
+import com.todokanai.musicplayer.myobjects.MyObjects
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,11 +19,11 @@ import kotlin.random.Random
 class PlayerStateHolders (
     val musicRepo:MusicRepository,
     val dsRepo:DataStoreRepository,
-    initialSeed:Double,
-    initialPlayList:List<Music>,
-    initialLoop:Boolean,
-    initialShuffle:Boolean,
-    dummyMusic: Music
+    initialSeed:Double = 0.0,
+    initialPlayList:List<Music> = emptyList(),
+    initialLoop:Boolean = false,
+    initialShuffle:Boolean = false,
+    dummyMusic: Music = MyObjects.dummyMusic
 ) :MediaInterface{
     private val _isPlayingHolder_new = MutableStateFlow<Boolean>(false)
     override val isPlayingHolder: StateFlow<Boolean>

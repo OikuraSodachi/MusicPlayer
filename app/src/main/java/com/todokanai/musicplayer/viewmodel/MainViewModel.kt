@@ -10,11 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.components.service.MusicService.Companion.mCurrentMusic
-import com.todokanai.musicplayer.components.service.MusicService.Companion.mLoop
-import com.todokanai.musicplayer.components.service.MusicService.Companion.mPlayList
-import com.todokanai.musicplayer.components.service.MusicService.Companion.mSeed
-import com.todokanai.musicplayer.components.service.MusicService.Companion.mShuffled
+import com.todokanai.musicplayer.components.service.MusicService.Companion.initialMusic
+import com.todokanai.musicplayer.components.service.MusicService.Companion.initialLoop
+import com.todokanai.musicplayer.components.service.MusicService.Companion.initialPlayList
+import com.todokanai.musicplayer.components.service.MusicService.Companion.initialSeed
+import com.todokanai.musicplayer.components.service.MusicService.Companion.initialShuffled
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.exit_td
@@ -49,11 +49,11 @@ class MainViewModel @Inject constructor(
             //-------------
             // customPlayer 초기 parameter
             runBlocking {
-                mSeed = dsRepo.getSeed()
-                mPlayList = musicRepo.getAllNonFlow()
-                mShuffled = dsRepo.isShuffled()
-                mCurrentMusic = musicRepo.currentMusicNonFlow()
-                mLoop = dsRepo.isLooping()
+                initialSeed = dsRepo.getSeed()
+                initialPlayList = musicRepo.getAllNonFlow()
+                initialShuffled = dsRepo.isShuffled()
+                initialMusic = musicRepo.currentMusicNonFlow()
+                initialLoop = dsRepo.isLooping()
             }
             //-----------
             ContextCompat.startForegroundService(context, intentService)

@@ -24,7 +24,6 @@ import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -41,11 +40,11 @@ class MusicService : MediaBrowserServiceCompat(){
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
         lateinit var mediaSession: MediaSessionCompat
-        var mSeed by Delegates.notNull<Double>()
-        lateinit var mPlayList:List<Music>
-        var mCurrentMusic : Music? = null
-        var mShuffled by Delegates.notNull<Boolean>()
-        var mLoop by Delegates.notNull<Boolean>()
+        var initialSeed by Delegates.notNull<Double>()
+        lateinit var initialPlayList:List<Music>
+        var initialMusic : Music? = null
+        var initialShuffled by Delegates.notNull<Boolean>()
+        var initialLoop by Delegates.notNull<Boolean>()
     }
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
@@ -76,19 +75,18 @@ class MusicService : MediaBrowserServiceCompat(){
         Variables.isServiceOn = true
         fun setLateinits(){
             mediaSession = MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)
-
+            ///*
             customPlayer = CustomPlayer(
-                stateHolders = PlayerStateHolders(
-                    musicRepo,
-                    dsRepo,
-                    mSeed,
-                    mPlayList,
-                    mLoop,
-                    mShuffled,
-                    dummyMusic
-                )
+                musicRepo,
+                dsRepo
             )
 
+          //   */
+            player.stateHolders.run{
+                setCurrentMusic(initialMusic?: dummyMusic)
+                setShuffle(initialShuffled)
+                setIsLooping(initialLoop)
+            }
             notificationManager = NotificationManagerCompat.from(this@MusicService)
             receiver = MusicReceiver()
             notifications = Notifications(this,Constants.CHANNEL_ID)
@@ -123,7 +121,7 @@ class MusicService : MediaBrowserServiceCompat(){
 
         // playerStateObserver.apply ....  Todo: 여기부터
         player.apply{
-            initAttributes(mCurrentMusic,this@MusicService)
+            initAttributes(initialMusic,this@MusicService)
             currentMusicHolder.asLiveData().observeForever(){
                 updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
             }
