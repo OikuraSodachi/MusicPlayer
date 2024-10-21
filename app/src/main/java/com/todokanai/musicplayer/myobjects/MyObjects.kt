@@ -18,8 +18,6 @@ object MyObjects {
     val getPlayer : CustomPlayer
         get() = MusicService.customPlayer
 
-    //val stateHolderTest = PlayerStateHoldersNew()
-
     val mainOpenIntent = Intent(appContext, MainActivity::class.java)
     val mainIntent = PendingIntent.getActivity(appContext,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
     val repeatIntent = PendingIntent.getBroadcast(appContext, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)

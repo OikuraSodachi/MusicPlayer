@@ -20,15 +20,11 @@ class PlayerStateHolders (
     val dsRepo:DataStoreRepository,
     val musicRepo:MusicRepository,
     initialSeed:Double = 0.0,
-    initialPlayList:List<Music> = emptyList(),
-    initialLoop:Boolean = false,
-    initialShuffle:Boolean = false,
+    initialPlayList:List<Music>,
+    initialLoop:Boolean,
+    initialShuffle:Boolean,
     dummyMusic: Music = MyObjects.dummyMusic
 ) :MediaInterface{
-
-   // private val dsRepo by lazy{DataStoreRepository(appContext)}
-  //  @Inject
-//    lateinit var musicRepo:MusicRepository
 
     private val _isPlayingHolder_new = MutableStateFlow<Boolean>(false)
     override val isPlayingHolder: StateFlow<Boolean>

@@ -6,25 +6,18 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.widget.Toast
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.interfaces.MediaInterface
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 
 class CustomPlayer (
-   // val stateHolders:PlayerStateHolders,
-    dsRepo:DataStoreRepository,
-    musicRepo:MusicRepository,
-): MediaPlayer(){
+    val stateHolders: PlayerStateHolders
+): MediaPlayer(),MediaInterface{
 
     val mediaPlayer = MediaPlayer()
 
-    val stateHolders = PlayerStateHolders(
-        dsRepo,
-        musicRepo
-    )
     private val nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT)
     override fun start() {
         mediaPlayer.start()
@@ -69,17 +62,17 @@ class CustomPlayer (
     // override
     //-------------------------
 
-    val seedHolder = stateHolders.seedHolder
+    override val seedHolder = stateHolders.seedHolder
 
-    val currentMusicHolder = stateHolders.currentMusicHolder
+    override val currentMusicHolder = stateHolders.currentMusicHolder
 
-    val isLoopingHolder = stateHolders.isLoopingHolder
+    override val isLoopingHolder = stateHolders.isLoopingHolder
 
-    val isPlayingHolder = stateHolders.isPlayingHolder
+    override val isPlayingHolder = stateHolders.isPlayingHolder
 
-    val isShuffledHolder = stateHolders.isShuffledHolder
+    override val isShuffledHolder = stateHolders.isShuffledHolder
 
-    val playListHolder = stateHolders.playListHolder
+    override val playListHolder = stateHolders.playListHolder
 
     fun initAttributes(initialMusic:Music?,context: Context) {
         this.apply {

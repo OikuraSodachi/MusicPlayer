@@ -25,6 +25,7 @@ import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -47,6 +48,7 @@ class MusicService : MediaBrowserServiceCompat(){
         var initialShuffled by Delegates.notNull<Boolean>()
         var initialLoop by Delegates.notNull<Boolean>()
     }
+    private lateinit var playerStateHolders: PlayerStateHolders
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
@@ -76,18 +78,17 @@ class MusicService : MediaBrowserServiceCompat(){
         Variables.isServiceOn = true
         fun setLateinits(){
             mediaSession = MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)
-            ///*
-            customPlayer = CustomPlayer(
+            playerStateHolders = PlayerStateHolders(
                 dsRepo,
-                musicRepo
+                musicRepo,
+                initialSeed,
+                initialPlayList,
+                initialLoop,
+                initialShuffled,
+                dummyMusic
             )
+            customPlayer = CustomPlayer(playerStateHolders)
 
-          //   */
-            player.stateHolders.run{
-                setCurrentMusic(initialMusic?: dummyMusic)
-                setShuffle(initialShuffled)
-                setIsLooping(initialLoop)
-            }
             notificationManager = NotificationManagerCompat.from(this@MusicService)
             receiver = MusicReceiver()
             /** private val noisyReceiver = NoisyReceiver() 로 선언해도 무방할지도? **/
@@ -96,6 +97,7 @@ class MusicService : MediaBrowserServiceCompat(){
             audioFocusChangeListener = MyAudioFocusChangeListener(player)
         }
         setLateinits()
+
         mediaSession.apply {
             setCallback(
                 MediaSessionCallback(
