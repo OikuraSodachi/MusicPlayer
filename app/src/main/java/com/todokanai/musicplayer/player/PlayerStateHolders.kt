@@ -13,11 +13,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.random.Random
 
 /** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
 class PlayerStateHolders (
-    val dsRepo:DataStoreRepository,
     val musicRepo:MusicRepository,
     initialSeed:Double = 0.0,
     initialPlayList:List<Music>,
@@ -25,6 +25,9 @@ class PlayerStateHolders (
     initialShuffle:Boolean,
     dummyMusic: Music = MyObjects.dummyMusic
 ) :MediaInterface{
+
+    @Inject
+    lateinit var dsRepo: DataStoreRepository
 
     private val _isPlayingHolder_new = MutableStateFlow<Boolean>(false)
     override val isPlayingHolder: StateFlow<Boolean>

@@ -16,12 +16,9 @@ import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.components.receiver.NoisyReceiver
 import com.todokanai.musicplayer.compose.IconsRepository
-import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.LateInitObjects.noisyReceiver
-import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
 import com.todokanai.musicplayer.player.CustomPlayer
@@ -41,19 +38,25 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
-        lateinit var mediaSession: MediaSessionCompat
+
         var initialSeed by Delegates.notNull<Double>()
         lateinit var initialPlayList:List<Music>
         var initialMusic : Music? = null
         var initialShuffled by Delegates.notNull<Boolean>()
         var initialLoop by Delegates.notNull<Boolean>()
     }
-    private lateinit var playerStateHolders: PlayerStateHolders
-    private lateinit var notifications: Notifications
-    private lateinit var notificationManager:NotificationManagerCompat
-    private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
- //   private val noisyReceiver = NoisyReceiver()
+
+    private val notifications = Notifications(Constants.CHANNEL_ID)
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+
+    private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
+    private lateinit var playerStateHolders: PlayerStateHolders
+
+    private val player by lazy{getPlayer}
+    private val mediaSession by lazy{MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)}
+    private val notificationManager by lazy{NotificationManagerCompat.from(this)}
+    private val receiver by lazy{MusicReceiver()}
+    private val noisyReceiver by lazy {NoisyReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
             Constants.CHANNEL_ID,
@@ -61,11 +64,6 @@ class MusicService : MediaBrowserServiceCompat(){
             NotificationManager.IMPORTANCE_NONE             //  알림의 중요도
         )
     }
-
-    private val player by lazy{getPlayer}
-
-    @Inject
-    lateinit var dsRepo:DataStoreRepository
 
     @Inject
     lateinit var musicRepo:MusicRepository
@@ -77,9 +75,7 @@ class MusicService : MediaBrowserServiceCompat(){
         super.onCreate()
         Variables.isServiceOn = true
         fun setLateinits(){
-            mediaSession = MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)
             playerStateHolders = PlayerStateHolders(
-                dsRepo,
                 musicRepo,
                 initialSeed,
                 initialPlayList,
@@ -88,12 +84,6 @@ class MusicService : MediaBrowserServiceCompat(){
                 dummyMusic
             )
             customPlayer = CustomPlayer(playerStateHolders)
-
-            notificationManager = NotificationManagerCompat.from(this@MusicService)
-            receiver = MusicReceiver()
-            /** private val noisyReceiver = NoisyReceiver() 로 선언해도 무방할지도? **/
-            noisyReceiver = NoisyReceiver()
-            notifications = Notifications(this,Constants.CHANNEL_ID)
             audioFocusChangeListener = MyAudioFocusChangeListener(player)
         }
         setLateinits()

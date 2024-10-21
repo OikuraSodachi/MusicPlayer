@@ -17,7 +17,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 
-class Notifications(context: Context,private val channelID:String) {
+class Notifications(private val channelID:String) {
     private val icons = IconsRepository()
     /*
     private val mainOpenIntent = Intent(context, MainActivity::class.java)
