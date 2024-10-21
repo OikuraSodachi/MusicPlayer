@@ -20,6 +20,7 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.LateInitObjects.noisyReceiver
 import com.todokanai.musicplayer.myobjects.LateInitObjects.receiver
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
@@ -49,7 +50,7 @@ class MusicService : MediaBrowserServiceCompat(){
     private lateinit var notifications: Notifications
     private lateinit var notificationManager:NotificationManagerCompat
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
-    private val noisyReceiver = NoisyReceiver()
+ //   private val noisyReceiver = NoisyReceiver()
     private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -77,8 +78,8 @@ class MusicService : MediaBrowserServiceCompat(){
             mediaSession = MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)
             ///*
             customPlayer = CustomPlayer(
-                musicRepo,
-                dsRepo
+                dsRepo,
+                musicRepo
             )
 
           //   */
@@ -89,6 +90,8 @@ class MusicService : MediaBrowserServiceCompat(){
             }
             notificationManager = NotificationManagerCompat.from(this@MusicService)
             receiver = MusicReceiver()
+            /** private val noisyReceiver = NoisyReceiver() 로 선언해도 무방할지도? **/
+            noisyReceiver = NoisyReceiver()
             notifications = Notifications(this,Constants.CHANNEL_ID)
             audioFocusChangeListener = MyAudioFocusChangeListener(player)
         }

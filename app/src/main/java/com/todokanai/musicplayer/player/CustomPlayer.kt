@@ -15,13 +15,16 @@ import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 
 class CustomPlayer (
    // val stateHolders:PlayerStateHolders,
+    dsRepo:DataStoreRepository,
     musicRepo:MusicRepository,
-    dsRepo:DataStoreRepository
 ): MediaPlayer(){
 
     val mediaPlayer = MediaPlayer()
 
-    val stateHolders = PlayerStateHolders(musicRepo,dsRepo)
+    val stateHolders = PlayerStateHolders(
+        dsRepo,
+        musicRepo
+    )
     private val nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT)
     override fun start() {
         mediaPlayer.start()
