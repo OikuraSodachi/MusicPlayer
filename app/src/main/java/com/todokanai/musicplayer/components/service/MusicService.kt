@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.components.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
@@ -109,7 +110,7 @@ class MusicService : MediaBrowserServiceCompat(){
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
         registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
 
-        fun updateNoti(isLooping: Boolean,isPlaying: Boolean,isShuffled: Boolean){
+        fun requestUpdateNoti(isLooping: Boolean, isPlaying: Boolean, isShuffled: Boolean){
             mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled)
             startForegroundService(serviceIntent)
         }
@@ -118,18 +119,18 @@ class MusicService : MediaBrowserServiceCompat(){
         player.apply{
             initAttributes(initialMusic,this@MusicService)
             currentMusicHolder.asLiveData().observeForever(){
-                updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
             }
             isPlayingHolder.asLiveData().observeForever(){
-                updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
 
             }
             isLoopingHolder.asLiveData().observeForever(){
-                updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
 
             }
             isShuffledHolder.asLiveData().observeForever(){
-                updateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
 
             }
 
@@ -160,20 +161,17 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        notificationManager.createNotificationChannel(serviceChannel)
-        MediaButtonReceiver.handleIntent(mediaSession,intent)
-
-        val notification = notifications.noti(
+        updateNotification(
             context = this,
+            notificationManager = notificationManager,
+            intent = intent,
+            serviceChannel = serviceChannel,
             mediaSession = mediaSession,
             isPlaying = player.isPlayingHolder.value,
             isLooping = player.isLoopingHolder.value,
             isShuffled = player.isShuffledHolder.value,
             currentMusic = player.currentMusicHolder.value
         )
-
-        notificationManager.notify(1,notification)
-        startForeground(1, notification)
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -197,12 +195,12 @@ class MusicService : MediaBrowserServiceCompat(){
         }else{
             PlaybackStateCompat.STATE_PAUSED
         }
-        val temp = state()
+        val state = state()
         fun repeatIcon() = icons.loopingImage(isLooping)
         fun shuffleIcon() = icons.shuffledImage(isShuffled)
         val playbackState = PlaybackStateCompat.Builder()
             .apply {
-                val actions = if (temp == PlaybackStateCompat.STATE_PLAYING) {
+                val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
                     PlaybackStateCompat.ACTION_PLAY_PAUSE or
                             PlaybackStateCompat.ACTION_PAUSE or
                             PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
@@ -221,8 +219,34 @@ class MusicService : MediaBrowserServiceCompat(){
                 addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon())
                 setActions(actions)
             }
-            .setState(temp, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
+            .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         this.setPlaybackState(playbackState.build())
     }
 
+    private fun updateNotification(
+        context:Context,
+        notificationManager:NotificationManagerCompat,
+        intent:Intent?,
+        serviceChannel:NotificationChannel,
+        mediaSession:MediaSessionCompat,
+        isPlaying:Boolean,
+        isLooping:Boolean,
+        isShuffled:Boolean,
+        currentMusic:Music
+    ){
+        notificationManager.createNotificationChannel(serviceChannel)
+        MediaButtonReceiver.handleIntent(mediaSession,intent)
+
+        val notification = notifications.noti(
+            context = context,
+            mediaSession = mediaSession,
+            isPlaying = isPlaying,
+            isLooping = isLooping,
+            isShuffled = isShuffled,
+            currentMusic = currentMusic
+        )
+
+        notificationManager.notify(1,notification)
+        startForeground(1, notification)
+    }
 }
