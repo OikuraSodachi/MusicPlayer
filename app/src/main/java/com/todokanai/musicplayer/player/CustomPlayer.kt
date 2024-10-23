@@ -8,17 +8,17 @@ import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.MediaInterface
-import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 
 class CustomPlayer (
-    val stateHolders: PlayerStateHolders
+    val stateHolders: PlayerStateHolders,
+    private val nextIntent:Intent
 ): MediaPlayer(),MediaInterface{
 
     val mediaPlayer = MediaPlayer()
 
-    private val nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT)
+   // private val nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT)
     override fun start() {
         mediaPlayer.start()
         stateHolders.setIsPlaying(mediaPlayer.isPlaying)

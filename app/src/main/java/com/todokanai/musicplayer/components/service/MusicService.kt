@@ -22,6 +22,11 @@ import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
+import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -84,7 +89,7 @@ class MusicService : MediaBrowserServiceCompat(){
                 initialShuffled,
                 dummyMusic
             )
-            customPlayer = CustomPlayer(playerStateHolders)
+            customPlayer = CustomPlayer(playerStateHolders, nextIntent)
             audioFocusChangeListener = MyAudioFocusChangeListener(player)
         }
         setLateinits()
@@ -243,7 +248,12 @@ class MusicService : MediaBrowserServiceCompat(){
             isPlaying = isPlaying,
             isLooping = isLooping,
             isShuffled = isShuffled,
-            currentMusic = currentMusic
+            currentMusic = currentMusic,
+            repeatIntent = repeatIntent,
+            prevIntent = prevIntent,
+            pausePlayIntent = pausePlayIntent,
+            nextIntent = nextIntent,
+            shuffleIntent = shuffleIntent
         )
 
         notificationManager.notify(1,notification)

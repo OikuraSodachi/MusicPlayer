@@ -1,5 +1,7 @@
 package com.todokanai.musicplayer.widgets
 
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
@@ -56,11 +58,11 @@ class MusicPlayerWidget : AppWidgetProvider() {
             setImageViewResource(R.id.widget_nextBtn,icons.next)
             setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage())
 
-            setOnClickPendingIntent(R.id.widget_repeatBtn, repeatIntent)
-            setOnClickPendingIntent(R.id.widget_prevBtn, prevIntent)
-            setOnClickPendingIntent(R.id.widget_pausePlayBtn, pausePlayIntent)
-            setOnClickPendingIntent(R.id.widget_nextBtn, nextIntent)
-            setOnClickPendingIntent(R.id.widget_shuffleBtn, shuffleIntent)
+            setOnClickPendingIntent(R.id.widget_repeatBtn, PendingIntent.getBroadcast(context,0, repeatIntent,FLAG_IMMUTABLE))
+            setOnClickPendingIntent(R.id.widget_prevBtn, PendingIntent.getBroadcast(context,0, prevIntent,FLAG_IMMUTABLE))
+            setOnClickPendingIntent(R.id.widget_pausePlayBtn, PendingIntent.getBroadcast(context,0, pausePlayIntent,FLAG_IMMUTABLE))
+            setOnClickPendingIntent(R.id.widget_nextBtn, PendingIntent.getBroadcast(context,0, nextIntent,FLAG_IMMUTABLE))
+            setOnClickPendingIntent(R.id.widget_shuffleBtn, PendingIntent.getBroadcast(context,0,shuffleIntent,FLAG_IMMUTABLE))
             setOnClickPendingIntent(R.id.widget_background, mainIntent)
         }
     }

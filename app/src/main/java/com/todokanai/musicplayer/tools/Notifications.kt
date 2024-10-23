@@ -1,7 +1,10 @@
 package com.todokanai.musicplayer.tools
 
 import android.app.Notification
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
+import android.content.Intent
 import android.media.MediaMetadata
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -10,25 +13,10 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 
 class Notifications(private val channelID:String) {
     private val icons = IconsRepository()
-    /*
-    private val mainOpenIntent = Intent(context, MainActivity::class.java)
-    private val mainIntent = PendingIntent.getActivity(context,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
-    private val repeatIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)
-    private val prevIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_PREVIOUS), PendingIntent.FLAG_IMMUTABLE)
-    private val pausePlayIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_PAUSE_PLAY), PendingIntent.FLAG_IMMUTABLE)
-    private val nextIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
-    private val shuffleIntent = PendingIntent.getBroadcast(context, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
-
-     */
 
     fun noti(
         context: Context,
@@ -36,7 +24,12 @@ class Notifications(private val channelID:String) {
         isPlaying:Boolean,
         isLooping:Boolean,
         isShuffled:Boolean,
-        currentMusic: Music?
+        currentMusic: Music?,
+        repeatIntent: Intent,
+        prevIntent: Intent,
+        pausePlayIntent:Intent,
+        nextIntent:Intent,
+        shuffleIntent:Intent
     ): Notification {
         mediaSession.apply{
             setMetadata(
@@ -58,11 +51,11 @@ class Notifications(private val channelID:String) {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             //----------------------------------------------------------------------------------------------------------\
             /**API level < 33 일 때만 적용되는 구간 **/
-            .addAction(NotificationCompat.Action(icons.loopingImage(isLooping), "REPEAT", repeatIntent))
-            .addAction(NotificationCompat.Action(icons.prev,"PREV",prevIntent))
-            .addAction(NotificationCompat.Action(icons.pausePlay(isPlaying), "pauseplay", pausePlayIntent))
-            .addAction(NotificationCompat.Action(icons.next,"NEXT",nextIntent))
-            .addAction(NotificationCompat.Action(icons.shuffledImage(isShuffled), "SHUFFLE", shuffleIntent))
+            .addAction(NotificationCompat.Action(icons.loopingImage(isLooping), "REPEAT", PendingIntent.getBroadcast(context,0,repeatIntent,FLAG_IMMUTABLE)))
+            .addAction(NotificationCompat.Action(icons.prev,"PREV",PendingIntent.getBroadcast(context,0,prevIntent,FLAG_IMMUTABLE)))
+            .addAction(NotificationCompat.Action(icons.pausePlay(isPlaying), "pauseplay",PendingIntent.getBroadcast(context,0,pausePlayIntent,FLAG_IMMUTABLE)))
+            .addAction(NotificationCompat.Action(icons.next,"NEXT",PendingIntent.getBroadcast(context,0,nextIntent,FLAG_IMMUTABLE)))
+            .addAction(NotificationCompat.Action(icons.shuffledImage(isShuffled), "SHUFFLE", PendingIntent.getBroadcast(context,0,shuffleIntent,FLAG_IMMUTABLE)))
             //
             //----------------------------------------------------------------------------------------------------------
             .setContentIntent(mainIntent)
