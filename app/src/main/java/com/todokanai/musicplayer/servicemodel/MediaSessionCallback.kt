@@ -1,12 +1,12 @@
 package com.todokanai.musicplayer.servicemodel
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
+import com.todokanai.musicplayer.components.receiver.NoisyReceiver
 import com.todokanai.musicplayer.myobjects.Constants
 
 class MediaSessionCallback(
@@ -14,9 +14,10 @@ class MediaSessionCallback(
     private val mediaSession: MediaSessionCompat,
     private val audioManager:AudioManager,
     private val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener,
-    private val noisyReceiver:BroadcastReceiver,
-    private val noisyIntentFilter:IntentFilter,
 ) : MediaSessionCompat.Callback() {
+
+    private val noisyReceiver = NoisyReceiver()
+    private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
 
     private fun isAudioFocusGranted(): Boolean {
         val requestResult = audioManager.requestAudioFocus(

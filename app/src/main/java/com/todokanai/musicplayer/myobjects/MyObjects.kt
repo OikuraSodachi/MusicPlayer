@@ -19,17 +19,9 @@ object MyObjects {
 
     val mainOpenIntent = Intent(appContext, MainActivity::class.java)
     val mainIntent = PendingIntent.getActivity(appContext,0, Intent(mainOpenIntent), PendingIntent.FLAG_IMMUTABLE)
-    //val repeatIntent = PendingIntent.getBroadcast(appContext, 0, Intent(Constants.ACTION_REPLAY), PendingIntent.FLAG_IMMUTABLE)
     val repeatIntent = Intent(Constants.ACTION_REPLAY)
-    //val prevIntent = PendingIntent.getBroadcast(appContext, 0, Intent(Constants.ACTION_SKIP_TO_PREVIOUS), PendingIntent.FLAG_IMMUTABLE)
     val prevIntent = Intent(Constants.ACTION_SKIP_TO_PREVIOUS)
-
-    //val pausePlayIntent = PendingIntent.getBroadcast(appContext, 0, Intent(Constants.ACTION_PAUSE_PLAY), PendingIntent.FLAG_IMMUTABLE)
     val pausePlayIntent = Intent(Constants.ACTION_PAUSE_PLAY)
-    //val nextIntent = PendingIntent.getBroadcast(appContext, 0, Intent(Constants.ACTION_SKIP_TO_NEXT), PendingIntent.FLAG_IMMUTABLE)
     val nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT)
-
-    // val shuffleIntent = PendingIntent.getBroadcast(appContext, 0, Intent(Constants.ACTION_SHUFFLE), PendingIntent.FLAG_IMMUTABLE)
     val shuffleIntent = Intent(Constants.ACTION_SHUFFLE)
-
 }

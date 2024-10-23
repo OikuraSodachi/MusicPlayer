@@ -53,7 +53,6 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     private val notifications = Notifications(Constants.CHANNEL_ID)
-    private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
 
     private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     private lateinit var playerStateHolders: PlayerStateHolders
@@ -62,7 +61,6 @@ class MusicService : MediaBrowserServiceCompat(){
     private val mediaSession by lazy{MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)}
     private val notificationManager by lazy{NotificationManagerCompat.from(this)}
     private val receiver by lazy{MusicReceiver()}
-    private val noisyReceiver by lazy {NoisyReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
             Constants.CHANNEL_ID,
@@ -100,9 +98,7 @@ class MusicService : MediaBrowserServiceCompat(){
                     this@MusicService,
                     this,
                     audioManager,
-                    audioFocusChangeListener,
-                    noisyReceiver,
-                    noisyIntentFilter
+                    audioFocusChangeListener
                 )
             )
             this@MusicService.sessionToken = sessionToken
@@ -113,7 +109,7 @@ class MusicService : MediaBrowserServiceCompat(){
         registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
-        registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
+       // registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
 
         fun requestUpdateNoti(isLooping: Boolean, isPlaying: Boolean, isShuffled: Boolean){
             mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled)
