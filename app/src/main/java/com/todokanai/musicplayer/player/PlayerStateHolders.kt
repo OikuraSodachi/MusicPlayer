@@ -29,53 +29,53 @@ class PlayerStateHolders (
     @Inject
     lateinit var dsRepo: DataStoreRepository
 
-    private val _isPlayingHolder_new = MutableStateFlow<Boolean>(false)
+    private val isPlaying = MutableStateFlow<Boolean>(false)
     override val isPlayingHolder: StateFlow<Boolean>
-        get() = _isPlayingHolder_new
+        get() = isPlaying
 
     fun setIsPlaying(isPlaying:Boolean){
-        _isPlayingHolder_new.value = isPlaying
+        this.isPlaying.value = isPlaying
     }
 
-    private val _currentMusicHolder_new = MutableStateFlow<Music>(dummyMusic)
+    private val currentMusic = MutableStateFlow<Music>(dummyMusic)
     override val currentMusicHolder : StateFlow<Music>
-        get() = _currentMusicHolder_new
+        get() = currentMusic
 
     fun setCurrentMusic(music: Music){
-        _currentMusicHolder_new.value = music
+        currentMusic.value = music
         CoroutineScope(Dispatchers.IO).launch {
             musicRepo.upsertCurrentMusic(music)
         }
     }
 
-    private val _isLoopingHolder_new = MutableStateFlow<Boolean>(initialLoop)
+    private val isLooping = MutableStateFlow<Boolean>(initialLoop)
     override val isLoopingHolder : StateFlow<Boolean>
-        get() = _isLoopingHolder_new
+        get() = isLooping
 
     fun setIsLooping(isLooping:Boolean){
-        _isLoopingHolder_new.value = isLooping
+        this.isLooping.value = isLooping
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveIsLooping(isLooping)
         }
     }
 
-    private val _isShuffledHolder_new = MutableStateFlow<Boolean>(initialShuffle)
+    private val isShuffled = MutableStateFlow<Boolean>(initialShuffle)
     override val isShuffledHolder : StateFlow<Boolean>
-        get() = _isShuffledHolder_new
+        get() = isShuffled
 
     fun setShuffle(isShuffled:Boolean){
-        _isShuffledHolder_new.value = isShuffled
+        this.isShuffled.value = isShuffled
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveIsShuffled(isShuffled)
         }
     }
 
-    private val _seedHolder_new = MutableStateFlow<Double>(initialSeed)
+    private val seed = MutableStateFlow<Double>(initialSeed)
     override val seedHolder : StateFlow<Double>
-        get() = _seedHolder_new
+        get() = seed
 
     fun setSeed(seed: Double){
-        _seedHolder_new.value = seed
+        this.seed.value = seed
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveRandomSeed(seed)
         }
