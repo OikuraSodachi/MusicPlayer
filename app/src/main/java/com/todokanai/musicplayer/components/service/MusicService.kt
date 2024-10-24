@@ -79,13 +79,6 @@ class MusicService : MediaBrowserServiceCompat(){
             playerStateHolders = PlayerStateHolders(
                 musicRepo,
                 dsRepo,
-                /*
-                initialSeed,
-                initialPlayList,
-                initialLoop,
-                initialShuffled,
-
-                 */
                 dummyMusic
             )
             customPlayer = CustomPlayer(playerStateHolders, nextIntent)
