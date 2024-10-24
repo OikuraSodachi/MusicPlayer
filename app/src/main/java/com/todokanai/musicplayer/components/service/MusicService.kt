@@ -16,6 +16,7 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.compose.IconsRepository
+import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
@@ -28,6 +29,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
+import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialMusic
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -36,19 +38,12 @@ import com.todokanai.musicplayer.variables.Variables
 import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
-
-        var initialSeed by Delegates.notNull<Double>()
-        lateinit var initialPlayList:List<Music>
-        var initialMusic : Music? = null
-        var initialShuffled by Delegates.notNull<Boolean>()
-        var initialLoop by Delegates.notNull<Boolean>()
     }
 
     private val notifications = Notifications(Constants.CHANNEL_ID)
@@ -72,6 +67,9 @@ class MusicService : MediaBrowserServiceCompat(){
     lateinit var musicRepo:MusicRepository
 
     @Inject
+    lateinit var dsRepo:DataStoreRepository
+
+    @Inject
     lateinit var audioManager: AudioManager
 
     override fun onCreate() {
@@ -80,10 +78,14 @@ class MusicService : MediaBrowserServiceCompat(){
         fun setLateinits(){
             playerStateHolders = PlayerStateHolders(
                 musicRepo,
+                dsRepo,
+                /*
                 initialSeed,
                 initialPlayList,
                 initialLoop,
                 initialShuffled,
+
+                 */
                 dummyMusic
             )
             customPlayer = CustomPlayer(playerStateHolders, nextIntent)
@@ -117,7 +119,10 @@ class MusicService : MediaBrowserServiceCompat(){
 
         // playerStateObserver.apply ....  Todo: 여기부터. Flow.map 방식으로 변경할 것
         player.apply{
-            initAttributes(initialMusic,this@MusicService)
+            initAttributes(
+                initialMusic,
+                this@MusicService
+            )
             currentMusicHolder.asLiveData().observeForever(){
                 requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
             }

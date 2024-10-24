@@ -10,12 +10,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.components.service.MusicService.Companion.initialMusic
-import com.todokanai.musicplayer.components.service.MusicService.Companion.initialLoop
-import com.todokanai.musicplayer.components.service.MusicService.Companion.initialPlayList
-import com.todokanai.musicplayer.components.service.MusicService.Companion.initialSeed
-import com.todokanai.musicplayer.components.service.MusicService.Companion.initialShuffled
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
+import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialLoop
+import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialMusic
+import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialPlayList
+import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialSeed
+import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialShuffle
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.exit_td
 import com.todokanai.musicplayer.tools.independent.isPermissionGranted_td
@@ -51,7 +51,7 @@ class MainViewModel @Inject constructor(
             runBlocking {
                 initialSeed = dsRepo.getSeed()
                 initialPlayList = musicRepo.getAllNonFlow()
-                initialShuffled = dsRepo.isShuffled()
+                initialShuffle = dsRepo.isShuffled()
                 initialMusic = musicRepo.currentMusicNonFlow()
                 initialLoop = dsRepo.isLooping()
             }

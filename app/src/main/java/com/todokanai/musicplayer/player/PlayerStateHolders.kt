@@ -13,21 +13,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 /** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
 class PlayerStateHolders (
     val musicRepo:MusicRepository,
-    initialSeed:Double = 0.0,
-    initialPlayList:List<Music>,
-    initialLoop:Boolean,
-    initialShuffle:Boolean,
+    val dsRepo:DataStoreRepository,
     dummyMusic: Music = MyObjects.dummyMusic
 ) :MediaInterface{
 
-    @Inject
-    lateinit var dsRepo: DataStoreRepository
+    companion object{
+        var initialSeed by Delegates.notNull<Double>()
+        lateinit var initialPlayList:List<Music>
+        var initialMusic : Music? = null
+        var initialShuffle by Delegates.notNull<Boolean>()
+        var initialLoop by Delegates.notNull<Boolean>()
+    }
 
     private val isPlaying = MutableStateFlow<Boolean>(false)
     override val isPlayingHolder: StateFlow<Boolean>
@@ -100,13 +102,6 @@ class PlayerStateHolders (
             return musicList.shuffled(Random(seed.toLong()))
         } else{
             return musicList.sortedBy { it.title }
-        }
-    }
-
-    fun <Type:Any> MutableStateFlow<Type>.setValue_td(value:Type,save:(value:Type)->Unit){
-        this.value = value
-        CoroutineScope(Dispatchers.IO).launch {
-            save(value)
         }
     }
 }
