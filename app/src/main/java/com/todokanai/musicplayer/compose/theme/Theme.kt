@@ -1,4 +1,4 @@
-package com.todokanai.musicplayer.compose.ui.theme
+package com.todokanai.musicplayer.compose.theme
 
 import android.app.Activity
 import android.os.Build

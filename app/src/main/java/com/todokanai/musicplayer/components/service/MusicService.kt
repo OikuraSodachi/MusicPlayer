@@ -15,13 +15,12 @@ import androidx.lifecycle.asLiveData
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
-import com.todokanai.musicplayer.components.receiver.NoisyReceiver
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
-import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
@@ -116,7 +115,7 @@ class MusicService : MediaBrowserServiceCompat(){
             startForegroundService(serviceIntent)
         }
 
-        // playerStateObserver.apply ....  Todo: 여기부터
+        // playerStateObserver.apply ....  Todo: 여기부터. Flow.map 방식으로 변경할 것
         player.apply{
             initAttributes(initialMusic,this@MusicService)
             currentMusicHolder.asLiveData().observeForever(){

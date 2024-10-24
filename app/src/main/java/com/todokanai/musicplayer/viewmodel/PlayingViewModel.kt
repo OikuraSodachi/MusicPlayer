@@ -8,7 +8,7 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
-import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

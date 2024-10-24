@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.components.service.MusicService.Companion.serviceIntent
 import com.todokanai.musicplayer.data.dataclass.MusicHolderItem
-import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.exit_td
 import dagger.hilt.android.lifecycle.HiltViewModel

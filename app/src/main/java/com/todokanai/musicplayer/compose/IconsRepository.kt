@@ -1,7 +1,7 @@
 package com.todokanai.musicplayer.compose
 
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.myobjects.MyObjects.getPlayer
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import java.io.File
 
 class IconsRepository() {
