@@ -88,10 +88,10 @@ class MusicService : MediaBrowserServiceCompat(){
             )
 
             /** case 1**/
-           // beginObserve(mediaSession,{startForegroundService(serviceIntent)})
+            beginObserve(mediaSession,{startForegroundService(serviceIntent)})
 
             /** case 2 **/
-            beginObserve2(mediaSession,{startForegroundService(serviceIntent)})
+           // beginObserve2(mediaSession,{startForegroundService(serviceIntent)})
             // Todo: 어느 쪽이 더 나은 방식인지?
         }       // observe LiveData
     }
