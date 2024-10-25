@@ -9,13 +9,10 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.asLiveData
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
-import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
@@ -35,20 +32,19 @@ import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import com.todokanai.musicplayer.variables.Variables
-import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat(){
+
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
+        lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     }
 
     private val notifications = Notifications(Constants.CHANNEL_ID)
-
-    private lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     private lateinit var playerStateHolders: PlayerStateHolders
 
     private val player by lazy{getPlayer}
@@ -75,75 +71,26 @@ class MusicService : MediaBrowserServiceCompat(){
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
-        fun setLateinits(){
-            playerStateHolders = PlayerStateHolders(
-                musicRepo,
-                dsRepo,
-                dummyMusic
-            )
-            customPlayer = CustomPlayer(playerStateHolders, nextIntent)
-            audioFocusChangeListener = MyAudioFocusChangeListener(player)
-        }
         setLateinits()
-
-        mediaSession.apply {
-            setCallback(
-                MediaSessionCallback(
-                    this@MusicService,
-                    this,
-                    audioManager,
-                    audioFocusChangeListener
-                )
-            )
-            this@MusicService.sessionToken = sessionToken
-        }
 
         registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
-       // registerReceiver(noisyReceiver,noisyIntentFilter, RECEIVER_NOT_EXPORTED)
 
-        fun requestUpdateNoti(isLooping: Boolean, isPlaying: Boolean, isShuffled: Boolean){
-            mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled)
-            startForegroundService(serviceIntent)
-        }
-
-        // playerStateObserver.apply ....  Todo: 여기부터. Flow.map 방식으로 변경할 것
         player.apply{
             initAttributes(
                 initialMusic,
                 this@MusicService
             )
-            /*
-            currentMusicHolder.asLiveData().observeForever(){
-                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
-            }
-            isPlayingHolder.asLiveData().observeForever(){
-                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
 
-            }
-            isLoopingHolder.asLiveData().observeForever(){
-                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
+            /** case 1**/
+           // beginObserve(mediaSession,{startForegroundService(serviceIntent)})
 
-            }
-            isShuffledHolder.asLiveData().observeForever(){
-                requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
-
-            }
-
-             */
-
-            flowTest.asLiveData().observeForever(){
-                requestUpdateNoti(it.isLooping,it.isPlaying,it.isShuffled)
-            }
-
-            if(isTestBuild) {
-                player.playListHolder.asLiveData().observeForever() {
-                    println("list: ${it.map { it.title }}")
-                }
-            }
+            /** case 2 **/
+            beginObserve2(mediaSession,{startForegroundService(serviceIntent)})
+            // Todo: 어느 쪽이 더 나은 방식인지?
         }       // observe LiveData
     }
 
@@ -188,46 +135,6 @@ class MusicService : MediaBrowserServiceCompat(){
         super.onDestroy()
     }
 
-    /**
-     *  MediaSessionCompat의 PlaybackState Setter
-     *
-     *  playback position 관련해서는 미검증 상태
-     */
-    fun MediaSessionCompat.setMediaPlaybackState_td(isLooping:Boolean,isPlaying:Boolean,isShuffled:Boolean){
-        val icons = IconsRepository()
-        fun state() = if(isPlaying){
-            PlaybackStateCompat.STATE_PLAYING
-        }else{
-            PlaybackStateCompat.STATE_PAUSED
-        }
-        val state = state()
-        fun repeatIcon() = icons.loopingImage(isLooping)
-        fun shuffleIcon() = icons.shuffledImage(isShuffled)
-        val playbackState = PlaybackStateCompat.Builder()
-            .apply {
-                val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                            PlaybackStateCompat.ACTION_PAUSE or
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
-                } else {
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                            PlaybackStateCompat.ACTION_PLAY or
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
-                }
-                addCustomAction(Constants.ACTION_REPLAY,"Repeat", repeatIcon())
-                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon())
-                setActions(actions)
-            }
-            .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
-        this.setPlaybackState(playbackState.build())
-    }
-
     private fun updateNotification(
         context:Context,
         notificationManager:NotificationManagerCompat,
@@ -258,5 +165,26 @@ class MusicService : MediaBrowserServiceCompat(){
 
         notificationManager.notify(1,notification)
         startForeground(1, notification)
+    }
+
+    fun setLateinits(){
+        playerStateHolders = PlayerStateHolders(
+            musicRepo,
+            dsRepo,
+            dummyMusic
+        )
+        customPlayer = CustomPlayer(playerStateHolders, nextIntent)
+        audioFocusChangeListener = MyAudioFocusChangeListener(player)
+        mediaSession.apply {
+            setCallback(
+                MediaSessionCallback(
+                    this@MusicService,
+                    this,
+                    audioManager,
+                    audioFocusChangeListener
+                )
+            )
+            this@MusicService.sessionToken = sessionToken
+        }
     }
 }

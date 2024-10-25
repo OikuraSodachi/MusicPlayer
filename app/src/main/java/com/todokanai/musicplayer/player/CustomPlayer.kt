@@ -4,10 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
+import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.R
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.MediaInterface
+import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.flow.combine
@@ -19,7 +24,6 @@ class CustomPlayer (
 
     val mediaPlayer = MediaPlayer()
 
-   // private val nextIntent = Intent(Constants.ACTION_SKIP_TO_NEXT)
     override fun start() {
         mediaPlayer.start()
         stateHolders.setIsPlaying(mediaPlayer.isPlaying)
@@ -51,6 +55,11 @@ class CustomPlayer (
         mediaPlayer.stop()
         stateHolders.setIsPlaying(mediaPlayer.isPlaying)
         super.stop()
+    }
+
+    /** Unstable **/
+    fun isShuffled():Boolean{
+        return isShuffledHolder.value
     }
 
     /*
@@ -171,8 +180,33 @@ class CustomPlayer (
     }
 
     fun shuffleAction() {
-        val wasShuffled = isShuffledHolder.value
-        stateHolders.setShuffle(!wasShuffled)
+        stateHolders.setShuffle(!isShuffledHolder.value)
+    }
+
+    private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
+        mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled())
+        startForegroundService()
+    }
+
+    fun beginObserve(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
+        currentMusicHolder.asLiveData().observeForever(){
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
+        isPlayingHolder.asLiveData().observeForever(){
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
+        isLoopingHolder.asLiveData().observeForever(){
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
+        isShuffledHolder.asLiveData().observeForever(){
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
+    }
+
+    fun beginObserve2(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
+        flowTest.asLiveData().observeForever(){
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
     }
 
     val flowTest = combine(
@@ -181,13 +215,52 @@ class CustomPlayer (
         isLoopingHolder,
         isPlayingHolder
     ){ currentMusic, isShuffled ,isLooping,isPlaying->
-
         MusicTest(
             currentMusic,
             isLooping,
             isShuffled,
             isPlaying
         )
+    }
+
+    /**
+     *  MediaSessionCompat의 PlaybackState Setter
+     *
+     *  playback position 관련해서는 미검증 상태
+     */
+    fun MediaSessionCompat.setMediaPlaybackState_td(isLooping:Boolean,isPlaying:Boolean,isShuffled:Boolean){
+        val icons = IconsRepository()
+        fun state() = if(isPlaying){
+            PlaybackStateCompat.STATE_PLAYING
+        }else{
+            PlaybackStateCompat.STATE_PAUSED
+        }
+        val state = state()
+        fun repeatIcon() = icons.loopingImage(isLooping)
+        fun shuffleIcon() = icons.shuffledImage(isShuffled)
+        val playbackState = PlaybackStateCompat.Builder()
+            .apply {
+                val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                            PlaybackStateCompat.ACTION_PAUSE or
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                } else {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                            PlaybackStateCompat.ACTION_PLAY or
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                }
+                addCustomAction(Constants.ACTION_REPLAY,"Repeat", repeatIcon())
+                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon())
+                setActions(actions)
+            }
+            .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
+        this.setPlaybackState(playbackState.build())
     }
 }
 
