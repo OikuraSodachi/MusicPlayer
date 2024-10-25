@@ -116,6 +116,7 @@ class MusicService : MediaBrowserServiceCompat(){
                 initialMusic,
                 this@MusicService
             )
+            /*
             currentMusicHolder.asLiveData().observeForever(){
                 requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
             }
@@ -130,6 +131,12 @@ class MusicService : MediaBrowserServiceCompat(){
             isShuffledHolder.asLiveData().observeForever(){
                 requestUpdateNoti(isLoopingHolder.value,isPlayingHolder.value,isShuffledHolder.value)
 
+            }
+
+             */
+
+            flowTest.asLiveData().observeForever(){
+                requestUpdateNoti(it.isLooping,it.isPlaying,it.isShuffled)
             }
 
             if(isTestBuild) {

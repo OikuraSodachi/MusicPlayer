@@ -13,7 +13,7 @@ import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.flow.combine
 
 class CustomPlayer (
-    val stateHolders: PlayerStateHolders,
+    private val stateHolders: PlayerStateHolders,
     private val nextIntent:Intent
 ): MediaPlayer(),MediaInterface{
 
@@ -176,9 +176,24 @@ class CustomPlayer (
     }
 
     val flowTest = combine(
-        stateHolders.currentMusicHolder,
-        stateHolders.isLoopingHolder,
-    ){ currentMusic, isLooping ->
+        currentMusicHolder,
+        isShuffledHolder,
+        isLoopingHolder,
+        isPlayingHolder
+    ){ currentMusic, isShuffled ,isLooping,isPlaying->
 
+        MusicTest(
+            currentMusic,
+            isLooping,
+            isShuffled,
+            isPlaying
+        )
     }
 }
+
+data class MusicTest(
+    val music:Music,
+    val isLooping:Boolean,
+    val isShuffled:Boolean,
+    val isPlaying:Boolean
+)
