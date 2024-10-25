@@ -52,6 +52,4 @@ class IconsRepository() {
         } else {
             repeatAll
         }
-
-    fun currentMusic() = player.currentMusicHolder.value
 }

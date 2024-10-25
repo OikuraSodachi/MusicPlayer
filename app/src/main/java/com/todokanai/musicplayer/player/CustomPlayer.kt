@@ -57,11 +57,6 @@ class CustomPlayer (
         super.stop()
     }
 
-    /** Unstable **/
-    fun isShuffled():Boolean{
-        return isShuffledHolder.value
-    }
-
     /*
     /** NullPointerException 발생함. 이유는 몰?루 **/
     override fun getCurrentPosition(): Int {
@@ -83,6 +78,7 @@ class CustomPlayer (
     override val isShuffledHolder = stateHolders.isShuffledHolder
 
     override val playListHolder = stateHolders.playListHolder
+
 
     fun initAttributes(initialMusic:Music?,context: Context) {
         this.apply {
@@ -184,7 +180,7 @@ class CustomPlayer (
     }
 
     private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
-        mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled())
+        mediaSession.setMediaPlaybackState_td(isLoopingHolder.value, isPlayingHolder.value, isShuffledHolder.value)
         startForegroundService()
     }
 

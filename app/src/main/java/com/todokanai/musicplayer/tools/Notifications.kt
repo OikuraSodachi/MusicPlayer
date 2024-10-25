@@ -43,6 +43,7 @@ class Notifications(private val channelID:String) {
 
         if(isTestBuild) {
             println("current: ${currentMusic?.title ?: context.getString(R.string.null_title)}")
+            println("isLooping: $isLooping")
         }
 
         return NotificationCompat.Builder(context, channelID)       // 알림바에 띄울 알림을 만듬
