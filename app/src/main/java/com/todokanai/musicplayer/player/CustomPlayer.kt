@@ -185,15 +185,19 @@ class CustomPlayer (
 
     fun beginObserve(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
         currentMusicHolder.asLiveData().observeForever(){
+          //  println("change: currentMusic")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
         isPlayingHolder.asLiveData().observeForever(){
+          //  println("change: isPlaying")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
         isLoopingHolder.asLiveData().observeForever(){
+          //  println("change: isLooping")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
         isShuffledHolder.asLiveData().observeForever(){
+           // println("change: isShuffled")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
     }
