@@ -8,6 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
@@ -68,39 +69,31 @@ class MusicPlayerWidget : AppWidgetProvider() {
         }
     }
 
-   // /*
     override fun onReceive(context: Context?, intent: Intent?) {
-        println("onReceive: Widget")
+        super.onReceive(context, intent)
+
         context?.let {
             val widgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
-            val currentMusic = player.currentMusicHolder.value
-            widgetIds.forEach {
-                updateMyAppWidget(appWidgetManager, it, widgetViews,currentMusic)
-            }
+            widgetIds.forEach { updateMyAppWidget_td(appWidgetManager, it, widgetViews,player.currentMusicHolder.value) }
         }
-        super.onReceive(context, intent)
     }
 
-
-   //  */
-    private fun updateMyAppWidget(
+    private fun updateMyAppWidget_td(
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         views: RemoteViews,
         currentMusic: Music
     ) {
-        println("updateAppWidget")
-        val icons = IconsRepository()
-        // Construct the RemoteViews object
         val albumUri = currentMusic.getAlbumUri()
         views.run {
             setTextViewText(R.id.widget_titleText,currentMusic.title)
             setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(player.isLoopingHolder.value))
             setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(player.isPlayingHolder.value))
             setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(player.isShuffledHolder.value))
+            println("albumUri: $albumUri")
+            Toast.makeText(appContext,"${albumUri?.path}",Toast.LENGTH_SHORT).show()
             setImageViewUri(R.id.widget_imageView, albumUri)   // Todo: updateMyAppWidget의 매 실행마다 이미지가 직전 이미지로 바뀌고 있음
         }
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 }
