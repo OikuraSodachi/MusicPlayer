@@ -4,7 +4,9 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.widget.RemoteViews
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
@@ -29,7 +31,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
     }
     private val icons = IconsRepository()
     private val player by lazy {getPlayer}
-
+    /*
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -42,6 +44,8 @@ class MusicPlayerWidget : AppWidgetProvider() {
             updateMyAppWidget(appWidgetManager, it,views,player.currentMusicHolder.value)
         }
     }
+
+     */
 
     /** stable **/
     override fun onEnabled(context: Context) {
@@ -64,7 +68,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         }
     }
 
-    /*
+   // /*
     override fun onReceive(context: Context?, intent: Intent?) {
         println("onReceive: Widget")
         context?.let {
@@ -78,7 +82,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
     }
 
 
-     */
+   //  */
     private fun updateMyAppWidget(
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,

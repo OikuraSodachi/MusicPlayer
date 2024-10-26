@@ -6,7 +6,7 @@ import java.io.File
 
 class IconsRepository() {
 
-    val player by lazy{getPlayer}
+  //  val player by lazy{getPlayer}
 
     private val thumbnailFolder = R.drawable.ic_baseline_folder_24
     private val thumbnailPdf = R.drawable.ic_pdf
@@ -32,21 +32,21 @@ class IconsRepository() {
     val repeat = R.drawable.baseline_repeat_one_24
     val repeatAll = R.drawable.baseline_repeat_24
 
-    fun pausePlay(isPlaying:Boolean = player.isPlaying) =
+    fun pausePlay(isPlaying:Boolean = getPlayer.isPlaying) =
         if(isPlaying){
             pause
         } else{
             play
         }
 
-    fun shuffledImage(isShuffled:Boolean = player.isShuffledHolder.value) =
+    fun shuffledImage(isShuffled:Boolean = getPlayer.isShuffledHolder.value) =
         if(isShuffled){
             shuffle
         } else{
             nonShuffle
         }
 
-    fun loopingImage(isLooping:Boolean = player.isLoopingHolder.value) =
+    fun loopingImage(isLooping:Boolean = getPlayer.isLoopingHolder.value) =
         if(isLooping){
             repeat
         } else {
