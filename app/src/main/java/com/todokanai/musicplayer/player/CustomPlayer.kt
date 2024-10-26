@@ -11,7 +11,6 @@ import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.interfaces.MediaInterface
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
@@ -20,7 +19,7 @@ import kotlinx.coroutines.flow.combine
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
     private val nextIntent:Intent
-): MediaPlayer(),MediaInterface{
+): MediaPlayer(){
 
     val mediaPlayer = MediaPlayer()
 
@@ -67,17 +66,17 @@ class CustomPlayer (
     // override
     //-------------------------
 
-    override val seedHolder = stateHolders.seedHolder
+    val seedHolder = stateHolders.seedHolder
 
-    override val currentMusicHolder = stateHolders.currentMusicHolder
+    val currentMusicHolder = stateHolders.currentMusicHolder
 
-    override val isLoopingHolder = stateHolders.isLoopingHolder
+    val isLoopingHolder = stateHolders.isLoopingHolder
 
-    override val isPlayingHolder = stateHolders.isPlayingHolder
+    val isPlayingHolder = stateHolders.isPlayingHolder
 
-    override val isShuffledHolder = stateHolders.isShuffledHolder
+    val isShuffledHolder = stateHolders.isShuffledHolder
 
-    override val playListHolder = stateHolders.playListHolder
+    val playListHolder = stateHolders.playListHolder
 
 
     fun initAttributes(initialMusic:Music?,context: Context) {
