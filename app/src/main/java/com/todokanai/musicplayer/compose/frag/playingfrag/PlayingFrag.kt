@@ -20,7 +20,7 @@ fun PlayingFrag(
     viewModel: PlayingViewModel = hiltViewModel()
 ){
   //  val mediaPlayer = viewModel.newMediaPlayer
-    val currentMusicFlow = viewModel.currentMusicHolder.collectAsStateWithLifecycle()
+   // val currentMusicFlow = viewModel.currentMusicHolder.collectAsStateWithLifecycle()
     val isPlaying = viewModel.isPlayingHolder.collectAsStateWithLifecycle()
     val isRepeating =viewModel.isRepeatingHolder.collectAsStateWithLifecycle()
     val isShuffled = viewModel.isShuffledHolder.collectAsStateWithLifecycle()
