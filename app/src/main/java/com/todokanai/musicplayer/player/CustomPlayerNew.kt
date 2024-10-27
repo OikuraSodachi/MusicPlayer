@@ -18,7 +18,9 @@ abstract class CustomPlayerNew(val dataStoreRepository:DataStoreRepository) {
     val isPlayingHolder :StateFlow<Boolean>
         get() = _isPlayingHolder
 
-    abstract fun isShuffled():Boolean
+    fun isShuffled():Boolean{
+        return isShuffledHolder.value
+    }
 
     abstract fun setMusic(music: Music)
 

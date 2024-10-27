@@ -30,10 +30,6 @@ class CustomPlayer_R(
             initialValue = initialLoop
         )
 
-    override fun isShuffled(): Boolean {
-        TODO("Not yet implemented")
-    }
-
     override fun setMusic(music: Music) {
         TODO("Not yet implemented")
     }
