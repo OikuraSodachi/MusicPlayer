@@ -123,7 +123,7 @@ class CustomPlayer (
         }
     }
 
-    private fun setMusic(music: Music?,context: Context){
+    fun setMusic(music: Music?,context: Context){
         val playList = playListHolder.value
         var i = 0
         try {
@@ -153,19 +153,27 @@ class CustomPlayer (
     fun prevAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
-        this.launchMusic(
-            context,
-            getCircularPrev_td(playList,playList.indexOf(currentMusic))
-        )
+        try {
+            this.launchMusic(
+                context,
+                getCircularPrev_td(playList, playList.indexOf(currentMusic))
+            )
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun nextAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
-        this.launchMusic(
-            context,
-            getCircularNext_td(playList, playList.indexOf(currentMusic))
-        )
+        try {
+            this.launchMusic(
+                context,
+                getCircularNext_td(playList, playList.indexOf(currentMusic))
+            )
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun repeatAction(){
@@ -207,6 +215,8 @@ class CustomPlayer (
             requestUpdateNoti(mediaSession,startForegroundService)
         }
     }
+
+    fun updatePlayList(newList:Array<Music>) = stateHolders.updatePlayList(newList)
 
     val flowTest = combine(
         currentMusicHolder,

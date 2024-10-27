@@ -7,8 +7,6 @@ import com.todokanai.musicplayer.data.room.MusicDao
 import com.todokanai.musicplayer.data.room.MyDatabase
 import com.todokanai.musicplayer.data.room.ScanPathDao
 import com.todokanai.musicplayer.data.room.UserDao
-import com.todokanai.musicplayer.player.PlayerStateHolders
-import com.todokanai.musicplayer.repository.MusicRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,10 +47,5 @@ class DatabaseModule {
     @Provides
     fun provideDataStoreRepository(@ApplicationContext context: Context):DataStoreRepository{
         return DataStoreRepository(context)
-    }
-
-    @Provides
-    fun providePlayerStateHolders(musicRepo:MusicRepository,dsRepo:DataStoreRepository):PlayerStateHolders{
-        return PlayerStateHolders(musicRepo, dsRepo)
     }
 }

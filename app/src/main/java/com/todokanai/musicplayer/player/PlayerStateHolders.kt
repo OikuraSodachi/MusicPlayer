@@ -25,7 +25,7 @@ class PlayerStateHolders (
 
     companion object{
         var initialSeed by Delegates.notNull<Double>()
-        lateinit var initialPlayList:List<Music>
+        lateinit var initialPlayList:Array<Music>
         var initialMusic : Music? = null
         var initialShuffle by Delegates.notNull<Boolean>()
         var initialLoop by Delegates.notNull<Boolean>()
@@ -83,23 +83,35 @@ class PlayerStateHolders (
         }
     }
 
+    private val _playListHolder = MutableStateFlow<Array<Music>>(initialPlayList)
+
     /** Todo: MusicRepo.getAll (Room을 observe) 대신 musicListHolder( Array<Music>)를 사용하도록 변경할것  **/
     override val playListHolder =
         combine(
-            musicRepo.getAll,
+            _playListHolder,
             isShuffledHolder,
             seedHolder
         ){ musics ,shuffled,seed ->
-            modifiedPlayList(musics.sortedBy{it.title},shuffled,seed)
+            modifiedPlayList(musics,shuffled,seed)
         }.stateIn(
             scope = CoroutineScope(Dispatchers.Default),
             started = SharingStarted.WhileSubscribed(5),
             initialValue = modifiedPlayList(initialPlayList,initialShuffle,initialSeed)
         )
 
-    private fun modifiedPlayList(musicList:List<Music>, isShuffled:Boolean, seed:Double):List<Music>{
+
+    fun updatePlayList(newList:Array<Music>){
+        this._playListHolder.value = newList
+
+        CoroutineScope(Dispatchers.IO).launch {
+            musicRepo.updateMusicList(newList)
+        }
+    }
+
+
+    private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
         if(isShuffled){
-            return musicList.shuffled(Random(seed.toLong()))
+            return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
         } else{
             return musicList.sortedBy { it.title }
         }

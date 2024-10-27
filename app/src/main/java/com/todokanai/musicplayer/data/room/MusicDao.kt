@@ -13,7 +13,7 @@ interface MusicDao {
     fun getAll() : Flow<Array<Music>>
 
     @Query("select * from room_music")
-    suspend fun getAllNonFlow() : List<Music>
+    suspend fun getAllNonFlow() : Array<Music>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(music: Music)

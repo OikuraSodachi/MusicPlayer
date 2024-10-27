@@ -12,6 +12,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.todokanai.musicplayer.components.view.SeekBarListener
 import com.todokanai.musicplayer.databinding.FragmentPlayingBinding
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.tools.IconPicker
 import com.todokanai.musicplayer.viewmodel.PlayingViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,8 +22,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class PlayingFragment : Fragment() {
 
-    private val binding by lazy{FragmentPlayingBinding.inflate(layoutInflater)}
-    private val viewModel:PlayingViewModel by viewModels()
+    private val binding by lazy { FragmentPlayingBinding.inflate(layoutInflater) }
+    private val viewModel: PlayingViewModel by viewModels()
     private val icons = IconPicker()
 
     override fun onCreateView(
@@ -31,25 +32,27 @@ class PlayingFragment : Fragment() {
     ): View? {
 
         val seekBarListener = SeekBarListener(
-            getCurrentPosition = {viewModel.currentPosition()},
+            getCurrentPosition = { viewModel.currentPosition() },
             onProgressChange = {
-                binding.songCurrentProgress.text = SimpleDateFormat("mm:ss").format(viewModel.currentPosition())
+                binding.songCurrentProgress.text =
+                    SimpleDateFormat("mm:ss").format(viewModel.currentPosition())
             },
-            seekTo = {viewModel.seekTo(it)}
+            seekTo = { viewModel.seekTo(it) }
         )
 
         fun seekBarSet(seekBar: SeekBar) {
             lifecycleScope.launch {
                 while (viewModel.isPlayingHolder.value) {
                     binding.seekBar.progress = viewModel.currentPosition()
-                    binding.songCurrentProgress.text = SimpleDateFormat("mm:ss").format(binding.seekBar.progress)
+                    binding.songCurrentProgress.text =
+                        SimpleDateFormat("mm:ss").format(binding.seekBar.progress)
                     delay(1000)
                 }
             }
             seekBar.setOnSeekBarChangeListener(seekBarListener)
         }
 
-        binding.run{
+        binding.run {
             repeatButton.setOnClickListener { viewModel.repeat(requireActivity()) }
             previousButton.setOnClickListener { viewModel.prev(requireActivity()) }
             playPauseButton.setOnClickListener { viewModel.pausePlay(requireActivity()) }
@@ -57,30 +60,37 @@ class PlayingFragment : Fragment() {
             shuffleButton.setOnClickListener { viewModel.shuffle(requireActivity()) }
         }
 
-        viewModel.run{
-            currentMusicHolder.asLiveData().observe(viewLifecycleOwner){
+        viewModel.run {
+            currentMusicHolder.asLiveData().observe(viewLifecycleOwner) {
                 it?.let {
-                    binding.run {
-                        seekBar.max = viewModel.duration()
-                        playerImage.setImageURI(it.getAlbumUri())
-                        artist.text = it.artist
-                        songTotalTime.text = SimpleDateFormat("mm:ss").format(it.duration)
-                        title.text = it.title
+                    if (it != dummyMusic) {
+                        binding.run {
+                            try {
+                                seekBar.max = viewModel.duration()
+                                playerImage.setImageURI(it.getAlbumUri())
+                                artist.text = it.artist
+                                songTotalTime.text = SimpleDateFormat("mm:ss").format(it.duration)
+                                title.text = it.title
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+
                     }
                 }
-            }
-            isPlayingHolder.asLiveData().observe(viewLifecycleOwner){
-                binding.playPauseButton.setImageResource(icons.pausePlayIcon(it))
-                seekBarSet(binding.seekBar)
-            }
+                isPlayingHolder.asLiveData().observe(viewLifecycleOwner) {
+                    binding.playPauseButton.setImageResource(icons.pausePlayIcon(it))
+                    seekBarSet(binding.seekBar)
+                }
 
-            isRepeatingHolder.asLiveData().observe(viewLifecycleOwner){
-                binding.repeatButton.setImageResource(icons.repeatIcon(it))
+                isRepeatingHolder.asLiveData().observe(viewLifecycleOwner) {
+                    binding.repeatButton.setImageResource(icons.repeatIcon(it))
+                }
+                isShuffledHolder.asLiveData().observe(viewLifecycleOwner) {
+                    binding.shuffleButton.setImageResource(icons.shuffleIcon(it))
+                }
             }
-            isShuffledHolder.asLiveData().observe(viewLifecycleOwner){
-                binding.shuffleButton.setImageResource(icons.shuffleIcon(it))
-            }
+            return binding.root
         }
-        return binding.root
     }
 }

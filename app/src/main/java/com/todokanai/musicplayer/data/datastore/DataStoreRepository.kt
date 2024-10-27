@@ -79,7 +79,7 @@ class DataStoreRepository(private val appContext: Context) {
     }
 
     suspend fun getSeed() : Double {
-        return appContext.dataStore.data.first()[DATASTORE_RANDOM_SEED]?:0.0
+        return appContext.dataStore.data.first()[DATASTORE_RANDOM_SEED]?:0.1
     }
 
     suspend fun saveRandomSeed(seed:Double){

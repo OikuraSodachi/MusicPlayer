@@ -18,6 +18,7 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
@@ -44,7 +45,7 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     private val notifications = Notifications(Constants.CHANNEL_ID)
-  //  private lateinit var playerStateHolders: PlayerStateHolders
+    private lateinit var playerStateHolders: PlayerStateHolders
 
     private val player by lazy{getPlayer}
     private val mediaSession by lazy{MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)}
@@ -66,9 +67,6 @@ class MusicService : MediaBrowserServiceCompat(){
 
     @Inject
     lateinit var audioManager: AudioManager
-
-    @Inject
-    lateinit var playerStateHolders: PlayerStateHolders
 
     override fun onCreate() {
         super.onCreate()
@@ -170,14 +168,12 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     fun setLateinits(){
-        /*
         playerStateHolders = PlayerStateHolders(
             musicRepo,
             dsRepo,
             dummyMusic
         )
 
-         */
         customPlayer = CustomPlayer(
             playerStateHolders,
             nextIntent
