@@ -4,8 +4,6 @@ import android.content.Context
 import android.support.v4.media.session.MediaSessionCompat
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
-import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.repository.MusicRepository
 import dagger.Module
@@ -26,10 +24,5 @@ class MediaModule {
     @Provides
     fun providePlayerStateHolders(musicRepo:MusicRepository,dsRepo:DataStoreRepository):PlayerStateHolders{
         return PlayerStateHolders(musicRepo,dsRepo)
-    }
-
-    @Provides
-    fun provideCustomPlayer(playerStateHolders: PlayerStateHolders):CustomPlayer{
-        return CustomPlayer(playerStateHolders,nextIntent)
     }
 }

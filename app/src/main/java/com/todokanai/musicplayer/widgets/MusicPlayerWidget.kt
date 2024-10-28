@@ -13,14 +13,13 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
-import com.todokanai.musicplayer.player.CustomPlayer
-import javax.inject.Inject
 
 /**
  * Implementation of App Widget functionality.
@@ -32,9 +31,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(appContext)
     }
     private val icons = IconsRepository()
-   // private val player by lazy {getPlayer}
-   @Inject
-   lateinit var player: CustomPlayer
+    private val player by lazy {getPlayer}
     /*
     override fun onUpdate(
         context: Context,
