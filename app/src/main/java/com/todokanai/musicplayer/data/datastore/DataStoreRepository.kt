@@ -29,6 +29,7 @@ class DataStoreRepository(private val appContext: Context) {
         val DATASTORE_SHOULD_STOP_ON_NOISY = booleanPreferencesKey("datastore_should_stop_on_noisy")
     }
 
+    private val seedDefaultValue:Double = 0.1
 
     fun saveSortBy(value:String){
         CoroutineScope(Dispatchers.IO).launch {
@@ -75,14 +76,14 @@ class DataStoreRepository(private val appContext: Context) {
     }
 
     val seed : Flow<Double> = appContext.dataStore.data.map {
-        it[DATASTORE_RANDOM_SEED] ?: 0.0
+        it[DATASTORE_RANDOM_SEED] ?:seedDefaultValue
     }
 
     suspend fun getSeed() : Double {
-        return appContext.dataStore.data.first()[DATASTORE_RANDOM_SEED]?:0.1
+        return appContext.dataStore.data.first()[DATASTORE_RANDOM_SEED]?:seedDefaultValue
     }
 
-    suspend fun saveRandomSeed(seed:Double){
+    suspend fun saveSeed(seed:Double){
         appContext.dataStore.edit {
             it[DATASTORE_RANDOM_SEED] = seed
         }

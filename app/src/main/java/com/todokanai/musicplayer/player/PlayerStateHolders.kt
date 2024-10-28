@@ -79,7 +79,7 @@ class PlayerStateHolders (
     fun setSeed(seed: Double){
         this.seed.value = seed
         CoroutineScope(Dispatchers.IO).launch {
-            dsRepo.saveRandomSeed(seed)
+            dsRepo.saveSeed(seed)
         }
     }
 

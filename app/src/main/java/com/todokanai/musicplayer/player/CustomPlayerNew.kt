@@ -87,7 +87,7 @@ abstract class CustomPlayerNew(val dataStoreRepository:DataStoreRepository) {
     }
 
     suspend fun seed_Setter(seed:Double){
-        dataStoreRepository.saveRandomSeed(seed)
+        dataStoreRepository.saveSeed(seed)
     }
 
     fun isPlaying_Setter(isPlaying:Boolean){
