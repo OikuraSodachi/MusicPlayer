@@ -9,13 +9,17 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
-import com.todokanai.musicplayer.myobjects.Getters.getPlayer
+import com.todokanai.musicplayer.player.CustomPlayer
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MusicReceiver  : BroadcastReceiver() {
 
-    private val player by lazy{getPlayer}
+    //private val player by lazy{getPlayer}
+
+    @Inject
+    lateinit var player:CustomPlayer
 
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {

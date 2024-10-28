@@ -6,7 +6,7 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.myobjects.Getters.getPlayer
+import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.ScanPathRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,9 +21,10 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val spRepository:ScanPathRepository,
     private val musicRepo:MusicRepository,
+    val player:CustomPlayer
 ) : ViewModel() {
 
-    private val player by lazy{getPlayer}
+  //  private val player by lazy{getPlayer}
 
     /** 더 깔끔한 IO 작업 중복 방지 방식은 없는지 고민해볼 것 **/
     fun apply(context: Context,button: View){
