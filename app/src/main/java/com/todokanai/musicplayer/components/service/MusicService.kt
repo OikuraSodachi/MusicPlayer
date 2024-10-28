@@ -45,7 +45,7 @@ class MusicService : MediaBrowserServiceCompat(){
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
         lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
-        val serviceScope : CoroutineScope = CoroutineScope(Dispatchers.Default)
+       // val serviceScope : CoroutineScope = CoroutineScope(Dispatchers.Default)
     }
     private val notifications = Notifications(Constants.CHANNEL_ID)
     private lateinit var playerStateHolders: PlayerStateHolders
@@ -141,7 +141,6 @@ class MusicService : MediaBrowserServiceCompat(){
         player.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
         mediaSession.release()
-        serviceScope.cancel()
         Variables.isServiceOn = false
         super.onDestroy()
     }
