@@ -33,6 +33,9 @@ import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,14 +45,15 @@ class MusicService : MediaBrowserServiceCompat(){
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
         lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
+        val serviceScope : CoroutineScope = CoroutineScope(Dispatchers.Default)
     }
-
     private val notifications = Notifications(Constants.CHANNEL_ID)
     private lateinit var playerStateHolders: PlayerStateHolders
 
     private val player by lazy{getPlayer}
-    private val mediaSession by lazy{MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)}
-    private val notificationManager by lazy{NotificationManagerCompat.from(this)}
+
+   // private val mediaSession by lazy{MediaSessionCompat(applicationContext, Constants.MEDIA_SESSION_TAG)}
+
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -67,6 +71,12 @@ class MusicService : MediaBrowserServiceCompat(){
 
     @Inject
     lateinit var audioManager: AudioManager
+
+    @Inject
+    lateinit var notificationManager: NotificationManagerCompat
+
+    @Inject
+    lateinit var mediaSession: MediaSessionCompat
 
     override fun onCreate() {
         super.onCreate()
@@ -131,6 +141,7 @@ class MusicService : MediaBrowserServiceCompat(){
         player.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
         mediaSession.release()
+        serviceScope.cancel()
         Variables.isServiceOn = false
         super.onDestroy()
     }
