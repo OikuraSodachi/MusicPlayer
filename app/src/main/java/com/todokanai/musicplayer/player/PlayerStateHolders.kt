@@ -85,7 +85,6 @@ class PlayerStateHolders (
 
     private val _playListHolder = MutableStateFlow<Array<Music>>(initialPlayList)
 
-    /** Todo: MusicRepo.getAll (Room을 observe) 대신 musicListHolder( Array<Music>)를 사용하도록 변경할것  **/
     override val playListHolder =
         combine(
             _playListHolder,
@@ -110,6 +109,7 @@ class PlayerStateHolders (
 
 
     private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
+        println("seed: $seed")
         if(isShuffled){
             return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
         } else{

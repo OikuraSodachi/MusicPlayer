@@ -153,6 +153,8 @@ class CustomPlayer (
     fun prevAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
+        println("temp ${playListHolder.value.map { it.title }}")
+
         try {
             this.launchMusic(
                 context,
@@ -166,6 +168,7 @@ class CustomPlayer (
     fun nextAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
+        println("temp ${playListHolder.value.map { it.title }}")
         try {
             this.launchMusic(
                 context,
@@ -205,7 +208,7 @@ class CustomPlayer (
             requestUpdateNoti(mediaSession,startForegroundService)
         }
         isShuffledHolder.asLiveData().observeForever(){
-           // println("change: isShuffled")
+          //  println("change: isShuffled = ${it}")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
     }
