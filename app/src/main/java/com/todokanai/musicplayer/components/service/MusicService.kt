@@ -18,7 +18,6 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
@@ -33,9 +32,6 @@ import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,14 +41,11 @@ class MusicService : MediaBrowserServiceCompat(){
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
         lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
-       // val serviceScope : CoroutineScope = CoroutineScope(Dispatchers.Default)
     }
     private val notifications = Notifications(Constants.CHANNEL_ID)
-    private lateinit var playerStateHolders: PlayerStateHolders
+    //private lateinit var playerStateHolders: PlayerStateHolders
 
     private val player by lazy{getPlayer}
-
-   // private val mediaSession by lazy{MediaSessionCompat(applicationContext, Constants.MEDIA_SESSION_TAG)}
 
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
@@ -77,6 +70,9 @@ class MusicService : MediaBrowserServiceCompat(){
 
     @Inject
     lateinit var mediaSession: MediaSessionCompat
+
+    @Inject
+    lateinit var playerStateHolders: PlayerStateHolders
 
     override fun onCreate() {
         super.onCreate()
@@ -178,11 +174,13 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     fun setLateinits(){
+        /*
         playerStateHolders = PlayerStateHolders(
             musicRepo,
             dsRepo,
             dummyMusic
         )
+         */
 
         customPlayer = CustomPlayer(
             playerStateHolders,
