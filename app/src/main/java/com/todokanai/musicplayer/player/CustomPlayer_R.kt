@@ -8,74 +8,33 @@ import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.interfaces.MediaInterfaceNew
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
-import kotlin.random.Random
 
 class CustomPlayer_R @Inject constructor(
     musicRepo:MusicRepository,
     dsRepo:DataStoreRepository,
-):CustomPlayerNew(dsRepo,musicRepo),MediaInterfaceNew {
-    /*
-    override var playList = emptyList<Music>()
-    override var isLooping = false
-    override var isShuffled = false
-    override var currentMusic = dummyMusic
-    override var isPlaying = false
+):CustomPlayerNew(dsRepo,musicRepo){
 
-     */
+    override val seedHolder = stateHolders.seedHolder
 
-    override val playListHolder = combine(
-        isShuffledHolder,
-        musicArrayHolder,
-        seedHolder
-    ){ isShuffled, musicArray,seed ->
-        modifiedPlayList(musicArray,isShuffled,seed)
+    override val currentMusicHolder = stateHolders.currentMusicHolder
 
-    }
+    override val isLoopingHolder = stateHolders.isLoopingHolder
 
-    override fun repeatAction(isLooping: Boolean) {
-        saveLoop(!isLooping)
-    }
+    val isPlayingHolder = stateHolders.isPlayingHolder
 
-    override fun prevAction(context: Context, currentMusic: Music,playList:List<Music>) {
-        try {
-            launchMusic(
-                context,
-                getCircularPrev_td(playList, playList.indexOf(currentMusic)),
-                playList
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+    override val isShuffledHolder = stateHolders.isShuffledHolder
 
-    override fun pausePlayAction(isPlaying: Boolean) {
-        TODO("Not yet implemented")
-    }
+    override val playListHolder = stateHolders.playListHolder
 
-    override fun nextAction(context: Context, currentMusic: Music,playList: List<Music>) {
-        try {
-            launchMusic(
-                context,
-                getCircularNext_td(playList, playList.indexOf(currentMusic)),
-                playList
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
-    override fun shuffleAction(isShuffled: Boolean) {
-        saveShuffle(!isShuffled)
-    }
-
-    fun initAttributes(initialMusic: Music, context: Context,playList: List<Music>) {
+    fun initAttributes(initialMusic:Music,context: Context) {
+        val playList = playListHolder.value
         this.apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -83,44 +42,101 @@ class CustomPlayer_R @Inject constructor(
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
-            this.setMusic(initialMusic, context, playList)
+            this.setMusic(initialMusic,context,playList)
         }
         // 대충 initial value set
     }
 
-    fun beginObserve(mediaSession: MediaSessionCompat, startForegroundService: () -> Unit) {
-        currentMusicHolder.asLiveData().observeForever() {
-          //  currentMusic = it ?: dummyMusic
-            requestUpdateNoti(mediaSession, startForegroundService)
+    fun pausePlayAction() =
+        if (isPlaying) {
+            this@CustomPlayer_R.pause()
+        } else {
+            this@CustomPlayer_R.start()
         }
-        isPlayingHolder.asLiveData().observeForever() {
-           // isPlaying = it
-            requestUpdateNoti(mediaSession, startForegroundService)
+
+    fun prevAction(context: Context){
+        val currentMusic = currentMusicHolder.value
+        val playList = playListHolder.value
+
+        try {
+            this.launchMusic(
+                context,
+                getCircularPrev_td(playList, playList.indexOf(currentMusic)),
+                playList
+            )
+        }catch (e:Exception){
+            e.printStackTrace()
         }
-        isLoopingHolder.asLiveData().observeForever() {
-          //  isLooping = it
-            requestUpdateNoti(mediaSession, startForegroundService)
+    }
+
+    fun nextAction(context: Context){
+        val currentMusic = currentMusicHolder.value
+        val playList = playListHolder.value
+        try {
+            this.launchMusic(
+                context,
+                getCircularNext_td(playList, playList.indexOf(currentMusic)),
+                playList
+            )
+        }catch (e:Exception){
+            e.printStackTrace()
         }
-        isShuffledHolder.asLiveData().observeForever() {
-            //isShuffled = it
-            requestUpdateNoti(mediaSession, startForegroundService)
-        }
-        playListHolder.asLiveData().observeForever(){
-           // playList = it
+    }
+
+    fun repeatAction(){
+        val shouldLoop = !isLooping
+        this.isLooping = shouldLoop
+    }
+
+    fun shuffleAction() {
+
+        stateHolders.setShuffle(!isShuffledHolder.value)
+    }
+
+    private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
+        mediaSession.setMediaPlaybackState_td(isLoopingHolder.value, isPlayingHolder.value, isShuffledHolder.value)
+        startForegroundService()
+    }
+
+    fun beginObserve(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
+        currentMusicHolder.asLiveData().observeForever(){
+            //  println("change: currentMusic")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
-
+        isPlayingHolder.asLiveData().observeForever(){
+            //  println("change: isPlaying")
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
+        isLoopingHolder.asLiveData().observeForever(){
+            //  println("change: isLooping")
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
+        isShuffledHolder.asLiveData().observeForever(){
+            //  println("change: isShuffled = ${it}")
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
     }
 
-    private fun isShuffled():Boolean{
-        return false
+    fun beginObserve2(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
+        flowTest.asLiveData().observeForever(){
+            requestUpdateNoti(mediaSession,startForegroundService)
+        }
     }
-    private fun requestUpdateNoti(
-        mediaSession: MediaSessionCompat,
-        startForegroundService: () -> Unit,
-    ) {
-        mediaSession.setMediaPlaybackState_td(isLooping, isPlaying,isShuffled() )
-        startForegroundService()
+
+    fun updatePlayList(newList:Array<Music>) = stateHolders.updatePlayList(newList)
+
+    val flowTest = combine(
+        currentMusicHolder,
+        isShuffledHolder,
+        isLoopingHolder,
+        isPlayingHolder
+    ){ currentMusic, isShuffled ,isLooping,isPlaying->
+        MusicTest(
+            currentMusic,
+            isLooping,
+            isShuffled,
+            isPlaying
+        )
     }
 
     /**
@@ -128,18 +144,13 @@ class CustomPlayer_R @Inject constructor(
      *
      *  playback position 관련해서는 미검증 상태
      */
-    fun MediaSessionCompat.setMediaPlaybackState_td(
-        isLooping: Boolean,
-        isPlaying: Boolean,
-        isShuffled: Boolean
-    ) {
+    fun MediaSessionCompat.setMediaPlaybackState_td(isLooping:Boolean,isPlaying:Boolean,isShuffled:Boolean){
         val icons = IconsRepository()
-        fun state() = if (isPlaying) {
+        fun state() = if(isPlaying){
             PlaybackStateCompat.STATE_PLAYING
-        } else {
+        }else{
             PlaybackStateCompat.STATE_PAUSED
         }
-
         val state = state()
         fun repeatIcon() = icons.loopingImage(isLooping)
         fun shuffleIcon() = icons.shuffledImage(isShuffled)
@@ -160,19 +171,11 @@ class CustomPlayer_R @Inject constructor(
                             PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
                             PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
                 }
-                addCustomAction(Constants.ACTION_REPLAY, "Repeat", repeatIcon())
-                addCustomAction(Constants.ACTION_SHUFFLE, "Shuffle", shuffleIcon())
+                addCustomAction(Constants.ACTION_REPLAY,"Repeat", repeatIcon())
+                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon())
                 setActions(actions)
             }
             .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         this.setPlaybackState(playbackState.build())
-    }
-
-    private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
-        if(isShuffled){
-            return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
-        } else{
-            return musicList.sortedBy { it.title }
-        }
     }
 }

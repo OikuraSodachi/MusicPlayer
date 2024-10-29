@@ -107,10 +107,9 @@ class MusicService : MediaBrowserServiceCompat(){
         player_R.apply {
             initAttributes(
                 initialMusic ?: dummyMusic,
-                this@MusicService,
-                emptyList()
+                this@MusicService
             )
-            beginObserve(mediaSession,{startForegroundService(serviceIntent)})
+         //   beginObserve(mediaSession,{startForegroundService(serviceIntent)})
         }
     }
 

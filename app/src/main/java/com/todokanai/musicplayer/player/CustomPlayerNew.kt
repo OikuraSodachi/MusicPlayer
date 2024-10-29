@@ -9,39 +9,15 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 abstract class CustomPlayerNew (
-    override val dsRepo: DataStoreRepository,
-    override val musicRepo:MusicRepository
+    final override val dsRepo: DataStoreRepository,
+    final override val musicRepo:MusicRepository
 ):CustomPlayer_Holders,MediaPlayer() {
-
+    val stateHolders = PlayerStateHolders(musicRepo, dsRepo)
     val mediaPlayer = MediaPlayer()
 
-    private val _isPlayingHolder = MutableStateFlow<Boolean>(false)
-    val isPlayingHolder : StateFlow<Boolean>
-        get() = _isPlayingHolder
-
-
-    fun _setIsPlaying(isPlaying:Boolean){
-        _isPlayingHolder.value = isPlaying
-    }
-    /*
-    fun getPlayList(
-        musicArray:Array<Music>,
-        isShuffled:Boolean,
-        seed:Double
-    ):List<Music>{
-        return modifiedPlayList(musicArray,isShuffled,seed)
-    }
-
-     */
-
-
     private fun setMusicPrimitive(music: Music,context: Context,onException:()->Unit = {}){
-    //    val isMusicValid = music.fileDir != "empty"
-        //if (isMusicValid) {
         try {
             mediaPlayer.apply {
                 reset()
@@ -57,7 +33,6 @@ abstract class CustomPlayerNew (
             e.printStackTrace()
             onException()
         }
-      //  }
     }
 
     fun setMusic(music: Music,context: Context,playList:List<Music>){
@@ -90,17 +65,17 @@ abstract class CustomPlayerNew (
 
     override fun start() {
         mediaPlayer.start()
-        _setIsPlaying(mediaPlayer.isPlaying)
+        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
     }
 
     override fun pause() {
         mediaPlayer.pause()
-        _setIsPlaying(mediaPlayer.isPlaying)
+        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
     }
 
     override fun reset() {
         mediaPlayer.reset()
-        _setIsPlaying(mediaPlayer.isPlaying)
+        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
     }
 
     override fun isPlaying(): Boolean {
@@ -111,13 +86,19 @@ abstract class CustomPlayerNew (
         return mediaPlayer.isLooping
     }
 
+    override fun setLooping(p0: Boolean) {
+        saveLoop(p0)
+        stateHolders.setIsLooping(p0)
+        super.setLooping(p0)
+    }
+
     override fun release() {
         mediaPlayer.release()
     }
 
     override fun stop() {
         mediaPlayer.stop()
-        _setIsPlaying(mediaPlayer.isPlaying)
+        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
         super.stop()
     }
 
