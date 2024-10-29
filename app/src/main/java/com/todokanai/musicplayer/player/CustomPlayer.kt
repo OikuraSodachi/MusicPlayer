@@ -155,7 +155,6 @@ class CustomPlayer (
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
         println("temp ${playListHolder.value.map { it.title }}")
-
         try {
             this.launchMusic(
                 context,
