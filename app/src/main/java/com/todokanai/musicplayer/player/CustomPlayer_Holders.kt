@@ -2,24 +2,16 @@ package com.todokanai.musicplayer.player
 
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
-abstract class CustomPlayer_Holders (
-    private val dsRepo:DataStoreRepository,
-    private val musicRepo:MusicRepository
-){
-
-    private val initialLoop = false
-    private val initialShuffle = false
-    private val initialSeed : Double = 0.1
-    private val initialMusicArray = emptyArray<Music>()
-    private val initialMusic :Music = dummyMusic
+interface CustomPlayer_Holders {
+    val dsRepo:DataStoreRepository
+    val musicRepo:MusicRepository
 
     fun saveShuffle(isShuffled:Boolean){
         CoroutineScope(Dispatchers.IO).launch {
@@ -39,33 +31,28 @@ abstract class CustomPlayer_Holders (
         }
     }
 
-    val _isShuffledHolder = dsRepo.isShuffled.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialShuffle
-    )
+  //  /*
+    val isShuffledHolder: Flow<Boolean>
+        get() = dsRepo.isShuffled
+    val isLoopingHolder: Flow<Boolean>
+        get() = dsRepo.isLooping
+    val seedHolder: Flow<Double>
+        get() = dsRepo.seed
 
-    val _isLoopingHolder = dsRepo.isLooping.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialLoop
-    )
+    val musicArrayHolder : Flow<Array<Music>>
+        get() = musicRepo.getAll
 
-    val _seedHolder = dsRepo.seed.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialSeed
-    )
+    val currentMusicHolder: Flow<Music?>
+        get() = musicRepo.currentMusic
 
-    val musicArrayHolder = musicRepo.getAll.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialMusicArray
-    )
 
-    val _currentMusicHolder = musicRepo.currentMusic.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialMusic
-    )
+    val playListHolder :Flow<List<Music>>
+    // */
+    private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
+        if(isShuffled){
+            return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
+        } else{
+            return musicList.sortedBy { it.title }
+        }
+    }
 }

@@ -18,6 +18,8 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer_R
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
@@ -48,6 +50,7 @@ class MusicService : MediaBrowserServiceCompat(){
     //private lateinit var playerStateHolders: PlayerStateHolders
 
     private val player by lazy{getPlayer}
+    private val player_R by lazy{ getPlayer_R}
 
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
@@ -100,6 +103,15 @@ class MusicService : MediaBrowserServiceCompat(){
            // beginObserve2(mediaSession,{startForegroundService(serviceIntent)})
             // Todo: 어느 쪽이 더 나은 방식인지?
         }       // observe LiveData
+
+        player_R.apply {
+            initAttributes(
+                initialMusic ?: dummyMusic,
+                this@MusicService,
+                emptyList()
+            )
+            beginObserve(mediaSession,{startForegroundService(serviceIntent)})
+        }
     }
 
     override fun onGetRoot(
