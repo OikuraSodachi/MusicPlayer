@@ -220,7 +220,7 @@ class CustomPlayer (
         }
     }
 
-    fun updatePlayList(newList:Array<Music>) = stateHolders.updatePlayList(newList)
+    fun updateMusicArray(newList:Array<Music>) = stateHolders.updatePlayList(newList)
 
     val flowTest = combine(
         currentMusicHolder,

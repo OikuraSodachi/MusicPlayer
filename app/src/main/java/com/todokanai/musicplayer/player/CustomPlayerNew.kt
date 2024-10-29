@@ -6,31 +6,40 @@ import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 abstract class CustomPlayerNew (
-    final override val dsRepo: DataStoreRepository,
-    final override val musicRepo:MusicRepository
-):CustomPlayer_Holders,MediaPlayer() {
-    val stateHolders = PlayerStateHolders(musicRepo, dsRepo)
+    val dsRepo: DataStoreRepository,
+    val musicRepo:MusicRepository
+):MediaPlayer() {
+  //  val stateHolders = PlayerStateHolders(musicRepo, dsRepo)
     val mediaPlayer = MediaPlayer()
 
-    override var isShuffled = false
     private val seed = 0.1
 
-    private var musicArray = emptyArray<Music>()
+    abstract val seedHolder:MutableStateFlow<Double>
+    abstract val playListHolder: MutableStateFlow<List<Music>>
+    abstract val isPlayingHolder:MutableStateFlow<Boolean>
+    abstract val isShuffledHolder:MutableStateFlow<Boolean>
+    abstract val isLoopingHolder:MutableStateFlow<Boolean>
+    abstract val currentMusicHolder:MutableStateFlow<Music>
+    abstract val musicArray : MutableStateFlow<Array<Music>>
+ //   private var musicArray = emptyArray<Music>()
 
     fun getPlayList():List<Music>{
-        return stateHolders.playListHolder.value
+        return playListHolder.value
      //   return modifiedPlayList(stateHolders.playListHolder.value,isShuffled,seed)
     }
 
     fun getCurrentMusic():Music{
-        return stateHolders.currentMusicHolder.value ?:dummyMusic
+        return currentMusicHolder.value
     }
 
     private fun setMusicPrimitive(music: Music,context: Context,onException:()->Unit = {}){
@@ -79,28 +88,28 @@ abstract class CustomPlayerNew (
     }
 
     fun getIsShuffled():Boolean{
-        return isShuffled
+        return isShuffledHolder.value
     }
 
     fun setIsShuffled(shuffle:Boolean){
-        isShuffled = shuffle
-        stateHolders.setShuffle(shuffle)
+        isShuffledHolder.value = shuffle
+        saveShuffle(shuffle)
     }
 
 
     override fun start() {
         mediaPlayer.start()
-        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
+        isPlayingHolder.value = isPlaying
     }
 
     override fun pause() {
         mediaPlayer.pause()
-        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
+        isPlayingHolder.value = isPlaying
     }
 
     override fun reset() {
         mediaPlayer.reset()
-        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
+        isPlayingHolder.value = isPlaying
     }
 
     override fun isPlaying(): Boolean {
@@ -112,8 +121,8 @@ abstract class CustomPlayerNew (
     }
 
     override fun setLooping(p0: Boolean) {
+        isLoopingHolder.value = p0
         saveLoop(p0)
-        stateHolders.setIsLooping(p0)
         super.setLooping(p0)
     }
 
@@ -123,7 +132,7 @@ abstract class CustomPlayerNew (
 
     override fun stop() {
         mediaPlayer.stop()
-        stateHolders.setIsPlaying(mediaPlayer.isPlaying)
+        isPlayingHolder.value = isPlaying
         super.stop()
     }
 
@@ -134,6 +143,24 @@ abstract class CustomPlayerNew (
             return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
         } else{
             return musicList.sortedBy { it.title }
+        }
+    }
+
+    private fun saveShuffle(isShuffled:Boolean){
+        CoroutineScope(Dispatchers.IO).launch {
+            dsRepo.saveIsShuffled(isShuffled)
+        }
+    }
+
+    private fun saveLoop(isLooping:Boolean){
+        CoroutineScope(Dispatchers.IO).launch {
+            dsRepo.saveIsLooping(isLooping)
+        }
+    }
+
+    private fun saveSeed(seed:Double){
+        CoroutineScope(Dispatchers.IO).launch {
+            dsRepo.saveSeed(seed)
         }
     }
 

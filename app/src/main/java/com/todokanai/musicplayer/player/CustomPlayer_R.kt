@@ -9,9 +9,11 @@ import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class CustomPlayer_R @Inject constructor(
@@ -19,17 +21,22 @@ class CustomPlayer_R @Inject constructor(
     dsRepo:DataStoreRepository,
 ):CustomPlayerNew(dsRepo,musicRepo){
 
-  //  val seedHolder = stateHolders.seedHolder
+    val initialSeed = 0.1
+    val initialMusic = dummyMusic
+    val initialLoop = false
+    val initialShuffle = false
+    val initialPlayList = emptyList<Music>()
+    val initialMusicArray = emptyArray<Music>()
 
-    val currentMusicHolder = stateHolders.currentMusicHolder
+    override val seedHolder = MutableStateFlow<Double>(initialSeed)
+    override val currentMusicHolder = MutableStateFlow<Music>(initialMusic)
+    override val isLoopingHolder = MutableStateFlow<Boolean>(initialLoop)
+    override val isPlayingHolder = MutableStateFlow<Boolean>(false)
+    override val isShuffledHolder = MutableStateFlow<Boolean>(initialShuffle)
+    override val playListHolder = MutableStateFlow<List<Music>>(initialPlayList)
+    override val musicArray = MutableStateFlow<Array<Music>>(initialMusicArray)
 
-    val isLoopingHolder = stateHolders.isLoopingHolder
 
-    val isPlayingHolder = stateHolders.isPlayingHolder
-
-    val isShuffledHolder = stateHolders.isShuffledHolder
-
-    val playListHolder = stateHolders.playListHolder
 
 
     fun initAttributes(initialMusic:Music,context: Context) {
@@ -91,7 +98,7 @@ class CustomPlayer_R @Inject constructor(
 
     ///*
     private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
-        mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled)
+        mediaSession.setMediaPlaybackState_td(isLoopingHolder.value, isPlayingHolder.value, isShuffledHolder.value)
         startForegroundService()
     }
 
@@ -119,7 +126,9 @@ class CustomPlayer_R @Inject constructor(
      //*/
 
 
-    fun updatePlayList(newList:Array<Music>) = stateHolders.updatePlayList(newList)
+    fun updateMusicArray(newList:Array<Music>){
+        musicArray.value = newList
+    }
 
 
     /**
