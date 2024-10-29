@@ -8,7 +8,7 @@ interface MediaInterface {
 
     val isPlayingHolder: StateFlow<Boolean>
     val seedHolder:StateFlow<Double>
-    val currentMusicHolder:StateFlow<Music>
+    val currentMusicHolder:StateFlow<Music?>
     val isLoopingHolder:StateFlow<Boolean>
     val isShuffledHolder:StateFlow<Boolean>
     val playListHolder:StateFlow<List<Music>>

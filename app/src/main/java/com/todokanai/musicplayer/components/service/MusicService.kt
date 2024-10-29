@@ -96,7 +96,7 @@ class MusicService : MediaBrowserServiceCompat(){
             )
 
             /** case 1**/
-          //  beginObserve(mediaSession,{startForegroundService(serviceIntent)})
+            beginObserve(mediaSession,{startForegroundService(serviceIntent)})
 
             /** case 2 **/
            // beginObserve2(mediaSession,{startForegroundService(serviceIntent)})

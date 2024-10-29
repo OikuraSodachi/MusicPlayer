@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
@@ -88,14 +89,14 @@ class CustomPlayer_R @Inject constructor(
         setIsShuffled(!getIsShuffled())
     }
 
-    /*
+    ///*
     private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
-        mediaSession.setMediaPlaybackState_td(isLoopingHolder.value, isPlayingHolder.value, isShuffledHolder.value)
+        mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled)
         startForegroundService()
     }
 
-     */
-    /*
+     //*/
+    ///*
     fun beginObserve(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
         currentMusicHolder.asLiveData().observeForever(){
             //  println("change: currentMusic")
@@ -115,7 +116,7 @@ class CustomPlayer_R @Inject constructor(
         }
     }
 
-     */
+     //*/
 
 
     fun updatePlayList(newList:Array<Music>) = stateHolders.updatePlayList(newList)

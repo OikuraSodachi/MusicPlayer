@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
@@ -24,11 +25,12 @@ abstract class CustomPlayerNew (
     private var musicArray = emptyArray<Music>()
 
     fun getPlayList():List<Music>{
-        return modifiedPlayList(musicArray,isShuffled,seed)
+        return stateHolders.playListHolder.value
+     //   return modifiedPlayList(stateHolders.playListHolder.value,isShuffled,seed)
     }
 
     fun getCurrentMusic():Music{
-        return stateHolders.currentMusicHolder.value
+        return stateHolders.currentMusicHolder.value ?:dummyMusic
     }
 
     private fun setMusicPrimitive(music: Music,context: Context,onException:()->Unit = {}){

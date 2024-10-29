@@ -12,6 +12,7 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.flow.combine
@@ -228,7 +229,7 @@ class CustomPlayer (
         isPlayingHolder
     ){ currentMusic, isShuffled ,isLooping,isPlaying->
         MusicTest(
-            currentMusic,
+            currentMusic?:dummyMusic,
             isLooping,
             isShuffled,
             isPlaying
