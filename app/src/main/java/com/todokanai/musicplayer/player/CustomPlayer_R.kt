@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
@@ -12,7 +11,6 @@ import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
-import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class CustomPlayer_R @Inject constructor(
@@ -20,21 +18,21 @@ class CustomPlayer_R @Inject constructor(
     dsRepo:DataStoreRepository,
 ):CustomPlayerNew(dsRepo,musicRepo){
 
-    override val seedHolder = stateHolders.seedHolder
+  //  val seedHolder = stateHolders.seedHolder
 
-    override val currentMusicHolder = stateHolders.currentMusicHolder
+    val currentMusicHolder = stateHolders.currentMusicHolder
 
-    override val isLoopingHolder = stateHolders.isLoopingHolder
+    val isLoopingHolder = stateHolders.isLoopingHolder
 
     val isPlayingHolder = stateHolders.isPlayingHolder
 
-    override val isShuffledHolder = stateHolders.isShuffledHolder
+    val isShuffledHolder = stateHolders.isShuffledHolder
 
-    override val playListHolder = stateHolders.playListHolder
+    val playListHolder = stateHolders.playListHolder
 
 
     fun initAttributes(initialMusic:Music,context: Context) {
-        val playList = playListHolder.value
+        val playList = getPlayList()
         this.apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -55,14 +53,13 @@ class CustomPlayer_R @Inject constructor(
         }
 
     fun prevAction(context: Context){
-        val currentMusic = currentMusicHolder.value
-        val playList = playListHolder.value
+        val currentMusic = getCurrentMusic()
+        val playList = getPlayList()
 
         try {
             this.launchMusic(
                 context,
                 getCircularPrev_td(playList, playList.indexOf(currentMusic)),
-                playList
             )
         }catch (e:Exception){
             e.printStackTrace()
@@ -70,13 +67,12 @@ class CustomPlayer_R @Inject constructor(
     }
 
     fun nextAction(context: Context){
-        val currentMusic = currentMusicHolder.value
-        val playList = playListHolder.value
+        val currentMusic = getCurrentMusic()
+        val playList = getPlayList()
         try {
             this.launchMusic(
                 context,
                 getCircularNext_td(playList, playList.indexOf(currentMusic)),
-                playList
             )
         }catch (e:Exception){
             e.printStackTrace()
@@ -89,15 +85,17 @@ class CustomPlayer_R @Inject constructor(
     }
 
     fun shuffleAction() {
-
-        stateHolders.setShuffle(!isShuffledHolder.value)
+        setIsShuffled(!getIsShuffled())
     }
 
+    /*
     private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
         mediaSession.setMediaPlaybackState_td(isLoopingHolder.value, isPlayingHolder.value, isShuffledHolder.value)
         startForegroundService()
     }
 
+     */
+    /*
     fun beginObserve(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
         currentMusicHolder.asLiveData().observeForever(){
             //  println("change: currentMusic")
@@ -117,27 +115,11 @@ class CustomPlayer_R @Inject constructor(
         }
     }
 
-    fun beginObserve2(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
-        flowTest.asLiveData().observeForever(){
-            requestUpdateNoti(mediaSession,startForegroundService)
-        }
-    }
+     */
+
 
     fun updatePlayList(newList:Array<Music>) = stateHolders.updatePlayList(newList)
 
-    val flowTest = combine(
-        currentMusicHolder,
-        isShuffledHolder,
-        isLoopingHolder,
-        isPlayingHolder
-    ){ currentMusic, isShuffled ,isLooping,isPlaying->
-        MusicTest(
-            currentMusic,
-            isLooping,
-            isShuffled,
-            isPlaying
-        )
-    }
 
     /**
      *  MediaSessionCompat의 PlaybackState Setter

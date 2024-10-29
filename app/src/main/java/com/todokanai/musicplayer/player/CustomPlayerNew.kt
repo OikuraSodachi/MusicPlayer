@@ -9,6 +9,7 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
+import kotlin.random.Random
 
 abstract class CustomPlayerNew (
     final override val dsRepo: DataStoreRepository,
@@ -16,6 +17,19 @@ abstract class CustomPlayerNew (
 ):CustomPlayer_Holders,MediaPlayer() {
     val stateHolders = PlayerStateHolders(musicRepo, dsRepo)
     val mediaPlayer = MediaPlayer()
+
+    override var isShuffled = false
+    private val seed = 0.1
+
+    private var musicArray = emptyArray<Music>()
+
+    fun getPlayList():List<Music>{
+        return modifiedPlayList(musicArray,isShuffled,seed)
+    }
+
+    fun getCurrentMusic():Music{
+        return stateHolders.currentMusicHolder.value
+    }
 
     private fun setMusicPrimitive(music: Music,context: Context,onException:()->Unit = {}){
         try {
@@ -57,9 +71,18 @@ abstract class CustomPlayerNew (
     }
 
 
-    fun launchMusic(context: Context,music: Music,playList: List<Music>){
-        setMusic(music, context,playList)
+    fun launchMusic(context: Context,music: Music){
+        setMusic(music, context,getPlayList())
         start()
+    }
+
+    fun getIsShuffled():Boolean{
+        return isShuffled
+    }
+
+    fun setIsShuffled(shuffle:Boolean){
+        isShuffled = shuffle
+        stateHolders.setShuffle(shuffle)
     }
 
 
@@ -103,6 +126,13 @@ abstract class CustomPlayerNew (
     }
 
 
-
+    private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
+        println("seed: $seed")
+        if(isShuffled){
+            return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
+        } else{
+            return musicList.sortedBy { it.title }
+        }
+    }
 
 }

@@ -18,7 +18,6 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
-import com.todokanai.musicplayer.myobjects.Getters.getPlayer_R
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
@@ -44,13 +43,13 @@ class MusicService : MediaBrowserServiceCompat(){
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
         lateinit var customPlayer_R : CustomPlayer_R
-        lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
+        val audioFocusChangeListener = MyAudioFocusChangeListener()
     }
     private val notifications = Notifications(Constants.CHANNEL_ID)
     //private lateinit var playerStateHolders: PlayerStateHolders
 
     private val player by lazy{getPlayer}
-    private val player_R by lazy{ getPlayer_R}
+   // private val player_R by lazy{ getPlayer_R}
 
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
@@ -92,25 +91,17 @@ class MusicService : MediaBrowserServiceCompat(){
 
         player.apply{
             initAttributes(
-                initialMusic,
+                initialMusic ?: dummyMusic,
                 this@MusicService
             )
 
             /** case 1**/
-            beginObserve(mediaSession,{startForegroundService(serviceIntent)})
+          //  beginObserve(mediaSession,{startForegroundService(serviceIntent)})
 
             /** case 2 **/
            // beginObserve2(mediaSession,{startForegroundService(serviceIntent)})
             // Todo: 어느 쪽이 더 나은 방식인지?
         }       // observe LiveData
-
-        player_R.apply {
-            initAttributes(
-                initialMusic ?: dummyMusic,
-                this@MusicService
-            )
-         //   beginObserve(mediaSession,{startForegroundService(serviceIntent)})
-        }
     }
 
     override fun onGetRoot(
@@ -203,7 +194,6 @@ class MusicService : MediaBrowserServiceCompat(){
             musicRepo,
             dsRepo
         )
-        audioFocusChangeListener = MyAudioFocusChangeListener(player)
         mediaSession.apply {
             setCallback(
                 MediaSessionCallback(

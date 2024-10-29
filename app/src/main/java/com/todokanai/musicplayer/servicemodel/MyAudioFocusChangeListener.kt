@@ -2,10 +2,11 @@ package com.todokanai.musicplayer.servicemodel
 
 import android.media.AudioManager
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 
 /** Singleton 상태 **/
-class MyAudioFocusChangeListener(private val mediaPlayer: CustomPlayer) : AudioManager.OnAudioFocusChangeListener{
+class MyAudioFocusChangeListener() : AudioManager.OnAudioFocusChangeListener{
+    val mediaPlayer by lazy{getPlayer}
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_LOSS -> {
