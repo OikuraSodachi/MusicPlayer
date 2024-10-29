@@ -2,33 +2,37 @@ package com.todokanai.musicplayer.player
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.widget.Toast
+import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
+import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 import kotlin.random.Random
 
-abstract class CustomPlayerNew @Inject constructor(
+abstract class CustomPlayerNew (
     dsRepo:DataStoreRepository,
     musicRepo:MusicRepository
 ):CustomPlayer_Holders(dsRepo,musicRepo) {
 
     val mediaPlayer = MediaPlayer()
 
-    private val _isPlayingHolder = MutableStateFlow<Boolean>(false)
-    val isPlayingHolder :StateFlow<Boolean>
-        get() = _isPlayingHolder
+    val _isPlayingHolder = MutableStateFlow<Boolean>(false)
+   // val isPlayingHolder :StateFlow<Boolean>
+     //   get() = _isPlayingHolder
 
-    fun isShuffled():Boolean = isShuffledHolder.value
+    private fun isShuffled():Boolean = _isShuffledHolder.value
 
-    private fun seed() : Double = seedHolder.value
+    private fun seed() : Double = _seedHolder.value
 
     private fun musicArray() : Array<Music> = musicArrayHolder.value
 
-    fun isLooping() : Boolean = isLoopingHolder.value
+
+    fun isPlaying_Setter(isPlaying:Boolean){
+        _isPlayingHolder.value = isPlaying
+    }
 
     fun getPlayList(
         musicArray:Array<Music> = musicArray(),
@@ -38,7 +42,7 @@ abstract class CustomPlayerNew @Inject constructor(
         return modifiedPlayList(musicArray,isShuffled,seed)
     }
 
-    fun setMusic(music: Music,context: Context,onException:()->Unit){
+    private fun setMusicPrimitive(music: Music,context: Context,onException:()->Unit = {}){
     //    val isMusicValid = music.fileDir != "empty"
         //if (isMusicValid) {
         try {
@@ -59,9 +63,38 @@ abstract class CustomPlayerNew @Inject constructor(
       //  }
     }
 
-    fun isPlaying_Setter(isPlaying:Boolean){
-        _isPlayingHolder.value = isPlaying
+    fun setMusic(music: Music,context: Context,playList :List<Music> = getPlayList()){
+        var i = 0
+        try {
+            setMusicPrimitive(
+                music = music,
+                context = context
+            )
+        } catch(e:Exception){
+            println(e.stackTrace)
+            i++
+            if(i!=playList.size) {
+                setMusicPrimitive(
+                    music = getCircularNext_td(playList, playList.indexOf(music)),
+                    context = context
+                )
+            } else{
+                Toast.makeText(context,context.getString(R.string.all_item_failure), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
+    fun start(){
+        mediaPlayer.start()
+        isPlaying_Setter(mediaPlayer.isPlaying)
+    }
+
+    fun launchMusic(context: Context,music: Music){
+        setMusic(music, context)
+        start()
+    }
+
+
 
 
 

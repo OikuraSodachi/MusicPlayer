@@ -24,6 +24,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.CustomPlayer_R
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialMusic
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -40,6 +41,7 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
+        lateinit var customPlayer_R : CustomPlayer_R
         lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     }
     private val notifications = Notifications(Constants.CHANNEL_ID)
@@ -185,6 +187,10 @@ class MusicService : MediaBrowserServiceCompat(){
         customPlayer = CustomPlayer(
             playerStateHolders,
             nextIntent
+        )
+        customPlayer_R = CustomPlayer_R(
+            musicRepo,
+            dsRepo
         )
         audioFocusChangeListener = MyAudioFocusChangeListener(player)
         mediaSession.apply {

@@ -1,17 +1,26 @@
 package com.todokanai.musicplayer.interfaces
 
+import android.content.Context
 import com.todokanai.musicplayer.data.room.Music
+import kotlinx.coroutines.flow.StateFlow
 
 interface MediaInterfaceNew {
-    fun setMusic(music: Music)
 
-    fun repeatAction()
+    fun repeatAction(isLooping:Boolean)
 
-    fun prevAction()
+    fun prevAction(context: Context,currentMusic:Music)
 
-    fun pausePlayAction()
+    fun pausePlayAction(isPlaying:Boolean)
 
-    fun nextAction()
+    fun nextAction(context: Context,currentMusic: Music)
 
-    fun shuffleAction()
+    fun shuffleAction(isShuffled:Boolean)
+
+    val isLoopingHolder: StateFlow<Boolean>
+
+    val isShuffledHolder:StateFlow<Boolean>
+
+    val currentMusicHolder:StateFlow<Music?>
+
+    val isPlayingHolder:StateFlow<Boolean>
 }

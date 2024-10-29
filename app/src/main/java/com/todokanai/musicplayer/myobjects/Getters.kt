@@ -6,4 +6,7 @@ import com.todokanai.musicplayer.components.service.MusicService
 object Getters {
     val getPlayer
         get() = MusicService.customPlayer
+
+    val getPlayer_R
+        get() = MusicService.customPlayer_R
 }
