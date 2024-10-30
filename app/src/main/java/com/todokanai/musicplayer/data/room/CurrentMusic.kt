@@ -5,17 +5,16 @@ import android.provider.MediaStore
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import java.text.SimpleDateFormat
 
 @Entity(tableName = "room_currentmusic")
 data class CurrentMusic(
-    @ColumnInfo val id: String = dummyMusic.id,
-    @ColumnInfo val title: String? = dummyMusic.title,
-    @ColumnInfo val artist: String? = dummyMusic.artist,
-    @ColumnInfo val albumId: String? = dummyMusic.albumId,
-    @ColumnInfo val duration: Int = dummyMusic.duration,
-    @ColumnInfo val fileDir: String = dummyMusic.fileDir
+    @ColumnInfo val id: String,
+    @ColumnInfo val title: String? = null,
+    @ColumnInfo val artist: String? = null,
+    @ColumnInfo val albumId: String? = null,
+    @ColumnInfo val duration: Int,
+    @ColumnInfo val fileDir: String
 ){
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo

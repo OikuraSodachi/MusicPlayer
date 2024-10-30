@@ -12,7 +12,7 @@ class MusicRepository @Inject constructor(private val musicDao:MusicDao,private 
 
     val getAll = musicDao.getAll()
 
-    val currentMusic = cMusicDao.getCurrentMusic().map { it.toMusic() }
+    val currentMusic = cMusicDao.getCurrentMusic().map { it?.toMusic() }
 
     suspend fun getAllNonFlow() = musicDao.getAllNonFlow()
 
@@ -22,7 +22,7 @@ class MusicRepository @Inject constructor(private val musicDao:MusicDao,private 
 
     suspend fun delete(music: Music) = musicDao.delete(music)
 
-    suspend fun currentMusicNonFlow() = cMusicDao.getCurrentNonFlow().toMusic()
+    suspend fun currentMusicNonFlow() = cMusicDao.getCurrentNonFlow()?.toMusic()
 
     suspend fun upsertCurrentMusic(currentMusic: Music){
         cMusicDao.deleteAll()

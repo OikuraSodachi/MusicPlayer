@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CurrentMusicDao {
     @Query("select * from room_currentmusic where `no`==1")
-    fun getCurrentMusic(): Flow<CurrentMusic>
+    fun getCurrentMusic(): Flow<CurrentMusic?>
 
     @Query("select * from room_currentmusic where `no`==1")
-    suspend fun getCurrentNonFlow() : CurrentMusic
+    suspend fun getCurrentNonFlow() : CurrentMusic?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(music: CurrentMusic)

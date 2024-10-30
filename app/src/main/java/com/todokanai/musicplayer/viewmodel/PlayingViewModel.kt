@@ -15,17 +15,17 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayingViewModel @Inject constructor() : ViewModel(){
 
-    private val customPlayer by lazy{ getPlayer}
+    private val mediaInterface by lazy{ getPlayer}
 
-    private val mediaPlayer = customPlayer.mediaPlayer
+    private val mediaPlayer = mediaInterface.mediaPlayer
 
-    val isPlayingHolder = customPlayer.isPlayingHolder
+    val isPlayingHolder = mediaInterface.isPlayingHolder
 
-    val isShuffledHolder = customPlayer.isShuffledHolder
+    val isShuffledHolder = mediaInterface.isShuffledHolder
 
-    val isRepeatingHolder = customPlayer.isLoopingHolder
+    val isRepeatingHolder = mediaInterface.isLoopingHolder
 
-    val currentMusicHolder = customPlayer.currentMusicHolder
+    val currentMusicHolder = mediaInterface.currentMusicHolder
     //----------------
 
     fun duration() = mediaPlayer.duration

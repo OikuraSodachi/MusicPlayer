@@ -12,7 +12,6 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.flow.combine
@@ -124,7 +123,7 @@ class CustomPlayer (
         }
     }
 
-    fun setMusic(music: Music?,context: Context){
+    private fun setMusic(music: Music?,context: Context){
         val playList = playListHolder.value
         var i = 0
         try {
@@ -154,29 +153,19 @@ class CustomPlayer (
     fun prevAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
-        println("temp ${playListHolder.value.map { it.title }}")
-        try {
-            this.launchMusic(
-                context,
-                getCircularPrev_td(playList, playList.indexOf(currentMusic))
-            )
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
+        this.launchMusic(
+            context,
+            getCircularPrev_td(playList,playList.indexOf(currentMusic))
+        )
     }
 
     fun nextAction(context: Context){
         val currentMusic = currentMusicHolder.value
         val playList = playListHolder.value
-        println("temp ${playListHolder.value.map { it.title }}")
-        try {
-            this.launchMusic(
-                context,
-                getCircularNext_td(playList, playList.indexOf(currentMusic))
-            )
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
+        this.launchMusic(
+            context,
+            getCircularNext_td(playList, playList.indexOf(currentMusic))
+        )
     }
 
     fun repeatAction(){
@@ -208,7 +197,7 @@ class CustomPlayer (
             requestUpdateNoti(mediaSession,startForegroundService)
         }
         isShuffledHolder.asLiveData().observeForever(){
-          //  println("change: isShuffled = ${it}")
+           // println("change: isShuffled")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
     }
@@ -219,8 +208,6 @@ class CustomPlayer (
         }
     }
 
-    fun updateMusicArray(newList:Array<Music>) = stateHolders.updatePlayList(newList)
-
     val flowTest = combine(
         currentMusicHolder,
         isShuffledHolder,
@@ -228,7 +215,7 @@ class CustomPlayer (
         isPlayingHolder
     ){ currentMusic, isShuffled ,isLooping,isPlaying->
         MusicTest(
-            currentMusic?:dummyMusic,
+            currentMusic,
             isLooping,
             isShuffled,
             isPlaying

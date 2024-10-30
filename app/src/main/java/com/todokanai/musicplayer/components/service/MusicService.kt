@@ -18,14 +18,12 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.CustomPlayer_R
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialMusic
 import com.todokanai.musicplayer.repository.MusicRepository
@@ -42,15 +40,15 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
-        lateinit var customPlayer_R : CustomPlayer_R
-        val audioFocusChangeListener = MyAudioFocusChangeListener()
+        lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     }
+
     private val notifications = Notifications(Constants.CHANNEL_ID)
-    //private lateinit var playerStateHolders: PlayerStateHolders
+  //  private lateinit var playerStateHolders: PlayerStateHolders
 
     private val player by lazy{getPlayer}
-   // private val player_R by lazy{ getPlayer_R}
-
+    private val mediaSession by lazy{MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)}
+    private val notificationManager by lazy{NotificationManagerCompat.from(this)}
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -70,12 +68,6 @@ class MusicService : MediaBrowserServiceCompat(){
     lateinit var audioManager: AudioManager
 
     @Inject
-    lateinit var notificationManager: NotificationManagerCompat
-
-    @Inject
-    lateinit var mediaSession: MediaSessionCompat
-
-    @Inject
     lateinit var playerStateHolders: PlayerStateHolders
 
     override fun onCreate() {
@@ -91,7 +83,7 @@ class MusicService : MediaBrowserServiceCompat(){
 
         player.apply{
             initAttributes(
-                initialMusic ?: dummyMusic,
+                initialMusic,
                 this@MusicService
             )
 
@@ -184,16 +176,13 @@ class MusicService : MediaBrowserServiceCompat(){
             dsRepo,
             dummyMusic
         )
-         */
 
+         */
         customPlayer = CustomPlayer(
             playerStateHolders,
             nextIntent
         )
-        customPlayer_R = CustomPlayer_R(
-            musicRepo,
-            dsRepo
-        )
+        audioFocusChangeListener = MyAudioFocusChangeListener(player)
         mediaSession.apply {
             setCallback(
                 MediaSessionCallback(

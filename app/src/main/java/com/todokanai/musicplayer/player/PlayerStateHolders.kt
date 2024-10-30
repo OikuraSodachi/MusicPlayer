@@ -25,7 +25,7 @@ class PlayerStateHolders (
 
     companion object{
         var initialSeed by Delegates.notNull<Double>()
-        lateinit var initialPlayList:Array<Music>
+        lateinit var initialPlayList:List<Music>
         var initialMusic : Music? = null
         var initialShuffle by Delegates.notNull<Boolean>()
         var initialLoop by Delegates.notNull<Boolean>()
@@ -39,37 +39,34 @@ class PlayerStateHolders (
         this.isPlaying.value = isPlaying
     }
 
-    override val currentMusicHolder : StateFlow<Music> = musicRepo.currentMusic.stateIn(
-        CoroutineScope(Dispatchers.IO),
-        SharingStarted.WhileSubscribed(5),
-        initialMusic ?:dummyMusic
-    )
+    private val currentMusic = MutableStateFlow<Music>(dummyMusic)
+    override val currentMusicHolder : StateFlow<Music>
+        get() = currentMusic
 
     fun setCurrentMusic(music: Music){
+        currentMusic.value = music
         CoroutineScope(Dispatchers.IO).launch {
             musicRepo.upsertCurrentMusic(music)
         }
     }
 
-    override val isLoopingHolder : StateFlow<Boolean> = dsRepo.isLooping.stateIn(
-        CoroutineScope(Dispatchers.IO),
-        SharingStarted.WhileSubscribed(5),
-        initialLoop
-    )
-        //get() = isLooping
+    private val isLooping = MutableStateFlow<Boolean>(initialLoop)
+    override val isLoopingHolder : StateFlow<Boolean>
+        get() = isLooping
 
     fun setIsLooping(isLooping:Boolean){
+        this.isLooping.value = isLooping
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveIsLooping(isLooping)
         }
     }
 
-    override val isShuffledHolder : StateFlow<Boolean> = dsRepo.isShuffled.stateIn(
-        CoroutineScope(Dispatchers.IO),
-        SharingStarted.WhileSubscribed(5),
-        initialShuffle
-    )
+    private val isShuffled = MutableStateFlow<Boolean>(initialShuffle)
+    override val isShuffledHolder : StateFlow<Boolean>
+        get() = isShuffled
+
     fun setShuffle(isShuffled:Boolean){
+        this.isShuffled.value = isShuffled
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveIsShuffled(isShuffled)
         }
@@ -82,40 +79,27 @@ class PlayerStateHolders (
     fun setSeed(seed: Double){
         this.seed.value = seed
         CoroutineScope(Dispatchers.IO).launch {
-            dsRepo.saveSeed(seed)
+            dsRepo.saveRandomSeed(seed)
         }
     }
 
-    private val _playListHolder = MutableStateFlow<Array<Music>>(initialPlayList)
-
+    /** Todo: MusicRepo.getAll (Room을 observe) 대신 musicListHolder( Array<Music>)를 사용하도록 변경할것  **/
     override val playListHolder =
         combine(
-            _playListHolder,
+            musicRepo.getAll,
             isShuffledHolder,
             seedHolder
         ){ musics ,shuffled,seed ->
-            modifiedPlayList(musics,shuffled,seed)
+            modifiedPlayList(musics.sortedBy{it.title},shuffled,seed)
         }.stateIn(
             scope = CoroutineScope(Dispatchers.Default),
             started = SharingStarted.WhileSubscribed(5),
             initialValue = modifiedPlayList(initialPlayList,initialShuffle,initialSeed)
         )
 
-
-
-    fun updatePlayList(newList:Array<Music>){
-        this._playListHolder.value = newList
-
-        CoroutineScope(Dispatchers.IO).launch {
-            musicRepo.updateMusicList(newList)
-        }
-    }
-
-
-    private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
-        println("seed: $seed")
+    private fun modifiedPlayList(musicList:List<Music>, isShuffled:Boolean, seed:Double):List<Music>{
         if(isShuffled){
-            return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
+            return musicList.shuffled(Random(seed.toLong()))
         } else{
             return musicList.sortedBy { it.title }
         }
