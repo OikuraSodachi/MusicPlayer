@@ -4,7 +4,7 @@ import android.media.MediaPlayer
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.MediaInterface
-import com.todokanai.musicplayer.myobjects.MyObjects
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,23 +14,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
 import kotlin.random.Random
 
 /** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
 class PlayerStateHolders (
     val musicRepo:MusicRepository,
     val dsRepo:DataStoreRepository,
-    dummyMusic: Music = MyObjects.dummyMusic
 ) :MediaInterface{
 
-    companion object{
-        var initialSeed by Delegates.notNull<Double>()
-        lateinit var initialPlayList:List<Music>
-        var initialMusic : Music? = null
-        var initialShuffle by Delegates.notNull<Boolean>()
-        var initialLoop by Delegates.notNull<Boolean>()
-    }
+    val initialSeedNew : Double = 0.1
+    val initialPlayListNew = emptyList<Music>()
+    val initialMusicNew = dummyMusic
+    val initialShuffleNew = false
+    val initialLoopNew = false
 
     override val mediaPlayer = MediaPlayer()
 
@@ -42,7 +38,7 @@ class PlayerStateHolders (
         this.isPlaying.value = isPlaying
     }
 
-    private val currentMusic = MutableStateFlow<Music>(dummyMusic)
+    private val currentMusic = MutableStateFlow<Music>(initialMusicNew)
     override val currentMusicHolder : StateFlow<Music>
         get() = currentMusic
 
@@ -53,7 +49,7 @@ class PlayerStateHolders (
         }
     }
 
-    private val isLooping = MutableStateFlow<Boolean>(initialLoop)
+    private val isLooping = MutableStateFlow<Boolean>(initialLoopNew)
     override val isLoopingHolder : StateFlow<Boolean>
         get() = isLooping
 
@@ -64,7 +60,7 @@ class PlayerStateHolders (
         }
     }
 
-    private val isShuffled = MutableStateFlow<Boolean>(initialShuffle)
+    private val isShuffled = MutableStateFlow<Boolean>(initialShuffleNew)
     override val isShuffledHolder : StateFlow<Boolean>
         get() = isShuffled
 
@@ -75,7 +71,7 @@ class PlayerStateHolders (
         }
     }
 
-    private val seed = MutableStateFlow<Double>(initialSeed)
+    private val seed = MutableStateFlow<Double>(initialSeedNew)
     override val seedHolder : StateFlow<Double>
         get() = seed
 
@@ -97,9 +93,17 @@ class PlayerStateHolders (
         }.stateIn(
             scope = CoroutineScope(Dispatchers.Default),
             started = SharingStarted.WhileSubscribed(5),
-            initialValue = modifiedPlayList(initialPlayList,initialShuffle,initialSeed)
+            initialValue = modifiedPlayList(initialPlayListNew,initialShuffleNew,initialSeedNew)
         )
 
+    suspend fun initialCurrentMusic() = musicRepo.currentMusicNonFlow()
+
+    suspend fun initValues(){
+        setSeed(dsRepo.getSeed())
+        setIsLooping(dsRepo.isLooping())
+        setShuffle(dsRepo.isShuffled())
+        setCurrentMusic(musicRepo.currentMusicNonFlow())
+    }
     private fun modifiedPlayList(musicList:List<Music>, isShuffled:Boolean, seed:Double):List<Music>{
         if(isShuffled){
             return musicList.shuffled(Random(seed.toLong()))

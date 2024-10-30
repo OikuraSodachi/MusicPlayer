@@ -51,8 +51,5 @@ class DatabaseModule {
         return DataStoreRepository(context)
     }
 
-    @Provides
-    fun providePlayerStateHolders(musicRepo:MusicRepository,dsRepo:DataStoreRepository):PlayerStateHolders{
-        return PlayerStateHolders(musicRepo, dsRepo)
-    }
+
 }

@@ -1,7 +1,6 @@
 package com.todokanai.musicplayer.player
 
 import android.content.Context
-import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.support.v4.media.session.MediaSessionCompat
@@ -12,14 +11,20 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.MyObjects
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
-    private val nextIntent:Intent
+   // private val nextIntent:Intent
 ): MediaPlayer(){
 
+
+    val nextIntent = MyObjects.nextIntent
     val mediaPlayer = stateHolders.mediaPlayer
 
     override fun start() {
@@ -78,7 +83,7 @@ class CustomPlayer (
     val playListHolder = stateHolders.playListHolder
 
 
-    fun initAttributes(initialMusic:Music?,context: Context) {
+    fun initAttributes(context: Context) {
         this.apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -86,8 +91,10 @@ class CustomPlayer (
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
-
-            this.setMusic(initialMusic,context)
+            CoroutineScope(Dispatchers.IO).launch {
+                stateHolders.initValues()
+                this@CustomPlayer.setMusic(stateHolders.initialCurrentMusic(), context)
+            }
         }
         // 대충 initial value set
     }

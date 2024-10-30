@@ -1,12 +1,14 @@
 package com.todokanai.musicplayer.compose
 
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.myobjects.Getters.getPlayer
+import com.todokanai.musicplayer.player.CustomPlayer
 import java.io.File
+import javax.inject.Inject
 
 class IconsRepository() {
-
-    val player by lazy{getPlayer}
+    @Inject
+    lateinit var player: CustomPlayer
+    //private val player by lazy{getPlayer}
 
     private val thumbnailFolder = R.drawable.ic_baseline_folder_24
     private val thumbnailPdf = R.drawable.ic_pdf

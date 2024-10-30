@@ -17,7 +17,6 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
@@ -25,7 +24,6 @@ import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
-import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialMusic
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -39,11 +37,11 @@ class MusicService : MediaBrowserServiceCompat(){
 
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
-        lateinit var customPlayer: CustomPlayer
+       // lateinit var customPlayer: CustomPlayer
     }
 
     private val notifications = Notifications(Constants.CHANNEL_ID)
-    private val player by lazy{getPlayer}
+   // private val player by lazy{getPlayer}
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -74,6 +72,9 @@ class MusicService : MediaBrowserServiceCompat(){
     @Inject
     lateinit var notificationManager: NotificationManagerCompat
 
+    @Inject
+    lateinit var player:CustomPlayer
+
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
@@ -87,7 +88,7 @@ class MusicService : MediaBrowserServiceCompat(){
 
         player.apply{
             initAttributes(
-                initialMusic,
+               // initialMusicNew,
                 this@MusicService
             )
 
@@ -182,10 +183,13 @@ class MusicService : MediaBrowserServiceCompat(){
         )
 
          */
+        /*
         customPlayer = CustomPlayer(
             playerStateHolders,
             nextIntent
         )
+
+         */
         mediaSession.apply {
             setCallback(
                 MediaSessionCallback(
