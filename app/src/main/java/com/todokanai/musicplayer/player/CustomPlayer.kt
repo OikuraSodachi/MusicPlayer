@@ -14,7 +14,6 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
-import kotlinx.coroutines.flow.combine
 
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
@@ -87,6 +86,7 @@ class CustomPlayer (
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
+
             this.setMusic(initialMusic,context)
         }
         // 대충 initial value set
@@ -200,27 +200,12 @@ class CustomPlayer (
            // println("change: isShuffled")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
-    }
-
-    fun beginObserve2(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
-        flowTest.asLiveData().observeForever(){
-            requestUpdateNoti(mediaSession,startForegroundService)
+        playListHolder.asLiveData().observeForever(){
+            println("playList: ${it.map{it.title}}")
         }
     }
 
-    val flowTest = combine(
-        currentMusicHolder,
-        isShuffledHolder,
-        isLoopingHolder,
-        isPlayingHolder
-    ){ currentMusic, isShuffled ,isLooping,isPlaying->
-        MusicTest(
-            currentMusic,
-            isLooping,
-            isShuffled,
-            isPlaying
-        )
-    }
+
 
     /**
      *  MediaSessionCompat의 PlaybackState Setter

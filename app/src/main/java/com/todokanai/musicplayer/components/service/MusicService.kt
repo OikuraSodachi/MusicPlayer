@@ -40,15 +40,10 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
         lateinit var customPlayer: CustomPlayer
-        lateinit var audioFocusChangeListener:MyAudioFocusChangeListener
     }
 
     private val notifications = Notifications(Constants.CHANNEL_ID)
-  //  private lateinit var playerStateHolders: PlayerStateHolders
-
     private val player by lazy{getPlayer}
-    private val mediaSession by lazy{MediaSessionCompat(this, Constants.MEDIA_SESSION_TAG)}
-    private val notificationManager by lazy{NotificationManagerCompat.from(this)}
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -68,7 +63,16 @@ class MusicService : MediaBrowserServiceCompat(){
     lateinit var audioManager: AudioManager
 
     @Inject
+    lateinit var audioFocusChangeListener: MyAudioFocusChangeListener
+
+    @Inject
     lateinit var playerStateHolders: PlayerStateHolders
+
+    @Inject
+    lateinit var mediaSession:MediaSessionCompat
+
+    @Inject
+    lateinit var notificationManager: NotificationManagerCompat
 
     override fun onCreate() {
         super.onCreate()
@@ -182,7 +186,6 @@ class MusicService : MediaBrowserServiceCompat(){
             playerStateHolders,
             nextIntent
         )
-        audioFocusChangeListener = MyAudioFocusChangeListener(player)
         mediaSession.apply {
             setCallback(
                 MediaSessionCallback(

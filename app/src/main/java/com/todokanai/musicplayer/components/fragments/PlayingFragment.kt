@@ -12,6 +12,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.todokanai.musicplayer.components.view.SeekBarListener
 import com.todokanai.musicplayer.databinding.FragmentPlayingBinding
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.tools.IconPicker
 import com.todokanai.musicplayer.viewmodel.PlayingViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,8 +59,9 @@ class PlayingFragment : Fragment() {
         }
 
         viewModel.run{
+            /** Todo: dummyMusic에 대한 의존성을 view에서 제거 하기 (remove dependency on dummyMusic from View Layer )**/
             currentMusicHolder.asLiveData().observe(viewLifecycleOwner){
-                it?.let {
+                if(it!=dummyMusic) {
                     binding.run {
                         seekBar.max = viewModel.duration()
                         playerImage.setImageURI(it.getAlbumUri())
