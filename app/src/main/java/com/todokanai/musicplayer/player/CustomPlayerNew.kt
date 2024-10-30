@@ -12,6 +12,7 @@ import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -25,13 +26,20 @@ abstract class CustomPlayerNew (
     private val seed = 0.1
 
     abstract val seedHolder:MutableStateFlow<Double>
-    abstract val playListHolder: MutableStateFlow<List<Music>>
     abstract val isPlayingHolder:MutableStateFlow<Boolean>
     abstract val isShuffledHolder:MutableStateFlow<Boolean>
     abstract val isLoopingHolder:MutableStateFlow<Boolean>
     abstract val currentMusicHolder:MutableStateFlow<Music>
     abstract val musicArray : MutableStateFlow<Array<Music>>
  //   private var musicArray = emptyArray<Music>()
+    abstract val playListHolder: StateFlow<List<Music>>
+
+
+
+
+
+
+
 
     fun getPlayList():List<Music>{
         return playListHolder.value

@@ -13,8 +13,14 @@ import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import kotlin.random.Random
 
 class CustomPlayer_R @Inject constructor(
     musicRepo:MusicRepository,
@@ -33,14 +39,26 @@ class CustomPlayer_R @Inject constructor(
     override val isLoopingHolder = MutableStateFlow<Boolean>(initialLoop)
     override val isPlayingHolder = MutableStateFlow<Boolean>(false)
     override val isShuffledHolder = MutableStateFlow<Boolean>(initialShuffle)
-    override val playListHolder = MutableStateFlow<List<Music>>(initialPlayList)
     override val musicArray = MutableStateFlow<Array<Music>>(initialMusicArray)
 
-
-
+    //override val playListHolder = MutableStateFlow<List<Music>>(initialPlayList)
+    /** No usages found in Project Files **/
+    override val playListHolder = combine(
+        musicArray,
+        isShuffledHolder,
+        seedHolder
+    ){ musics,shuffled,seed ->
+        println("list_stateIn : ${modifiedPlayList(musics,shuffled,seed)}")
+        modifiedPlayList(musics,shuffled,seed)
+    }.stateIn(
+        scope = CoroutineScope(Dispatchers.Default),
+        started = SharingStarted.WhileSubscribed(5),
+        initialValue = initialPlayList
+    )
 
     fun initAttributes(initialMusic:Music,context: Context) {
         val playList = getPlayList()
+     //   musicArray.value = musicRepo.getAll
         this.apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -169,5 +187,14 @@ class CustomPlayer_R @Inject constructor(
             }
             .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         this.setPlaybackState(playbackState.build())
+    }
+
+    private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
+        println("seed: $seed")
+        if(isShuffled){
+            return musicList.sortedBy { it.title }.shuffled(Random(seed.toLong()))
+        } else{
+            return musicList.sortedBy { it.title }
+        }
     }
 }
