@@ -52,19 +52,10 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     @Inject
-    lateinit var musicRepo:MusicRepository
-
-    @Inject
-    lateinit var dsRepo:DataStoreRepository
-
-    @Inject
     lateinit var audioManager: AudioManager
 
     @Inject
     lateinit var audioFocusChangeListener: MyAudioFocusChangeListener
-
-    @Inject
-    lateinit var playerStateHolders: PlayerStateHolders
 
     @Inject
     lateinit var mediaSession:MediaSessionCompat
