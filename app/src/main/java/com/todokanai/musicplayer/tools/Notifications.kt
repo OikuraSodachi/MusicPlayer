@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.tools
 
 import android.app.Notification
 import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
@@ -16,6 +17,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
@@ -28,13 +30,19 @@ import javax.inject.Inject
 class Notifications @Inject constructor(
     private val channelID:String,
     val mediaSession: MediaSessionCompat,
-    val notificationManager:NotificationManagerCompat
+    private val notificationManager:NotificationManagerCompat
 ) {
     private val icons = IconsRepository()
 
-    fun noti(
+    private val serviceChannel = NotificationChannel(
+        Constants.CHANNEL_ID,
+        Constants.NOTIFICATION_CHANNEL_NAME,
+        NotificationManager.IMPORTANCE_NONE             //  알림의 중요도
+    )
+
+
+    private fun noti(
         context: Context,
-        mediaSession:MediaSessionCompat,
         isPlaying:Boolean,
         isLooping:Boolean,
         isShuffled:Boolean,
@@ -85,10 +93,7 @@ class Notifications @Inject constructor(
 
     fun updateNotification(
         service: MediaBrowserServiceCompat,
-      //  notificationManager: NotificationManagerCompat,
         intent:Intent?,
-        serviceChannel: NotificationChannel,
-       // mediaSession:MediaSessionCompat,
         isPlaying:Boolean,
         isLooping:Boolean,
         isShuffled:Boolean,
@@ -99,7 +104,6 @@ class Notifications @Inject constructor(
 
         val notification = noti(
             context = service,
-            mediaSession = mediaSession,
             isPlaying = isPlaying,
             isLooping = isLooping,
             isShuffled = isShuffled,
