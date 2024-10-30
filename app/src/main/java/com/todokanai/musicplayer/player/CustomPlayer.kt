@@ -20,7 +20,7 @@ class CustomPlayer (
     private val nextIntent:Intent
 ): MediaPlayer(){
 
-    val mediaPlayer = MediaPlayer()
+    val mediaPlayer = stateHolders.mediaPlayer
 
     override fun start() {
         mediaPlayer.start()

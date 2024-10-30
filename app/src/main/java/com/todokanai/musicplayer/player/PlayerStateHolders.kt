@@ -1,5 +1,6 @@
 package com.todokanai.musicplayer.player
 
+import android.media.MediaPlayer
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.MediaInterface
@@ -30,6 +31,8 @@ class PlayerStateHolders (
         var initialShuffle by Delegates.notNull<Boolean>()
         var initialLoop by Delegates.notNull<Boolean>()
     }
+
+    override val mediaPlayer = MediaPlayer()
 
     private val isPlaying = MutableStateFlow<Boolean>(false)
     override val isPlayingHolder: StateFlow<Boolean>
