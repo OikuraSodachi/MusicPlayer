@@ -1,6 +1,7 @@
 package com.todokanai.musicplayer.tools
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
@@ -9,13 +10,26 @@ import android.media.MediaMetadata
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
+import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
+import javax.inject.Inject
 
-class Notifications(private val channelID:String) {
+class Notifications @Inject constructor(
+    private val channelID:String,
+    val mediaSession: MediaSessionCompat,
+    val notificationManager:NotificationManagerCompat
+) {
     private val icons = IconsRepository()
 
     fun noti(
@@ -67,5 +81,37 @@ class Notifications(private val channelID:String) {
             )
             .setOngoing(true)
             .build()
+    }
+
+    fun updateNotification(
+        service: MediaBrowserServiceCompat,
+      //  notificationManager: NotificationManagerCompat,
+        intent:Intent?,
+        serviceChannel: NotificationChannel,
+       // mediaSession:MediaSessionCompat,
+        isPlaying:Boolean,
+        isLooping:Boolean,
+        isShuffled:Boolean,
+        currentMusic:Music
+    ){
+        notificationManager.createNotificationChannel(serviceChannel)
+        MediaButtonReceiver.handleIntent(mediaSession,intent)
+
+        val notification = noti(
+            context = service,
+            mediaSession = mediaSession,
+            isPlaying = isPlaying,
+            isLooping = isLooping,
+            isShuffled = isShuffled,
+            currentMusic = currentMusic,
+            repeatIntent = repeatIntent,
+            prevIntent = prevIntent,
+            pausePlayIntent = pausePlayIntent,
+            nextIntent = nextIntent,
+            shuffleIntent = shuffleIntent
+        )
+
+        notificationManager.notify(1,notification)
+        service.startForeground(1, notification)
     }
 }

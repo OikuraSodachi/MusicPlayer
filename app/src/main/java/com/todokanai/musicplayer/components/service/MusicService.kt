@@ -2,7 +2,6 @@ package com.todokanai.musicplayer.components.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
@@ -11,20 +10,10 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
-import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
-import com.todokanai.musicplayer.data.datastore.DataStoreRepository
-import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
-import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.PlayerStateHolders
-import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -40,8 +29,7 @@ class MusicService : MediaBrowserServiceCompat(){
        // lateinit var customPlayer: CustomPlayer
     }
 
-    private val notifications = Notifications(Constants.CHANNEL_ID)
-   // private val player by lazy{getPlayer}
+  //  private val notifications = Notifications(Constants.CHANNEL_ID)
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -62,6 +50,9 @@ class MusicService : MediaBrowserServiceCompat(){
 
     @Inject
     lateinit var notificationManager: NotificationManagerCompat
+
+    @Inject
+    lateinit var notifications:Notifications
 
     @Inject
     lateinit var player:CustomPlayer
@@ -111,12 +102,10 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        updateNotification(
-            context = this,
-            notificationManager = notificationManager,
+        notifications.updateNotification(
+            service = this,
             intent = intent,
             serviceChannel = serviceChannel,
-            mediaSession = mediaSession,
             isPlaying = player.isPlayingHolder.value,
             isLooping = player.isLoopingHolder.value,
             isShuffled = player.isShuffledHolder.value,
@@ -124,7 +113,7 @@ class MusicService : MediaBrowserServiceCompat(){
         )
         return super.onStartCommand(intent, flags, startId)
     }
-
+    /*
     override fun onDestroy() {
         player.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
@@ -164,6 +153,7 @@ class MusicService : MediaBrowserServiceCompat(){
         notificationManager.notify(1,notification)
         startForeground(1, notification)
     }
+    */
 
     fun setLateinits(){
         /*
