@@ -3,7 +3,6 @@ package com.todokanai.musicplayer.repository
 import com.todokanai.musicplayer.data.room.CurrentMusicDao
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.data.room.MusicDao
-import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,7 +22,7 @@ class MusicRepository @Inject constructor(private val musicDao:MusicDao,private 
 
     suspend fun delete(music: Music) = musicDao.delete(music)
 
-    suspend fun currentMusicNonFlow() = cMusicDao.getCurrentNonFlow()?.toMusic() ?:dummyMusic
+    suspend fun currentMusicNonFlow() = cMusicDao.getCurrentNonFlow()?.toMusic()
 
     suspend fun upsertCurrentMusic(currentMusic: Music){
         cMusicDao.deleteAll()
