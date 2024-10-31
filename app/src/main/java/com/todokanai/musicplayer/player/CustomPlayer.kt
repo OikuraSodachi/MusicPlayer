@@ -14,6 +14,9 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
@@ -75,19 +78,21 @@ class CustomPlayer (
 
     val isShuffledHolder = stateHolders.isShuffledHolder
 
-    val playListHolder = stateHolders.playListHolder
+    val playListHolder = stateHolders.playListTest
 
 
-    fun initAttributes(initialMusic:Music?,context: Context) {
-        this.apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
-            )
-
-            this.setMusic(initialMusic,context)
+    fun initAttributes(context: Context) {
+        CoroutineScope(Dispatchers.IO).launch {
+            this.apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                stateHolders.initValues()
+                this@CustomPlayer.setMusic(stateHolders.getInitialMusic(), context)
+            }
         }
         // 대충 initial value set
     }
@@ -208,9 +213,12 @@ class CustomPlayer (
            // println("change: isShuffled")
             requestUpdateNoti(mediaSession,startForegroundService)
         }
+        /*
         playListHolder.asLiveData().observeForever(){
             println("playList: ${it.map{it.title}}")
         }
+
+         */
     }
 
 

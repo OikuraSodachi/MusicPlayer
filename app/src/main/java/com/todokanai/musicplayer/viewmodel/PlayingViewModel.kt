@@ -17,6 +17,9 @@ class PlayingViewModel @Inject constructor() : ViewModel(){
 
     private val mediaInterface by lazy{ getPlayer}
 
+  //  private val mediaInterface = playerAddOn
+
+
     private val mediaPlayer = mediaInterface.mediaPlayer
 
     val isPlayingHolder = mediaInterface.isPlayingHolder

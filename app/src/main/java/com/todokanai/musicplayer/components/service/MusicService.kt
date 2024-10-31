@@ -16,7 +16,6 @@ import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
-import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialMusic
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -70,7 +69,7 @@ class MusicService : MediaBrowserServiceCompat(){
 
         player.apply{
             initAttributes(
-                initialMusic,
+         //       initialMusic,
                 this@MusicService
             )
             /** case 1**/

@@ -11,11 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
-import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialLoop
-import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialMusic
-import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialPlayList
-import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialSeed
-import com.todokanai.musicplayer.player.PlayerStateHolders.Companion.initialShuffle
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.exit_td
 import com.todokanai.musicplayer.tools.independent.isPermissionGranted_td
@@ -24,7 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +42,7 @@ class MainViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             //-------------
             // customPlayer 초기 parameter
+            /*
             runBlocking {
                 initialSeed = dsRepo.getSeed()
                 initialPlayList = musicRepo.getAllNonFlow()
@@ -55,6 +50,8 @@ class MainViewModel @Inject constructor(
                 initialMusic = musicRepo.currentMusicNonFlow()
                 initialLoop = dsRepo.isLooping()
             }
+
+             */
             //-----------
             ContextCompat.startForegroundService(context, intentService)
         }
