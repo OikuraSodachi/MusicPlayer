@@ -30,7 +30,7 @@ class MediaModule {
 
     @Provides
     fun providesNotifications(notificationManager:NotificationManagerCompat,mediaSession:MediaSessionCompat):Notifications{
-        return Notifications(Constants.CHANNEL_ID,notificationManager,mediaSession)
+        return Notifications(notificationManager,mediaSession)
     }
 
     @Provides

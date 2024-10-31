@@ -78,7 +78,9 @@ class CustomPlayer (
 
     val isShuffledHolder = stateHolders.isShuffledHolder
 
-    val playListHolder = stateHolders.playListTest
+   // val playListHolder = stateHolders.playListTest
+
+    fun playList() = stateHolders.playListTest()
 
 
     fun initAttributes(context: Context) {
@@ -95,6 +97,10 @@ class CustomPlayer (
             }
         }
         // 대충 initial value set
+    }
+
+    fun onMusicListScan(context: Context){
+        initAttributes(context)
     }
 
     fun pausePlayAction() =
@@ -129,7 +135,7 @@ class CustomPlayer (
     }
 
     private fun setMusic(music: Music?,context: Context){
-        val playList = playListHolder.value
+        val playList = playList()
         var i = 0
         try {
             setMusicPrimitive(
@@ -158,7 +164,7 @@ class CustomPlayer (
     fun prevAction(context: Context){
         try {
             val currentMusic = currentMusicHolder.value
-            val playList = playListHolder.value
+            val playList = playList()
             this.launchMusic(
                 context,
                 getCircularPrev_td(playList, playList.indexOf(currentMusic))
@@ -171,7 +177,7 @@ class CustomPlayer (
     fun nextAction(context: Context){
         try {
             val currentMusic = currentMusicHolder.value
-            val playList = playListHolder.value
+            val playList = playList()
             this.launchMusic(
                 context,
                 getCircularNext_td(playList, playList.indexOf(currentMusic))

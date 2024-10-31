@@ -16,6 +16,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
@@ -26,10 +27,10 @@ import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 import javax.inject.Inject
 
 class Notifications @Inject constructor(
-    private val channelID:String,
     val notificationManager: NotificationManagerCompat,
-    val mediaSession: MediaSessionCompat
-) {
+    val mediaSession: MediaSessionCompat,
+    private val channelID:String = Constants.CHANNEL_ID
+    ) {
     private val icons = IconsRepository()
 
     fun noti(

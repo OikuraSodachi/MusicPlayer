@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.ScanPathRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val spRepository:ScanPathRepository,
-    private val musicRepo:MusicRepository,
+    private val musicRepo:MusicRepository
 ) : ViewModel() {
 
     /** 더 깔끔한 IO 작업 중복 방지 방식은 없는지 고민해볼 것 **/
@@ -29,6 +30,7 @@ class SettingsViewModel @Inject constructor(
             val dirsToScan = spRepository.getPathNonFlow()
             val newList  = scanMusicList(dirsToScan,context).toTypedArray()
             musicRepo.updateMusicList(newList)
+            getPlayer.onMusicListScan(context)
         }.invokeOnCompletion {
             button.isClickable = true
         }

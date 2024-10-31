@@ -9,10 +9,7 @@ import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -24,7 +21,7 @@ class PlayerStateHolders (
 ) :MediaInterface{
 
     val initialSeedNew : Double = 0.1
-    val initialPlayListNew = emptyList<Music>()
+    var playList = emptyArray<Music>()
     val initialMusicNew = dummyMusic
     val initialShuffleNew = false
     val initialLoopNew = false
@@ -83,30 +80,10 @@ class PlayerStateHolders (
         }
     }
 
-    /*
-    /** Todo: MusicRepo.getAll (Room을 observe) 대신 musicListHolder( Array<Music>)를 사용하도록 변경할것  **/
-    override val playListHolder =
-        combine(
-            musicRepo.getAll,
-            isShuffledHolder,
-            seedHolder
-        ){ musics ,shuffled,seed ->
-            println("flow detected")
-            modifiedPlayList(musics,shuffled,seed)
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.Default),
-            started = SharingStarted.WhileSubscribed(5),
-            initialValue = initialPlayListNew
-        )
 
-     */
-
-  //  /*
-    private val _playListHolder = MutableStateFlow<List<Music>>(initialPlayListNew)
-    override val playListHolder: StateFlow<List<Music>>
-        get() = _playListHolder
-
-    // */
+    fun updatePlayList(newList:Array<Music>){
+        playList = newList
+    }
 
     private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
         if(isShuffled){
@@ -116,30 +93,17 @@ class PlayerStateHolders (
         }
     }
 
-    suspend fun initValues(){
+
+    suspend fun initValues() {
         setSeed(dsRepo.getSeed())
         setShuffle(dsRepo.isShuffled())
         setIsLooping(dsRepo.isLooping())
         setCurrentMusic(musicRepo.currentMusicNonFlow())
-        setPlayList(modifiedPlayList(musicRepo.getAllNonFlow(),isShuffledHolder.value,seedHolder.value))
+        updatePlayList(musicRepo.getAllNonFlow())
     }
 
     suspend fun getInitialMusic() = musicRepo.currentMusicNonFlow()
-
-    fun setPlayList(newList:List<Music>) {
-        _playListHolder.value = newList
+    fun playListTest():List<Music>{
+        return modifiedPlayList(playList,isShuffledHolder.value,seedHolder.value)
     }
-
-    val playListTest = combine(
-        musicRepo.getAll,
-        isShuffledHolder,
-        seedHolder
-    ){
-        musics,shuffled,seed ->
-        modifiedPlayList(musics,shuffled,seed)
-    }.stateIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = initialPlayListNew
-    )
 }
