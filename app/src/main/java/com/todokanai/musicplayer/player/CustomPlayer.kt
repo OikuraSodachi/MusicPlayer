@@ -151,21 +151,29 @@ class CustomPlayer (
     }
 
     fun prevAction(context: Context){
-        val currentMusic = currentMusicHolder.value
-        val playList = playListHolder.value
-        this.launchMusic(
-            context,
-            getCircularPrev_td(playList,playList.indexOf(currentMusic))
-        )
+        try {
+            val currentMusic = currentMusicHolder.value
+            val playList = playListHolder.value
+            this.launchMusic(
+                context,
+                getCircularPrev_td(playList, playList.indexOf(currentMusic))
+            )
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun nextAction(context: Context){
-        val currentMusic = currentMusicHolder.value
-        val playList = playListHolder.value
-        this.launchMusic(
-            context,
-            getCircularNext_td(playList, playList.indexOf(currentMusic))
-        )
+        try {
+            val currentMusic = currentMusicHolder.value
+            val playList = playListHolder.value
+            this.launchMusic(
+                context,
+                getCircularNext_td(playList, playList.indexOf(currentMusic))
+            )
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun repeatAction(){
