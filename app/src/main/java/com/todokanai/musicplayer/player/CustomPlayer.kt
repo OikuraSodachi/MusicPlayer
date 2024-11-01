@@ -78,7 +78,9 @@ class CustomPlayer (
 
     val isShuffledHolder = playListManager.shuffledFlow
 
-   // val playListHolder = stateHolders.playListTest
+    shuffled 문제 있는상태임
+
+    // val playListHolder = stateHolders.playListTest
 
     fun playList() = playListManager.playList()
     fun currentMusic() = playListManager.currentMusic()

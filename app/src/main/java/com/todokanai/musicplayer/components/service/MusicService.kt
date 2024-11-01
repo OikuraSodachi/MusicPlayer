@@ -85,7 +85,6 @@ class MusicService : MediaBrowserServiceCompat(){
         }       // observe LiveData
     }
 
-    shuffled 문제 있는상태임
 
     override fun onGetRoot(
         clientPackageName: String,
