@@ -1,18 +1,14 @@
 package com.todokanai.musicplayer.player
 
 import android.content.Context
-import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.widget.Toast
 import androidx.lifecycle.asLiveData
-import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.MyObjects
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +17,6 @@ import kotlinx.coroutines.launch
 
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
-    private val nextIntent:Intent = MyObjects.nextIntent
 ): MediaPlayer(){
 
     val mediaPlayer = stateHolders.mediaPlayer
@@ -88,7 +83,7 @@ class CustomPlayer (
 
     val isShuffledHolder = stateHolders.isShuffledHolder
 
-    private fun playList() = stateHolders.playListTest()
+    private fun playList() = stateHolders.playList()
 
     fun initAttributes(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -99,8 +94,7 @@ class CustomPlayer (
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
-                stateHolders.initValues()
-                this@CustomPlayer.setMusic(stateHolders.getInitialMusic(), context)
+                stateHolders.onInitAttributes(context)
             }
         }
         // 대충 initial value set
@@ -117,54 +111,8 @@ class CustomPlayer (
                 this@CustomPlayer.start()
             }
 
-    /** onCompletion() 의 context에 주의 (?). 아직 미검증 상태  **/
-    private fun setMusicPrimitive(music: Music?,context: Context){
-        music?.let {
-            val shouldLoop = isLooping
-            val isMusicValid = music.fileDir != "empty"
-
-            if (isMusicValid) {
-                reset()
-                mediaPlayer.apply {
-                    setDataSource(context, music.getUri())
-                    setOnCompletionListener {
-                        if (!isLooping) {
-                            context.sendBroadcast(nextIntent)
-                        }
-                    }
-
-                    isLooping = shouldLoop
-                    prepare()
-                }
-                stateHolders.setCurrentMusic(music)
-            }
-        }
-    }
-
-    private fun setMusic(music: Music?,context: Context){
-        val playList = playList()
-        var i = 0
-        try {
-            setMusicPrimitive(
-                music = music,
-                context = context
-            )
-        } catch(e:Exception){
-            println(e.stackTrace)
-            i++
-            if(i!=playList.size) {
-                setMusicPrimitive(
-                    music = getCircularNext_td(playList, playList.indexOf(music)),
-                    context = context
-                )
-            } else{
-                Toast.makeText(context,context.getString(R.string.all_item_failure),Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     fun launchMusic(context: Context, music: Music){
-        this.setMusic(music,context)
+        stateHolders.setMusic(music,context)
         this.start()
     }
 
