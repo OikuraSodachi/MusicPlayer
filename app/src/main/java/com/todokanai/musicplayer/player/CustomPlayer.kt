@@ -87,9 +87,7 @@ class CustomPlayer (
 
     val isShuffledHolder = stateHolders.isShuffledHolder
 
-
     private fun playList() = stateHolders.playListTest()
-
 
     fun initAttributes(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
