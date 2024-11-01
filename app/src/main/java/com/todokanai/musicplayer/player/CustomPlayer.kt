@@ -13,14 +13,14 @@ import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
-import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
-    private val nextIntent:Intent
+    private val nextIntent:Intent,
+    val playListManager: PlayListManager
 ): MediaPlayer(){
 
     val mediaPlayer = stateHolders.mediaPlayer
@@ -68,19 +68,20 @@ class CustomPlayer (
     // override
     //-------------------------
 
-    val seedHolder = stateHolders.seedHolder
+   // val seedHolder = stateHolders.seedHolder
 
-    val currentMusicHolder = stateHolders.currentMusicHolder
+    val currentMusicHolder = playListManager.currentMusicFlow
 
     val isLoopingHolder = stateHolders.isLoopingHolder
 
     val isPlayingHolder = stateHolders.isPlayingHolder
 
-    val isShuffledHolder = stateHolders.isShuffledHolder
+    val isShuffledHolder = playListManager.shuffledFlow
 
    // val playListHolder = stateHolders.playListTest
 
-    fun playList() = stateHolders.playListTest()
+    fun playList() = playListManager.playList()
+    fun currentMusic() = playListManager.currentMusic()
 
 
     fun initAttributes(context: Context) {
@@ -92,8 +93,13 @@ class CustomPlayer (
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
+                /*
                 stateHolders.initValues()
                 this@CustomPlayer.setMusic(stateHolders.getInitialMusic(), context)
+
+                 */
+                playListManager.initValues()
+                this@CustomPlayer.setMusic(playListManager.currentMusic(),context)
             }
         }
         // 대충 initial value set
@@ -129,7 +135,8 @@ class CustomPlayer (
                     isLooping = shouldLoop
                     prepare()
                 }
-                stateHolders.setCurrentMusic(music)
+                playListManager.updateCurrentMusic(music)
+               // stateHolders.setCurrentMusic(music)
             }
         }
     }
@@ -162,8 +169,9 @@ class CustomPlayer (
     }
 
     fun prevAction(context: Context){
+        /*
         try {
-            val currentMusic = currentMusicHolder.value
+            val currentMusic = currentMusic()
             val playList = playList()
             this.launchMusic(
                 context,
@@ -172,16 +180,29 @@ class CustomPlayer (
         }catch (e:Exception){
             e.printStackTrace()
         }
+         */
+        try{
+            launchMusic(context, playListManager.getPrevMusic())
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun nextAction(context: Context){
+        /*
         try {
-            val currentMusic = currentMusicHolder.value
+            val currentMusic = currentMusic()
             val playList = playList()
             this.launchMusic(
                 context,
                 getCircularNext_td(playList, playList.indexOf(currentMusic))
             )
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+         */
+        try{
+            launchMusic(context, playListManager.getNextMusic())
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -194,7 +215,11 @@ class CustomPlayer (
     }
 
     fun shuffleAction() {
-        stateHolders.setShuffle(!isShuffledHolder.value)
+        //stateHolders.setShuffle(!isShuffledHolder.value)
+        playListManager.updateShuffle(!playListManager.isShuffled())
+        val playList = playList()
+        //println("prev: ${playList[playList.indexOf(currentMusic())-1].title}, next: ${playList[playList.indexOf(currentMusic())+1].title}")
+
     }
 
     private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){

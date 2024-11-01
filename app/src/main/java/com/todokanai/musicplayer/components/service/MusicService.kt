@@ -15,6 +15,7 @@ import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.PlayListManager
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -56,6 +57,9 @@ class MusicService : MediaBrowserServiceCompat(){
     @Inject
     lateinit var notifications:Notifications
 
+    @Inject
+    lateinit var playListManager: PlayListManager
+
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
@@ -80,6 +84,8 @@ class MusicService : MediaBrowserServiceCompat(){
             // Todo: 어느 쪽이 더 나은 방식인지?
         }       // observe LiveData
     }
+
+    shuffled 문제 있는상태임
 
     override fun onGetRoot(
         clientPackageName: String,
@@ -108,7 +114,7 @@ class MusicService : MediaBrowserServiceCompat(){
             isPlaying = player.isPlayingHolder.value,
             isLooping = player.isLoopingHolder.value,
             isShuffled = player.isShuffledHolder.value,
-            currentMusic = player.currentMusicHolder.value
+            currentMusic = player.currentMusic()
         )
         return super.onStartCommand(intent, flags, startId)
     }
@@ -124,7 +130,8 @@ class MusicService : MediaBrowserServiceCompat(){
     fun setLateinits(){
         customPlayer = CustomPlayer(
             playerStateHolders,
-            nextIntent
+            nextIntent,
+            playListManager
         )
         mediaSession.apply {
             setCallback(
