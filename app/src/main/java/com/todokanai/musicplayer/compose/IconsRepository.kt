@@ -39,14 +39,14 @@ class IconsRepository() {
             play
         }
 
-    fun shuffledImage(isShuffled:Boolean = player.isShuffledHolder.value) =
+    fun shuffledImage(isShuffled:Boolean = player.isShuffled()) =
         if(isShuffled){
             shuffle
         } else{
             nonShuffle
         }
 
-    fun loopingImage(isLooping:Boolean = player.isLoopingHolder.value) =
+    fun loopingImage(isLooping:Boolean = player.isLooping) =
         if(isLooping){
             repeat
         } else {

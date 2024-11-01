@@ -15,7 +15,6 @@ import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.PlayListManager
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -57,9 +56,6 @@ class MusicService : MediaBrowserServiceCompat(){
     @Inject
     lateinit var notifications:Notifications
 
-    @Inject
-    lateinit var playListManager: PlayListManager
-
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
@@ -85,7 +81,6 @@ class MusicService : MediaBrowserServiceCompat(){
         }       // observe LiveData
     }
 
-
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
@@ -110,9 +105,9 @@ class MusicService : MediaBrowserServiceCompat(){
             service = this,
             intent = intent,
             serviceChannel = serviceChannel,
-            isPlaying = player.isPlayingHolder.value,
-            isLooping = player.isLoopingHolder.value,
-            isShuffled = player.isShuffledHolder.value,
+            isPlaying = player.isPlaying,
+            isLooping = player.isLooping,
+            isShuffled = player.isShuffled(),
             currentMusic = player.currentMusic()
         )
         return super.onStartCommand(intent, flags, startId)
@@ -129,8 +124,7 @@ class MusicService : MediaBrowserServiceCompat(){
     fun setLateinits(){
         customPlayer = CustomPlayer(
             playerStateHolders,
-            nextIntent,
-            playListManager
+            nextIntent
         )
         mediaSession.apply {
             setCallback(

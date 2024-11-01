@@ -13,14 +13,14 @@ import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
+import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
-    private val nextIntent:Intent,
-    val playListManager: PlayListManager
+    private val nextIntent:Intent
 ): MediaPlayer(){
 
     val mediaPlayer = stateHolders.mediaPlayer
@@ -57,6 +57,15 @@ class CustomPlayer (
         stateHolders.setIsPlaying(mediaPlayer.isPlaying)
         super.stop()
     }
+    /** "shuffled" version of ( mediaPlayer.isLooping / mediaPlayer.isPlaying ) **/
+    fun isShuffled():Boolean{
+        return isShuffledHolder.value
+    }
+
+    /** "currentMusic" version of ( mediaPlayer.isLooping / mediaPlayer.isPlaying ) **/
+    fun currentMusic():Music{
+        return currentMusicHolder.value
+    }
 
     /*
     /** NullPointerException 발생함. 이유는 몰?루 **/
@@ -68,22 +77,18 @@ class CustomPlayer (
     // override
     //-------------------------
 
-   // val seedHolder = stateHolders.seedHolder
+    val seedHolder = stateHolders.seedHolder
 
-    val currentMusicHolder = playListManager.currentMusicFlow
+    val currentMusicHolder = stateHolders.currentMusicHolder
 
     val isLoopingHolder = stateHolders.isLoopingHolder
 
     val isPlayingHolder = stateHolders.isPlayingHolder
 
-    val isShuffledHolder = playListManager.shuffledFlow
+    val isShuffledHolder = stateHolders.isShuffledHolder
 
-    shuffled 문제 있는상태임
 
-    // val playListHolder = stateHolders.playListTest
-
-    fun playList() = playListManager.playList()
-    fun currentMusic() = playListManager.currentMusic()
+    private fun playList() = stateHolders.playListTest()
 
 
     fun initAttributes(context: Context) {
@@ -95,13 +100,8 @@ class CustomPlayer (
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
-                /*
                 stateHolders.initValues()
                 this@CustomPlayer.setMusic(stateHolders.getInitialMusic(), context)
-
-                 */
-                playListManager.initValues()
-                this@CustomPlayer.setMusic(playListManager.currentMusic(),context)
             }
         }
         // 대충 initial value set
@@ -121,7 +121,7 @@ class CustomPlayer (
     /** onCompletion() 의 context에 주의 (?). 아직 미검증 상태  **/
     private fun setMusicPrimitive(music: Music?,context: Context){
         music?.let {
-            val shouldLoop = isLoopingHolder.value
+            val shouldLoop = isLooping
             val isMusicValid = music.fileDir != "empty"
 
             if (isMusicValid) {
@@ -137,8 +137,7 @@ class CustomPlayer (
                     isLooping = shouldLoop
                     prepare()
                 }
-                playListManager.updateCurrentMusic(music)
-               // stateHolders.setCurrentMusic(music)
+                stateHolders.setCurrentMusic(music)
             }
         }
     }
@@ -171,7 +170,6 @@ class CustomPlayer (
     }
 
     fun prevAction(context: Context){
-        /*
         try {
             val currentMusic = currentMusic()
             val playList = playList()
@@ -182,16 +180,9 @@ class CustomPlayer (
         }catch (e:Exception){
             e.printStackTrace()
         }
-         */
-        try{
-            launchMusic(context, playListManager.getPrevMusic())
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
     }
 
     fun nextAction(context: Context){
-        /*
         try {
             val currentMusic = currentMusic()
             val playList = playList()
@@ -199,12 +190,6 @@ class CustomPlayer (
                 context,
                 getCircularNext_td(playList, playList.indexOf(currentMusic))
             )
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-         */
-        try{
-            launchMusic(context, playListManager.getNextMusic())
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -217,15 +202,11 @@ class CustomPlayer (
     }
 
     fun shuffleAction() {
-        //stateHolders.setShuffle(!isShuffledHolder.value)
-        playListManager.updateShuffle(!playListManager.isShuffled())
-        val playList = playList()
-        //println("prev: ${playList[playList.indexOf(currentMusic())-1].title}, next: ${playList[playList.indexOf(currentMusic())+1].title}")
-
+        stateHolders.setShuffle(!isShuffled())
     }
 
     private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
-        mediaSession.setMediaPlaybackState_td(isLoopingHolder.value, isPlayingHolder.value, isShuffledHolder.value)
+        mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled())
         startForegroundService()
     }
 
@@ -250,11 +231,8 @@ class CustomPlayer (
         playListHolder.asLiveData().observeForever(){
             println("playList: ${it.map{it.title}}")
         }
-
          */
     }
-
-
 
     /**
      *  MediaSessionCompat의 PlaybackState Setter
@@ -296,10 +274,3 @@ class CustomPlayer (
         this.setPlaybackState(playbackState.build())
     }
 }
-
-data class MusicTest(
-    val music:Music,
-    val isLooping:Boolean,
-    val isShuffled:Boolean,
-    val isPlaying:Boolean
-)
