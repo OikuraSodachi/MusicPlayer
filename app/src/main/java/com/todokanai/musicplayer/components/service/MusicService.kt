@@ -13,7 +13,6 @@ import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.myobjects.Getters.getPlayer
-import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
@@ -122,10 +121,7 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     fun setLateinits(){
-        customPlayer = CustomPlayer(
-            playerStateHolders,
-            nextIntent
-        )
+        customPlayer = CustomPlayer(playerStateHolders)
         mediaSession.apply {
             setCallback(
                 MediaSessionCallback(

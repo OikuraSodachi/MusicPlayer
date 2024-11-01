@@ -4,8 +4,6 @@ import android.content.Context
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import dagger.Module
@@ -31,10 +29,5 @@ class MediaModule {
     @Provides
     fun providesNotifications(notificationManager:NotificationManagerCompat,mediaSession:MediaSessionCompat):Notifications{
         return Notifications(notificationManager,mediaSession)
-    }
-
-    @Provides
-    fun providesCustomPlayer(stateHolders: PlayerStateHolders):CustomPlayer{
-        return CustomPlayer(stateHolders)
     }
 }
