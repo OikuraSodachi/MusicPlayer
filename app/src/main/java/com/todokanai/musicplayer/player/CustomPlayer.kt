@@ -12,6 +12,7 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.MyObjects
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class CustomPlayer (
     private val stateHolders: PlayerStateHolders,
-    private val nextIntent:Intent
+    private val nextIntent:Intent = MyObjects.nextIntent
 ): MediaPlayer(){
 
     val mediaPlayer = stateHolders.mediaPlayer
