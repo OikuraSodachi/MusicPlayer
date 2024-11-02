@@ -123,7 +123,7 @@ class PlayerStateHolders (
         context: Context,
         targetMusic: Music,
     ){
-        setMusic_General_Type(
+        setMusic_generic(
             context = context,
             targetMusic = targetMusic,
             playList = playList(),
@@ -139,7 +139,7 @@ class PlayerStateHolders (
 
 
     /** targetMusic에 대해서 setMusic. 실패시 다음 music에 시도  (recursive) **/
-    private fun setMusic_General_Type(
+    private fun setMusic_generic(
         context: Context,
         targetMusic:Music,
         playList:List<Music>,
@@ -157,7 +157,7 @@ class PlayerStateHolders (
         }catch (e:Exception){
             e.printStackTrace()
             if(playList.size != trialCount) {
-                setMusic_General_Type(
+                setMusic_generic(
                     context,
                     getCircularNext_td(playList, playList.indexOf(targetMusic)),    // try on the next item
                     playList,
