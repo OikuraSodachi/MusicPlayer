@@ -98,31 +98,28 @@ class PlayerStateHolders (
     }
 
     /** onCompletion() 의 context에 주의 (?). 아직 미검증 상태  **/
-    private fun setMusicPrimitive(music: Music?,context: Context){
-        music?.let {
-            val shouldLoop = mediaPlayer.isLooping
-            val isMusicValid = music.fileDir != "empty"
+    private fun setMusicPrimitive(music: Music,context: Context){
+        val shouldLoop = mediaPlayer.isLooping
+        val isMusicValid = music.fileDir != "empty"
 
-            if (isMusicValid) {
-                mediaPlayer.reset()
-                mediaPlayer.apply {
-                    setDataSource(context, music.getUri())
-                    setOnCompletionListener {
-                        if (!isLooping) {
-                            context.sendBroadcast(nextIntent)
-                        }
+        if (isMusicValid) {
+            mediaPlayer.reset()
+            mediaPlayer.apply {
+                setDataSource(context, music.getUri())
+                setOnCompletionListener {
+                    if (!isLooping) {
+                        context.sendBroadcast(nextIntent)
                     }
-
-                    isLooping = shouldLoop
-                    prepare()
                 }
-                setCurrentMusic(music)
+                isLooping = shouldLoop
+                prepare()
             }
+            setCurrentMusic(music)
         }
     }
 
     /** includes setter for currentMusicHolder **/
-    fun setMusic(music: Music?,context: Context){
+    fun setMusic(music: Music,context: Context){
         val playList = playList()
         var i = 0
         try {
