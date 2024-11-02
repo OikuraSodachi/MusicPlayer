@@ -112,7 +112,7 @@ class CustomPlayer (
             }
 
     fun launchMusic(context: Context, music: Music){
-        stateHolders.setMusic(music,context)
+        stateHolders.setMusic(context,music)
         this.start()
     }
 

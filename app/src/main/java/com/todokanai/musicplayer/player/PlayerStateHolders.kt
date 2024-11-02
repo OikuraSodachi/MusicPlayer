@@ -119,24 +119,55 @@ class PlayerStateHolders (
     }
 
     /** includes setter for currentMusicHolder **/
-    fun setMusic(music: Music,context: Context){
-        val playList = playList()
-        var i = 0
-        try {
-            setMusicPrimitive(
-                music = music,
-                context = context
-            )
-        } catch(e:Exception){
-            println(e.stackTrace)
-            i++
-            if(i!=playList.size) {
-                setMusicPrimitive(
-                    music = getCircularNext_td(playList, playList.indexOf(music)),
-                    context = context
-                )
-            } else{
+    fun setMusic(
+        context: Context,
+        targetMusic: Music,
+    ){
+        setMusic_General_Type(
+            context = context,
+            targetMusic = targetMusic,
+            playList = playList(),
+            setMusicPrimitive = {setMusicPrimitive(it,context)},
+            onFailure = {
                 Toast.makeText(context,context.getString(R.string.all_item_failure), Toast.LENGTH_SHORT).show()
+            },
+            onListEmpty = {
+                Toast.makeText(context,context.getString(R.string.playList_empty), Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+
+    /** targetMusic에 대해서 setMusic. 실패시 다음 music에 시도  (recursive) **/
+    private fun setMusic_General_Type(
+        context: Context,
+        targetMusic:Music,
+        playList:List<Music>,
+        setMusicPrimitive:(Music)->Unit,
+        trialCount:Int = 1,
+        onFailure:()->Unit,
+        onListEmpty:()->Unit
+    ):Unit{
+        try{
+            if(playList.isNotEmpty()) {
+                setMusicPrimitive(targetMusic)
+            }else{
+                onListEmpty()
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            if(playList.size != trialCount) {
+                setMusic_General_Type(
+                    context,
+                    getCircularNext_td(playList, playList.indexOf(targetMusic)),    // try on the next item
+                    playList,
+                    setMusicPrimitive,
+                    trialCount+1,
+                    onFailure,
+                    onListEmpty
+                )
+            }else{
+                onFailure()     // failure on all items
             }
         }
     }
@@ -147,6 +178,9 @@ class PlayerStateHolders (
         setIsLooping(dsRepo.isLooping())
         musicArray = musicRepo.getAllNonFlow()
         // init values
-        setMusic(musicRepo.currentMusicNonFlow(),context)
+        setMusic(context,musicRepo.currentMusicNonFlow())
     }
+
+
+
 }
