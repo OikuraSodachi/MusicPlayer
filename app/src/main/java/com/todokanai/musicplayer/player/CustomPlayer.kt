@@ -18,6 +18,8 @@ import javax.inject.Inject
 
 class CustomPlayer @Inject constructor(
     private val stateHolders: PlayerStateHolders,
+    private val mediaSession: MediaSessionCompat,
+    private val icons:IconsRepository
 ): MediaPlayer(){
 
     val mediaPlayer = stateHolders.mediaPlayer
@@ -154,11 +156,11 @@ class CustomPlayer @Inject constructor(
     }
 
     private fun requestUpdateNoti(mediaSession: MediaSessionCompat,startForegroundService:()->Unit){
-        mediaSession.setMediaPlaybackState_td(isLooping, isPlaying, isShuffled())
+        mediaSession.setMediaPlaybackState_td(icons.loopingImage(isLooping), isPlaying, icons.shuffledImage(isShuffled()))
         startForegroundService()
     }
 
-    fun beginObserve(mediaSession: MediaSessionCompat,startForegroundService: () -> Unit){
+    fun beginObserve(startForegroundService: () -> Unit){
         currentMusicHolder.asLiveData().observeForever(){
           //  println("change: currentMusic")
             requestUpdateNoti(mediaSession,startForegroundService)
@@ -187,16 +189,17 @@ class CustomPlayer @Inject constructor(
      *
      *  playback position 관련해서는 미검증 상태
      */
-    fun MediaSessionCompat.setMediaPlaybackState_td(isLooping:Boolean,isPlaying:Boolean,isShuffled:Boolean){
-        val icons = IconsRepository()
+    fun MediaSessionCompat.setMediaPlaybackState_td(
+        repeatIcon:Int,
+        isPlaying:Boolean,
+        shuffleIcon:Int
+    ){
         fun state() = if(isPlaying){
             PlaybackStateCompat.STATE_PLAYING
         }else{
             PlaybackStateCompat.STATE_PAUSED
         }
         val state = state()
-        fun repeatIcon() = icons.loopingImage(isLooping)
-        fun shuffleIcon() = icons.shuffledImage(isShuffled)
         val playbackState = PlaybackStateCompat.Builder()
             .apply {
                 val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
@@ -214,8 +217,8 @@ class CustomPlayer @Inject constructor(
                             PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
                             PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
                 }
-                addCustomAction(Constants.ACTION_REPLAY,"Repeat", repeatIcon())
-                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon())
+                addCustomAction(Constants.ACTION_REPLAY,"Repeat", repeatIcon)
+                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon)
                 setActions(actions)
             }
             .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)

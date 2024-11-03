@@ -29,9 +29,9 @@ import javax.inject.Inject
 class Notifications @Inject constructor(
     val notificationManager: NotificationManagerCompat,
     val mediaSession: MediaSessionCompat,
+    val icons : IconsRepository,
     private val channelID:String = Constants.CHANNEL_ID
     ) {
-    private val icons = IconsRepository()
 
     fun noti(
         context: Context,

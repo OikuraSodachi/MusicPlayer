@@ -3,6 +3,7 @@ package com.todokanai.musicplayer.di
 import android.content.Context
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
@@ -33,13 +34,13 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideNotifications(notificationManager:NotificationManagerCompat,mediaSession:MediaSessionCompat):Notifications{
-        return Notifications(notificationManager,mediaSession)
+    fun provideNotifications(notificationManager:NotificationManagerCompat,mediaSession:MediaSessionCompat,icons:IconsRepository):Notifications{
+        return Notifications(notificationManager,mediaSession,icons)
     }
     @Singleton
     @Provides
-    fun provideCustomPlayer(stateHolders:PlayerStateHolders): CustomPlayer {
-        return CustomPlayer(stateHolders)
+    fun provideCustomPlayer(stateHolders:PlayerStateHolders,mediaSession: MediaSessionCompat,iconsRepository: IconsRepository): CustomPlayer {
+        return CustomPlayer(stateHolders,mediaSession,iconsRepository)
     }
 
 }

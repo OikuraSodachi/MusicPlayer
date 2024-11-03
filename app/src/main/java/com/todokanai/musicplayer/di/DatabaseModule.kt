@@ -1,6 +1,7 @@
 package com.todokanai.musicplayer.di
 
 import android.content.Context
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.CurrentMusicDao
 import com.todokanai.musicplayer.data.room.MusicDao
@@ -54,7 +55,12 @@ class DatabaseModule {
     @Singleton
     @Provides
     fun providePlayerStateHolders(musicRepo:MusicRepository,dsRepo:DataStoreRepository):PlayerStateHolders{
-        val instance = PlayerStateHolders(musicRepo,dsRepo)
-        return instance
+        return PlayerStateHolders(musicRepo,dsRepo)
+    }
+
+    @Singleton
+    @Provides
+    fun provideIconsRepository():IconsRepository{
+        return IconsRepository()
     }
 }
