@@ -14,8 +14,9 @@ import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CustomPlayer (
+class CustomPlayer @Inject constructor(
     private val stateHolders: PlayerStateHolders,
 ): MediaPlayer(){
 

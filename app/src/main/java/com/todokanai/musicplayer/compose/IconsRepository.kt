@@ -1,15 +1,10 @@
 package com.todokanai.musicplayer.compose
 
 import com.todokanai.musicplayer.R
-import com.todokanai.musicplayer.player.CustomPlayer
 import java.io.File
-import javax.inject.Inject
 
 class IconsRepository() {
 
-    @Inject
-    lateinit var player: CustomPlayer
-    //private val player by lazy{getPlayer}
     private val thumbnailFolder = R.drawable.ic_baseline_folder_24
     private val thumbnailPdf = R.drawable.ic_pdf
     private val thumbnailDefaultFile =R.drawable.ic_baseline_insert_drive_file_24
@@ -34,21 +29,21 @@ class IconsRepository() {
     val repeat = R.drawable.baseline_repeat_one_24
     val repeatAll = R.drawable.baseline_repeat_24
 
-    fun pausePlay(isPlaying:Boolean = player.isPlaying) =
+    fun pausePlay(isPlaying:Boolean) =
         if(isPlaying){
             pause
         } else{
             play
         }
 
-    fun shuffledImage(isShuffled:Boolean = player.isShuffled()) =
+    fun shuffledImage(isShuffled:Boolean) =
         if(isShuffled){
             shuffle
         } else{
             nonShuffle
         }
 
-    fun loopingImage(isLooping:Boolean = player.isLooping) =
+    fun loopingImage(isLooping:Boolean) =
         if(isLooping){
             repeat
         } else {

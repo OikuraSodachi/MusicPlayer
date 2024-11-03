@@ -13,7 +13,6 @@ import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -26,12 +25,11 @@ class MusicService : MediaBrowserServiceCompat(){
 
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
-      //  lateinit var customPlayer: CustomPlayer
     }
 
     @Inject
     lateinit var player:CustomPlayer
-    //private val player by lazy{getPlayer}
+
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -48,9 +46,6 @@ class MusicService : MediaBrowserServiceCompat(){
     lateinit var audioFocusChangeListener: MyAudioFocusChangeListener
 
     @Inject
-    lateinit var playerStateHolders: PlayerStateHolders
-
-    @Inject
     lateinit var mediaSession:MediaSessionCompat
 
     @Inject
@@ -59,7 +54,18 @@ class MusicService : MediaBrowserServiceCompat(){
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
-        setLateinits()
+
+        mediaSession.apply {
+            setCallback(
+                MediaSessionCallback(
+                    this@MusicService,
+                    this,
+                    audioManager,
+                    audioFocusChangeListener
+                )
+            )
+            this@MusicService.sessionToken = sessionToken
+        }
 
         registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
@@ -68,10 +74,7 @@ class MusicService : MediaBrowserServiceCompat(){
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
 
         player.apply{
-            initAttributes(
-         //       initialMusic,
-                this@MusicService
-            )
+            initAttributes(this@MusicService)
             /** case 1**/
             beginObserve(mediaSession,{startForegroundService(serviceIntent)})
 
@@ -119,20 +122,5 @@ class MusicService : MediaBrowserServiceCompat(){
         mediaSession.release()
         Variables.isServiceOn = false
         super.onDestroy()
-    }
-
-    fun setLateinits(){
-    //    customPlayer = CustomPlayer(playerStateHolders)
-        mediaSession.apply {
-            setCallback(
-                MediaSessionCallback(
-                    this@MusicService,
-                    this,
-                    audioManager,
-                    audioFocusChangeListener
-                )
-            )
-            this@MusicService.sessionToken = sessionToken
-        }
     }
 }

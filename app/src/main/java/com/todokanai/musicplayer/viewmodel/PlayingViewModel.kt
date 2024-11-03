@@ -9,17 +9,11 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
 import com.todokanai.musicplayer.player.CustomPlayer
-import com.todokanai.musicplayer.player.PlayerStateHolders
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayingViewModel @Inject constructor(
-    val stateHolders: PlayerStateHolders,
-    val customPlayer: CustomPlayer
-) : ViewModel(){
-
-  //  private val customPlayer by lazy{ getPlayer}
+class PlayingViewModel @Inject constructor(customPlayer: CustomPlayer) : ViewModel(){
 
     private val mediaPlayer = customPlayer.mediaPlayer
 
@@ -38,10 +32,7 @@ class PlayingViewModel @Inject constructor(
 
     fun seekTo(progress:Int) = mediaPlayer.seekTo(progress)
 
-    fun pausePlay(context:Context){
-        println("viewModel: $stateHolders")
-        context.sendBroadcast(Intent(ACTION_PAUSE_PLAY))
-    }
+    fun pausePlay(context:Context) = context.sendBroadcast(Intent(ACTION_PAUSE_PLAY))
 
     fun prev(context:Context) = context.sendBroadcast(Intent(ACTION_SKIP_TO_PREVIOUS))
 

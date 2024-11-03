@@ -57,11 +57,11 @@ class MusicPlayerWidget : AppWidgetProvider() {
         val views = widgetViews
         // Construct the RemoteViews object
         views.run {
-            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage())
+            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(player.isLooping))
             setImageViewResource(R.id.widget_prevBtn,icons.prev)
-            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay())
+            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(player.isPlaying))
             setImageViewResource(R.id.widget_nextBtn,icons.next)
-            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage())
+            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(player.isShuffled()))
 
             setOnClickPendingIntent(R.id.widget_repeatBtn, PendingIntent.getBroadcast(context,0, repeatIntent,FLAG_IMMUTABLE))
             setOnClickPendingIntent(R.id.widget_prevBtn, PendingIntent.getBroadcast(context,0, prevIntent,FLAG_IMMUTABLE))
