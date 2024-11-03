@@ -12,7 +12,6 @@ import androidx.media.MediaBrowserServiceCompat
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.Getters.getPlayer
 import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.PlayerStateHolders
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
@@ -27,10 +26,12 @@ class MusicService : MediaBrowserServiceCompat(){
 
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
-        lateinit var customPlayer: CustomPlayer
+      //  lateinit var customPlayer: CustomPlayer
     }
 
-    private val player by lazy{getPlayer}
+    @Inject
+    lateinit var player:CustomPlayer
+    //private val player by lazy{getPlayer}
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
         NotificationChannel(
@@ -121,7 +122,7 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     fun setLateinits(){
-        customPlayer = CustomPlayer(playerStateHolders)
+    //    customPlayer = CustomPlayer(playerStateHolders)
         mediaSession.apply {
             setCallback(
                 MediaSessionCallback(

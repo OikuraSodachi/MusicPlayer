@@ -51,8 +51,10 @@ class DatabaseModule {
         return DataStoreRepository(context)
     }
 
+    @Singleton
     @Provides
     fun providePlayerStateHolders(musicRepo:MusicRepository,dsRepo:DataStoreRepository):PlayerStateHolders{
-        return PlayerStateHolders(musicRepo, dsRepo)
+        val instance = PlayerStateHolders(musicRepo,dsRepo)
+        return instance
     }
 }

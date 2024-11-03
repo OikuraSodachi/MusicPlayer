@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.data.dataclass.MusicHolderItem
-import com.todokanai.musicplayer.myobjects.Getters.getPlayer
+import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MusicListViewModel @Inject constructor(musicRepo : MusicRepository) : ViewModel(){
+class MusicListViewModel @Inject constructor(musicRepo : MusicRepository,val player: CustomPlayer) : ViewModel(){
 
     /** list of music ( not playList ) **/
     private val sortedList = musicRepo.getAll.map{
@@ -29,7 +29,7 @@ class MusicListViewModel @Inject constructor(musicRepo : MusicRepository) : View
 
     fun onMusicClick(context: Context, music: MusicHolderItem) {
         viewModelScope.launch {
-            getPlayer.launchMusic(context,music.music)
+            player.launchMusic(context,music.music)
         }
     }
     /*
