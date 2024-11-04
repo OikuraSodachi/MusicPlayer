@@ -136,10 +136,12 @@ class CustomPlayer @Inject constructor(
         try {
             val currentMusic = currentMusic()
             val playList = playList()
-            this.launchMusic(
-                context,
-                getCircularNext_td(playList, playList.indexOf(currentMusic))
-            )
+            if(playList.isNotEmpty()) {
+                this.launchMusic(
+                    context,
+                    getCircularNext_td(playList, playList.indexOf(currentMusic))
+                )
+            }
         }catch (e:Exception){
             e.printStackTrace()
         }
