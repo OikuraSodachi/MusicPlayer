@@ -22,8 +22,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideMyAudioFocusChangeListener():MyAudioFocusChangeListener{
-        return MyAudioFocusChangeListener()
+    fun provideMyAudioFocusChangeListener(player: CustomPlayer):MyAudioFocusChangeListener{
+        return MyAudioFocusChangeListener(player)
     }
 
     @Singleton

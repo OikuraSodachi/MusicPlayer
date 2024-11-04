@@ -5,11 +5,8 @@ import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.CustomPlayer
 import javax.inject.Inject
 
-/** Singleton 상태 **/
-class MyAudioFocusChangeListener() : AudioManager.OnAudioFocusChangeListener{
-    @Inject
-    lateinit var mediaPlayer: CustomPlayer
-    //private val player by lazy{getPlayer}
+class MyAudioFocusChangeListener @Inject constructor(val player:CustomPlayer) : AudioManager.OnAudioFocusChangeListener{
+
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_LOSS -> {
@@ -18,21 +15,21 @@ class MyAudioFocusChangeListener() : AudioManager.OnAudioFocusChangeListener{
                 //mediaController.transportControls.pause()
                 // Wait 30 seconds before stopping playback
                 //handler.postDelayed(delayedStopRunnable, TimeUnit.SECONDS.toMillis(30))
-                mediaPlayer.stop()
+                player.stop()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                mediaPlayer.pause()
+                player.pause()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                mediaPlayer.setVolume(
+                player.setVolume(
                     Constants.DUCK_VOLUME,
                     Constants.DUCK_VOLUME
                 )
             }
             AudioManager.AUDIOFOCUS_GAIN -> {
-                if (!mediaPlayer.isPlaying) {
-                    mediaPlayer.start()
-                    mediaPlayer.setVolume(
+                if (!player.isPlaying) {
+                    player.start()
+                    player.setVolume(
                         Constants.FULL_VOLUME,
                         Constants.FULL_VOLUME
                     )

@@ -27,9 +27,9 @@ import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 import javax.inject.Inject
 
 class Notifications @Inject constructor(
-    val notificationManager: NotificationManagerCompat,
+    private val notificationManager: NotificationManagerCompat,
     val mediaSession: MediaSessionCompat,
-    val icons : IconsRepository,
+    private val icons : IconsRepository,
     private val channelID:String = Constants.CHANNEL_ID
     ) {
 
@@ -38,6 +38,7 @@ class Notifications @Inject constructor(
         isPlaying:Boolean,
         isLooping:Boolean,
         isShuffled:Boolean,
+        mainIntent:PendingIntent,
         currentMusic: Music?,
         repeatIntent: Intent,
         prevIntent: Intent,
@@ -101,6 +102,7 @@ class Notifications @Inject constructor(
             isLooping = isLooping,
             isShuffled = isShuffled,
             currentMusic = currentMusic,
+            mainIntent = mainIntent,
             repeatIntent = repeatIntent,
             prevIntent = prevIntent,
             pausePlayIntent = pausePlayIntent,
