@@ -1,6 +1,5 @@
 package com.todokanai.musicplayer.player
 
-import android.app.Activity
 import android.content.Context
 import android.media.MediaPlayer
 import android.widget.Toast
@@ -130,18 +129,10 @@ class PlayerStateHolders (
             playList = playList(),
             setMusicPrimitive = {setMusicPrimitive(it,context)},
             onFailure = {
-                (context as? Activity)?.runOnUiThread {
-                    Toast.makeText(context,context.getString(R.string.all_item_failure), Toast.LENGTH_SHORT).show()
-                }
+                Toast.makeText(context,context.getString(R.string.all_item_failure), Toast.LENGTH_SHORT).show()
             },
             onListEmpty = {
-                (context as? Activity)?.runOnUiThread {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.playList_empty),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                Toast.makeText(context,context.getString(R.string.playList_empty), Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -165,7 +156,7 @@ class PlayerStateHolders (
             }
         }catch (e:Exception){
             e.printStackTrace()
-            if(playList.isNotEmpty() && playList.size != trialCount) {
+            if(playList.size != trialCount) {
                 setMusic_generic(
                     context,
                     getCircularNext_td(playList, playList.indexOf(targetMusic)),    // try on the next item
