@@ -103,7 +103,6 @@ class MusicService : MediaBrowserServiceCompat(){
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         notifications.updateNotification(
             service = this,
             intent = intent,
