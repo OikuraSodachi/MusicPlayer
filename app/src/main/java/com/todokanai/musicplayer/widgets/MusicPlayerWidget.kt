@@ -20,21 +20,26 @@ import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
  * Implementation of App Widget functionality.
  */
+@AndroidEntryPoint
 class MusicPlayerWidget : AppWidgetProvider() {
 
     companion object{
         val widgetViews = RemoteViews(appContext.packageName, R.layout.music_player_widget)
         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(appContext)
     }
-    private val icons = IconsRepository()
+
+    @Inject
+    lateinit var icons:IconsRepository
+
     @Inject
     lateinit var player: CustomPlayer
-    //private val player by lazy{getPlayer}
+
     /*
     override fun onUpdate(
         context: Context,
@@ -48,15 +53,11 @@ class MusicPlayerWidget : AppWidgetProvider() {
             updateMyAppWidget(appWidgetManager, it,views,player.currentMusicHolder.value)
         }
     }
-
      */
 
     /** stable **/
     override fun onEnabled(context: Context) {
-        // Enter relevant functionality for when the first widget is created
-        val views = widgetViews
-        // Construct the RemoteViews object
-        views.run {
+        widgetViews.run {
             setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(player.isLooping))
             setImageViewResource(R.id.widget_prevBtn,icons.prev)
             setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(player.isPlaying))
@@ -74,7 +75,6 @@ class MusicPlayerWidget : AppWidgetProvider() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
-
         context?.let {
             val widgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
             widgetIds.forEach { updateMyAppWidget_td(appWidgetManager, it, widgetViews,player.currentMusic()) }
