@@ -25,11 +25,11 @@ class PlayerStateHolders (
     dummyMusic: Music = MyObjects.dummyMusic
 ) :MediaInterface{
 
-    private val initialSeedNew : Double = 0.1
+    private val initialSeed : Double = 0.1
     private var musicArray = emptyArray<Music>()
-    private val initialMusicNew = dummyMusic
-    private val initialShuffleNew = false
-    private val initialLoopNew = false
+    private val initialMusic = dummyMusic
+    private val initialShuffle = false
+    private val initialLoop = false
 
     override val mediaPlayer = MediaPlayer()
 
@@ -41,7 +41,7 @@ class PlayerStateHolders (
         this.isPlaying.value = isPlaying
     }
 
-    private val currentMusic = MutableStateFlow<Music>(initialMusicNew)
+    private val currentMusic = MutableStateFlow<Music>(initialMusic)
     override val currentMusicHolder : StateFlow<Music>
         get() = currentMusic
 
@@ -52,7 +52,7 @@ class PlayerStateHolders (
         }
     }
 
-    private val isLooping = MutableStateFlow<Boolean>(initialLoopNew)
+    private val isLooping = MutableStateFlow<Boolean>(initialLoop)
     override val isLoopingHolder : StateFlow<Boolean>
         get() = isLooping
 
@@ -63,7 +63,7 @@ class PlayerStateHolders (
         }
     }
 
-    private val isShuffled = MutableStateFlow<Boolean>(initialShuffleNew)
+    private val isShuffled = MutableStateFlow<Boolean>(initialShuffle)
     override val isShuffledHolder : StateFlow<Boolean>
         get() = isShuffled
 
@@ -74,7 +74,7 @@ class PlayerStateHolders (
         }
     }
 
-    private val seed = MutableStateFlow<Double>(initialSeedNew)
+    private val seed = MutableStateFlow<Double>(initialSeed)
     override val seedHolder : StateFlow<Double>
         get() = seed
 
