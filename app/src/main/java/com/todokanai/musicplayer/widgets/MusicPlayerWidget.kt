@@ -8,7 +8,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
@@ -96,8 +95,8 @@ class MusicPlayerWidget : AppWidgetProvider() {
             setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(player.isLooping))
             setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(player.isPlaying))
             setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(player.isShuffled()))
-            println("albumUri: $albumUri")
-            Toast.makeText(appContext,"${albumUri?.path}",Toast.LENGTH_SHORT).show()
+          //  println("albumUri: $albumUri")
+        //    Toast.makeText(appContext,"${albumUri?.path}",Toast.LENGTH_SHORT).show()
             setImageViewUri(R.id.widget_imageView, albumUri)   // Todo: updateMyAppWidget의 매 실행마다 이미지가 직전 이미지로 바뀌고 있음
         }
         appWidgetManager.updateAppWidget(appWidgetId, views)
