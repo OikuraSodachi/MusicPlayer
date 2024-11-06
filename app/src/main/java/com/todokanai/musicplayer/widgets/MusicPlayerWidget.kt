@@ -11,7 +11,6 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.compose.IconsRepository
-import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
@@ -55,6 +54,9 @@ class MusicPlayerWidget : AppWidgetProvider() {
     }
      */
 
+    private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
+
+
     /** stable **/
     override fun onEnabled(context: Context) {
         widgetViews.run {
@@ -76,8 +78,8 @@ class MusicPlayerWidget : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         context?.let {
-            val widgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
-            widgetIds.forEach { updateMyAppWidget_td(appWidgetManager, it, widgetViews,player.currentMusic()) }
+            val widgetIds = getWidgetIds(context)
+            widgetIds.forEach { updateMyAppWidget_td(appWidgetManager, it, widgetViews,player) }
         }
     }
 
@@ -85,8 +87,9 @@ class MusicPlayerWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         views: RemoteViews,
-        currentMusic: Music
+        player: CustomPlayer
     ) {
+        val currentMusic = player.currentMusic()
         val albumUri = currentMusic.getAlbumUri()
         views.run {
             setTextViewText(R.id.widget_titleText,currentMusic.title)
