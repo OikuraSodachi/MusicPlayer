@@ -174,13 +174,10 @@ class PlayerStateHolders (
 
     suspend fun onInitAttributes(context: Context){
         setSeed(dsRepo.getSeed())
-        setShuffle(dsRepo.isShuffled())
-        setIsLooping(dsRepo.isLooping())
+        setShuffle(dsRepo.isShuffled() ?: false)
+        setIsLooping(dsRepo.isLooping() ?: false)
         musicArray = musicRepo.getAllNonFlow()
         // init values
         setMusic(context,musicRepo.currentMusicNonFlow())
     }
-
-
-
 }
