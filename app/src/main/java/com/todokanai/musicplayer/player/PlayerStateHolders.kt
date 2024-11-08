@@ -7,7 +7,7 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.MediaInterface
-import com.todokanai.musicplayer.myobjects.MyObjects
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
@@ -20,9 +20,8 @@ import kotlin.random.Random
 
 /** player의 looping, currentMusic, shuffled, seed 값은 여기서 가져올 것 **/
 class PlayerStateHolders (
-    val musicRepo:MusicRepository,
-    val dsRepo:DataStoreRepository,
-    dummyMusic: Music = MyObjects.dummyMusic
+    private val musicRepo:MusicRepository,
+    private val dsRepo:DataStoreRepository
 ) :MediaInterface{
 
     private val initialSeed : Double = 0.1

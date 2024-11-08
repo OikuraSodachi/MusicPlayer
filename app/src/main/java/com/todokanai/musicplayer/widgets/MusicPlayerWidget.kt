@@ -38,23 +38,20 @@ class MusicPlayerWidget : AppWidgetProvider() {
     @Inject
     lateinit var player: CustomPlayer
 
-    /*
+    private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray,
     ) {
-        val views = widgetViews
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
         println("widget onUpdate")
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
-            updateMyAppWidget(appWidgetManager, it,views,player.currentMusicHolder.value)
+            updateMyAppWidget_td(appWidgetManager, it,widgetViews,player)
         }
     }
-     */
-
-    private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
-
 
     /** stable **/
     override fun onEnabled(context: Context) {
@@ -77,8 +74,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         context?.let {
-            val widgetIds = getWidgetIds(context)
-            widgetIds.forEach { updateMyAppWidget_td(appWidgetManager, it, widgetViews,player) }
+            onUpdate(context, appWidgetManager,getWidgetIds(context))
         }
     }
 

@@ -10,6 +10,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
+import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.CustomPlayer
@@ -18,6 +19,10 @@ import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,22 +54,36 @@ class MusicService : MediaBrowserServiceCompat(){
     lateinit var mediaSession:MediaSessionCompat
 
     @Inject
+    lateinit var dsRepo:DataStoreRepository
+
+    @Inject
     lateinit var notifications:Notifications
 
     override fun onCreate() {
         super.onCreate()
         Variables.isServiceOn = true
+        sessionToken = mediaSession.sessionToken
+        val mediaButtonEnabled = dsRepo.isMediaButtonEnabled.stateIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.WhileSubscribed(5),
+            initialValue = true
+        )
+
+
+        fun mediaButtonEnabled():Boolean{
+            return mediaButtonEnabled.value ?: true
+        }
+
+        val mediaSessionCallback = MediaSessionCallback(
+            this@MusicService,
+            audioManager,
+            audioFocusChangeListener,
+            {mediaButtonEnabled.value ?: true}
+        )
 
         mediaSession.apply {
-            setCallback(
-                MediaSessionCallback(
-                    this@MusicService,
-                    this,
-                    audioManager,
-                    audioFocusChangeListener
-                )
-            )
-            this@MusicService.sessionToken = sessionToken
+            setCallback(mediaSessionCallback)
+            isActive = true
         }
 
         registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)

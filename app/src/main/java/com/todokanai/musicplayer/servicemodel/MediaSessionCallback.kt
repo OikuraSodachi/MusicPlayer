@@ -11,9 +11,9 @@ import com.todokanai.musicplayer.myobjects.Constants
 
 class MediaSessionCallback(
     private val context: Context,
-    private val mediaSession: MediaSessionCompat,
     private val audioManager:AudioManager,
     private val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener,
+    val mediaButtonEnabled:()->Boolean
 ) : MediaSessionCompat.Callback() {
 
     private val noisyReceiver = NoisyReceiver()
@@ -33,7 +33,7 @@ class MediaSessionCallback(
             return
         }
         context.registerReceiver(noisyReceiver, noisyIntentFilter, Context.RECEIVER_NOT_EXPORTED)
-        mediaSession.isActive = true
+        //mediaSession.isActive = true
 
         context.sendBroadcast(Intent(Constants.ACTION_PAUSE_PLAY))
     }
@@ -57,7 +57,12 @@ class MediaSessionCallback(
         super.onSkipToNext()
     }
     override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
-        return super.onMediaButtonEvent(mediaButtonEvent)
+        if(mediaButtonEnabled()){
+            return super.onMediaButtonEvent(mediaButtonEvent)
+        } else{
+            println("mediaButton disabled")
+            return false
+        }
     }
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)

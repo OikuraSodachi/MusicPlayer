@@ -48,4 +48,10 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     suspend fun getSeed() = DATASTORE_RANDOM_SEED.value() ?:0.0
 
     suspend fun saveRandomSeed(seed:Double) = DATASTORE_RANDOM_SEED.save(seed)
+
+    suspend fun saveEnableMediaButton(enabled:Boolean) = DATASTORE_MEDIA_BUTTON_ENABLED.save(enabled)
+
+    suspend fun isMediaButtonEnabled() = DATASTORE_MEDIA_BUTTON_ENABLED.value()
+
+    val isMediaButtonEnabled = DATASTORE_MEDIA_BUTTON_ENABLED.flow()
 }
