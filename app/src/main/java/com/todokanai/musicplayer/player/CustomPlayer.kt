@@ -125,7 +125,7 @@ class CustomPlayer @Inject constructor(
             val playList = playList()
             this.launchMusic(
                 context,
-                getCircularPrev_td(playList, playList.indexOf(currentMusic))
+                getCircularPrev_td(playList, currentMusic)
             )
         }catch (e:Exception){
             e.printStackTrace()
@@ -138,7 +138,7 @@ class CustomPlayer @Inject constructor(
             val playList = playList()
             this.launchMusic(
                 context,
-                getCircularNext_td(playList, playList.indexOf(currentMusic))
+                getCircularNext_td(playList,currentMusic)
             )
         }catch (e:Exception){
             e.printStackTrace()

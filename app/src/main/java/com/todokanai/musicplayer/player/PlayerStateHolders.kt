@@ -158,7 +158,7 @@ class PlayerStateHolders (
             if(playList.size != trialCount) {
                 setMusic_generic(
                     context,
-                    getCircularNext_td(playList, playList.indexOf(targetMusic)),    // try on the next item
+                    getCircularNext_td(playList,targetMusic),    // try on the next item
                     playList,
                     setMusicPrimitive,
                     trialCount+1,
