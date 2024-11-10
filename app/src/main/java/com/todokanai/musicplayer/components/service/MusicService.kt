@@ -14,6 +14,7 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -31,9 +32,11 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
     }
+    @Inject
+    lateinit var player3:CustomPlayer
 
     @Inject
-    lateinit var player:CustomPlayer
+    lateinit var player: CustomPlayerNewWrapper
 
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
@@ -95,12 +98,19 @@ class MusicService : MediaBrowserServiceCompat(){
         player.apply{
             initAttributes(this@MusicService)
             /** case 1**/
-            beginObserve({startForegroundService(serviceIntent)})
+         //   beginObserve({startForegroundService(serviceIntent)})
 
             /** case 2 **/
            // beginObserve2(mediaSession,{startForegroundService(serviceIntent)})
             // Todo: 어느 쪽이 더 나은 방식인지?
         }       // observe LiveData
+
+        /*
+        player3.apply {
+            initAttributes(this@MusicService)
+        }
+
+         */
     }
 
     override fun onGetRoot(

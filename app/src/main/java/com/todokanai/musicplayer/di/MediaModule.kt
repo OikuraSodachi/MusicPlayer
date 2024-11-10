@@ -4,9 +4,12 @@ import android.content.Context
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import com.todokanai.musicplayer.compose.IconsRepository
+import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import com.todokanai.musicplayer.player.PlayerStateHolders
+import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import dagger.Module
@@ -22,8 +25,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideMyAudioFocusChangeListener(player: CustomPlayer):MyAudioFocusChangeListener{
-        return MyAudioFocusChangeListener(player)
+    fun provideMyAudioFocusChangeListener(player: CustomPlayer,player2:CustomPlayerNewWrapper):MyAudioFocusChangeListener{
+        return MyAudioFocusChangeListener(player,player2)
     }
 
     @Singleton
@@ -41,6 +44,12 @@ class MediaModule {
     @Provides
     fun provideCustomPlayer(stateHolders:PlayerStateHolders,mediaSession: MediaSessionCompat,iconsRepository: IconsRepository): CustomPlayer {
         return CustomPlayer(stateHolders,mediaSession,iconsRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCustomPlayerWrapper(dataStoreRepository: DataStoreRepository,musicRepository: MusicRepository,iconsRepository: IconsRepository,mediaSession: MediaSessionCompat):CustomPlayerNewWrapper{
+        return CustomPlayerNewWrapper(dataStoreRepository,musicRepository,iconsRepository,mediaSession)
     }
 
 }

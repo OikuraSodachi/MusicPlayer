@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -27,7 +26,7 @@ abstract class MediaInterfaceNew(
     val musicRepository:MusicRepository
 ):MediaPlayer() {
 
-    //var musicArray = emptyArray<Music>()
+    var musicArray = emptyArray<Music>()
 
     /** 재생 목록의 전체 Array **/
     private val musicArrayFlow = musicRepository.getAll.stateIn(
@@ -92,14 +91,14 @@ abstract class MediaInterfaceNew(
     }
 
     /** setter for currentMusicHolder **/
-    private fun setCurrentMusic(music: Music){
+    fun setCurrentMusic(music: Music){
         _currentMusicHolder.value = music
         CoroutineScope(Dispatchers.IO).launch {
             musicRepository.upsertCurrentMusic(music)
         }
     }
 
-    private fun setSeed(seed:Double){
+    fun setSeed(seed:Double){
         _seedHolder.value = seed
         CoroutineScope(Dispatchers.IO).launch {
             dataStoreRepository.saveRandomSeed(seed)
@@ -107,7 +106,7 @@ abstract class MediaInterfaceNew(
     }
 
     /** setter for isPlayingHolder **/
-    private fun setPlayingHolder(){
+    fun setPlayingHolder(){
         _isPlayingHolder.value = isPlaying
     }
 
@@ -130,10 +129,22 @@ abstract class MediaInterfaceNew(
         super.stop()
         setPlayingHolder()
     }
-    abstract fun initAttributes()
+    suspend fun onInitAttributes(context: Context){
+        setSeed(dataStoreRepository.getSeed())
+        setShuffle(dataStoreRepository.isShuffled() ?: false)
+        setLooping(dataStoreRepository.isLooping() ?: false)
+        musicArray = musicRepository.getAllNonFlow()
+        // init values
+        setMusic(context,musicRepository.currentMusicNonFlow())
+    }
 
-    abstract fun playList():List<Music>
+    /** shuffled 적용된 List<Music> **/
+    fun sortedPlayList():List<Music>{
+        return modifiedPlayList(musicArray,isShuffled(),seedHolder.value)
+    }
 
+    /*
+    // playListFlow는 일단 보류 ( 값 반영이 의도한  대로 되지 않고 있음 )
     val playListFlow = combine(
         musicRepository.getAll,
         isShuffledHolder,
@@ -141,6 +152,8 @@ abstract class MediaInterfaceNew(
     ){ musics,shuffled,seed ->
         modifiedPlayList(musics, shuffled, seed)
     }
+
+     */
 
     private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
         if(isShuffled){
@@ -158,7 +171,7 @@ abstract class MediaInterfaceNew(
         setMusic_generic(
             context = context,
             targetMusic = targetMusic,
-            playList = playList(),
+            playList = sortedPlayList(),
             setMusicPrimitive = {setMusicPrimitive(it,context)},
             onFailure = {
                 Toast.makeText(context,context.getString(R.string.all_item_failure), Toast.LENGTH_SHORT).show()

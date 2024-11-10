@@ -9,13 +9,17 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayingViewModel @Inject constructor(customPlayer: CustomPlayer) : ViewModel(){
+class PlayingViewModel @Inject constructor(
+    customPlayer2: CustomPlayer,
+    customPlayer:CustomPlayerNewWrapper
+    ) : ViewModel(){
 
-    private val mediaPlayer = customPlayer.mediaPlayer
+    private val mediaPlayer = customPlayer
 
     val isPlayingHolder = customPlayer.isPlayingHolder
 

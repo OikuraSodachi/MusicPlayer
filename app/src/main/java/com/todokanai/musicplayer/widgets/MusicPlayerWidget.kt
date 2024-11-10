@@ -18,6 +18,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,6 +38,9 @@ class MusicPlayerWidget : AppWidgetProvider() {
 
     @Inject
     lateinit var player: CustomPlayer
+
+    @Inject
+    lateinit var player2:CustomPlayerNewWrapper
 
     private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
 

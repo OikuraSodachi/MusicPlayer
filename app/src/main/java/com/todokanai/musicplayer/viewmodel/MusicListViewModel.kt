@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.data.dataclass.MusicHolderItem
 import com.todokanai.musicplayer.player.CustomPlayer
+import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import com.todokanai.musicplayer.repository.MusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
@@ -12,7 +13,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MusicListViewModel @Inject constructor(musicRepo : MusicRepository,val player: CustomPlayer) : ViewModel(){
+class MusicListViewModel @Inject constructor(
+    musicRepo : MusicRepository,
+    val player2: CustomPlayer,
+    val player:CustomPlayerNewWrapper
+) : ViewModel(){
 
     /** list of music ( not playList ) **/
     private val sortedList = musicRepo.getAll.map{
