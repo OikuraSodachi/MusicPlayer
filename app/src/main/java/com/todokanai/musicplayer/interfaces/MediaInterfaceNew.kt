@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-
 /** latest value 저장 작업은 여기서 전부 처리함 **/
 abstract class MediaInterfaceNew(
     val dataStoreRepository:DataStoreRepository,
@@ -63,7 +62,6 @@ abstract class MediaInterfaceNew(
     val isShuffledHolder : StateFlow<Boolean>
         get() = _isShuffledHolder
 
-
     /** setter for isLoopingHolder **/
     override fun setLooping(isLooping: Boolean) {
         super.setLooping(isLooping)
@@ -76,7 +74,6 @@ abstract class MediaInterfaceNew(
     fun isShuffled():Boolean{
         return _isShuffledHolder.value
     }
-
 
     /** setter for isShuffledHolder **/
     fun setShuffle(shuffled:Boolean){
@@ -152,7 +149,6 @@ abstract class MediaInterfaceNew(
     ){ musics,shuffled,seed ->
         modifiedPlayList(musics, shuffled, seed)
     }
-
      */
 
     private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
@@ -182,7 +178,6 @@ abstract class MediaInterfaceNew(
         )
     }
 
-
     /** onCompletion() 의 context에 주의 (?). 아직 미검증 상태  **/
     private fun setMusicPrimitive(music: Music,context: Context){
         val shouldLoop = isLooping
@@ -190,20 +185,17 @@ abstract class MediaInterfaceNew(
 
         if (isMusicValid) {
             reset()
-         //   apply {
-                setDataSource(context, music.getUri())
-                setOnCompletionListener {
-                    if (!isLooping) {
-                        context.sendBroadcast(nextIntent)
-                    }
+            setDataSource(context, music.getUri())
+            setOnCompletionListener {
+                if (!isLooping) {
+                    context.sendBroadcast(nextIntent)
                 }
-                isLooping = shouldLoop
-                prepare()
-          //  }
+            }
+            isLooping = shouldLoop
+            prepare()
             setCurrentMusic(music)
         }
     }
-
 
     /** targetMusic에 대해서 setMusic. 실패시 다음 music에 시도  (recursive) **/
     private fun setMusic_generic(
@@ -238,5 +230,4 @@ abstract class MediaInterfaceNew(
             }
         }
     }
-
 }
