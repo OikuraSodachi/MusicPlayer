@@ -1,20 +1,16 @@
 package com.todokanai.musicplayer.data.datastore
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import com.todokanai.musicplayer.base.MyDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(appContext.dataStore) {
+class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(appContext) {
     companion object{
-        val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mydatastore")
         val DATASTORE_SORT_BY = stringPreferencesKey("datastore_sort_by")
 
         val DATASTORE_IS_SHUFFLED = booleanPreferencesKey("datastore_is_shuffled")
