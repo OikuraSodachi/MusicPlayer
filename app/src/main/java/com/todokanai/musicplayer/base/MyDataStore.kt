@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 abstract class MyDataStore(private val appContext: Context) {
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mydatastore")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mydatastore")
 
     fun <Type:Any> Preferences.Key<Type>.flow(): Flow<Type?> {
         return appContext.dataStore.data.map {
