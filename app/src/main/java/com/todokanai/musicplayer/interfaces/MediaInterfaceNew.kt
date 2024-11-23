@@ -138,7 +138,6 @@ abstract class MediaInterfaceNew(
 
     /** shuffled 적용된 List<Music> **/
     fun sortedPlayList():List<Music>{
-       // return modifiedPlayList(musicArray,isShuffled(),seedHolder.value)
         return playListFlow.value
     }
 
