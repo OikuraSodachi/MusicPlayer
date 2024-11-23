@@ -41,13 +41,14 @@ abstract class CustomPlayerNew(
         }
     }
 
-
+    /** returns previous item of playList **/
     fun getPrevMusic():Music{
         val list = sortedPlayList()
         val current = currentMusic()
         return getCircularPrev_td(list,current)
     }
 
+    /** returns next item of playList **/
     fun getNextMusic():Music{
         val list = sortedPlayList()
         val current = currentMusic()

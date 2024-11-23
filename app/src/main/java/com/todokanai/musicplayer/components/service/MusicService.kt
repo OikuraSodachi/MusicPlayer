@@ -13,7 +13,6 @@ import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
@@ -32,8 +31,8 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
     }
-    @Inject
-    lateinit var player3:CustomPlayer
+   /// @Inject
+  //  lateinit var player3:CustomPlayer
 
     @Inject
     lateinit var player: CustomPlayerNewWrapper

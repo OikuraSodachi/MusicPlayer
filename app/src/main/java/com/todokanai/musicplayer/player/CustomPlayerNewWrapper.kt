@@ -29,9 +29,9 @@ class CustomPlayerNewWrapper @Inject constructor(
 
     fun pausePlayAction(context: Context){
         if(isPlaying){
-            start()
-        }else{
             pause()
+        }else{
+            start()
         }
         noti(context)
     }

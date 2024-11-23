@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -25,7 +26,7 @@ abstract class MediaInterfaceNew(
     val musicRepository:MusicRepository
 ):MediaPlayer() {
 
-    var musicArray = emptyArray<Music>()
+    //var musicArray = emptyArray<Music>()
 
     /** 재생 목록의 전체 Array **/
     private val musicArrayFlow = musicRepository.getAll.stateIn(
@@ -130,26 +131,28 @@ abstract class MediaInterfaceNew(
         setSeed(dataStoreRepository.getSeed())
         setShuffle(dataStoreRepository.isShuffled() ?: false)
         setLooping(dataStoreRepository.isLooping() ?: false)
-        musicArray = musicRepository.getAllNonFlow()
+      //  musicArray = musicRepository.getAllNonFlow()
         // init values
         setMusic(context,musicRepository.currentMusicNonFlow())
     }
 
     /** shuffled 적용된 List<Music> **/
     fun sortedPlayList():List<Music>{
-        return modifiedPlayList(musicArray,isShuffled(),seedHolder.value)
+       // return modifiedPlayList(musicArray,isShuffled(),seedHolder.value)
+        return playListFlow.value
     }
 
-    /*
-    // playListFlow는 일단 보류 ( 값 반영이 의도한  대로 되지 않고 있음 )
     val playListFlow = combine(
         musicRepository.getAll,
         isShuffledHolder,
         seedHolder
     ){ musics,shuffled,seed ->
         modifiedPlayList(musics, shuffled, seed)
-    }
-     */
+    }.stateIn(
+        scope = CoroutineScope(Dispatchers.Default),
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList()
+    )
 
     private fun modifiedPlayList(musicList:Array<Music>, isShuffled:Boolean, seed:Double):List<Music>{
         if(isShuffled){

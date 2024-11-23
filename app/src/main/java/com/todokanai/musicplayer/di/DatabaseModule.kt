@@ -54,6 +54,12 @@ class DatabaseModule {
 
     @Singleton
     @Provides
+    fun provideMusicRepository(musicDao: MusicDao,currentMusicDao: CurrentMusicDao):MusicRepository{
+        return MusicRepository(musicDao,currentMusicDao)
+    }
+
+    @Singleton
+    @Provides
     fun providePlayerStateHolders(musicRepo:MusicRepository,dsRepo:DataStoreRepository):PlayerStateHolders{
         return PlayerStateHolders(musicRepo,dsRepo)
     }
