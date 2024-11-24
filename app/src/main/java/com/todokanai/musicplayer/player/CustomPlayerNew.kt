@@ -60,7 +60,7 @@ abstract class CustomPlayerNew(
      *  Done
      * **/
     fun launchMusic(context: Context, music:Music){
-        setMusic(context,music)
+        setMusic(context,music,isLooping)
         start()
     }
 

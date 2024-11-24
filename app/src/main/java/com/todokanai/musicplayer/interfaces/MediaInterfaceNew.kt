@@ -67,6 +67,7 @@ abstract class MediaInterfaceNew(
     override fun setLooping(isLooping: Boolean) {
         super.setLooping(isLooping)
         _isLoopingHolder.value = isLooping
+        println("setLooping: $isLooping")
         CoroutineScope(Dispatchers.IO).launch {
             dataStoreRepository.saveIsLooping(isLooping)
         }
@@ -130,10 +131,12 @@ abstract class MediaInterfaceNew(
     suspend fun onInitAttributes(context: Context){
         setSeed(dataStoreRepository.getSeed())
         setShuffle(dataStoreRepository.isShuffled() ?: false)
-        setLooping(dataStoreRepository.isLooping() ?: false)
+       // println("ds: ${dataStoreRepository.isLooping()}")
+        val loop = dataStoreRepository.isLooping() ?:false
+        setLooping(loop)
       //  musicArray = musicRepository.getAllNonFlow()
         // init values
-        setMusic(context,musicRepository.currentMusicNonFlow())
+        setMusic(context,musicRepository.currentMusicNonFlow(),loop)
     }
 
     /** shuffled 적용된 List<Music> **/
@@ -165,12 +168,13 @@ abstract class MediaInterfaceNew(
     fun setMusic(
         context: Context,
         targetMusic: Music,
+        loop: Boolean
     ){
         setMusic_generic(
             context = context,
             targetMusic = targetMusic,
             playList = sortedPlayList(),
-            setMusicPrimitive = {setMusicPrimitive(it,context)},
+            setMusicPrimitive = {setMusicPrimitive(it,context,loop)},
             onFailure = {
                 Toast.makeText(context,context.getString(R.string.all_item_failure), Toast.LENGTH_SHORT).show()
             },
@@ -181,8 +185,8 @@ abstract class MediaInterfaceNew(
     }
 
     /** onCompletion() 의 context에 주의 (?). 아직 미검증 상태  **/
-    private fun setMusicPrimitive(music: Music,context: Context){
-        val shouldLoop = isLooping
+    private fun setMusicPrimitive(music: Music,context: Context,loop: Boolean){
+       // val shouldLoop = isLooping
         val isMusicValid = music.fileDir != "empty"
 
         if (isMusicValid) {
@@ -193,7 +197,7 @@ abstract class MediaInterfaceNew(
                     context.sendBroadcast(nextIntent)
                 }
             }
-            isLooping = shouldLoop
+            isLooping = loop
             prepare()
             setCurrentMusic(music)
         }

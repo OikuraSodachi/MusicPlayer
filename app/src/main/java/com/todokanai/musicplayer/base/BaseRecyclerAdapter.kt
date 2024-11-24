@@ -17,7 +17,7 @@ abstract class BaseRecyclerAdapter<E:Any,VH:RecyclerView.ViewHolder>(
         // Todo: Memory Leak이 발생하는지 여부 체크할 것
         itemFlow.asLiveData().observe(lifecycleOwner){
             itemList = it
-            println("itemList: $itemList")
+            //println("itemList: $itemList")
             notifyDataSetChanged()
         }
         super.onAttachedToRecyclerView(recyclerView)
