@@ -6,7 +6,6 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.ScanPathRepository
@@ -22,7 +21,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val spRepository:ScanPathRepository,
     private val musicRepo:MusicRepository,
-    private val player3: CustomPlayer,
+  //  private val player3: CustomPlayer,
     val player:CustomPlayerNewWrapper
 ) : ViewModel() {
 

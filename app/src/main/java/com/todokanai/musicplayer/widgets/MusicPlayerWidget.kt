@@ -17,7 +17,6 @@ import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
-import com.todokanai.musicplayer.player.CustomPlayer
 import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -36,11 +35,11 @@ class MusicPlayerWidget : AppWidgetProvider() {
     @Inject
     lateinit var icons:IconsRepository
 
-    @Inject
-    lateinit var player: CustomPlayer
+   // @Inject
+ //   lateinit var player: CustomPlayer
 
     @Inject
-    lateinit var player2:CustomPlayerNewWrapper
+    lateinit var player:CustomPlayerNewWrapper
 
     private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
 
@@ -86,7 +85,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         views: RemoteViews,
-        player: CustomPlayer
+        player: CustomPlayerNewWrapper
     ) {
         val currentMusic = player.currentMusic()
         val albumUri = currentMusic.getAlbumUri()
