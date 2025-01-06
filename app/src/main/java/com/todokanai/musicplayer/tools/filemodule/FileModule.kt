@@ -6,10 +6,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.isAccessible_td
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
@@ -23,28 +26,26 @@ class FileModule(defaultPath:File) {
     val currentPath : StateFlow<File>
         get() = _currentPath
 
-    /** listFiles 값 refresh 용도  **/
-    private val updaterFlow = MutableStateFlow<Boolean>(false)
-
     /** directory tree **/
     val dirTree = currentPath.map { file -> file.dirTree() }
 
     /** array of files to show
      *
+     * currentPath refresh 했을 때, 갱신이 되지 않을 경우 여기부터 체크해볼 것
+     *
      * TODO : combine 대신 sharedFlow를 이용해서  refresh 기능을 만들 것
      * **/
-    val listFiles = combine(
-        currentPath,
-        updaterFlow
-    ){
-            path,updater ->
-        path.listFiles() ?: emptyArray()
-    }
+    val listFiles = currentPath.map {
+        it.listFiles() ?: emptyArray()
+    }.shareIn(
+        CoroutineScope(Dispatchers.Default),
+        SharingStarted.WhileSubscribed(5)
+    )
+
+
 
     /** whether currentPath is Accessible **/
     val notAccessible = currentPath.map { it.listFiles() == null }
-
-    fun refreshListFiles(){ updaterFlow.value =!updaterFlow.value }
 
     /** setter for currentPath **/
     fun updateCurrentPath(directory: File) {
