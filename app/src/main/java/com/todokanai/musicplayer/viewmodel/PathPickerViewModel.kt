@@ -8,7 +8,7 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.myobjects.Constants.BY_DEFAULT
 import com.todokanai.musicplayer.repository.ScanPathRepository
 import com.todokanai.musicplayer.tools.FileListSorter
-import com.todokanai.musicplayer.tools.independent.FileModule
+import com.todokanai.musicplayer.tools.filemodule.FileModule
 import com.todokanai.musicplayer.tools.independent.getPhysicalStorages_td
 import com.todokanai.musicplayer.variables.Variables
 import dagger.hilt.android.lifecycle.HiltViewModel
