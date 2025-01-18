@@ -64,7 +64,7 @@ class Notifications @Inject constructor(
         return NotificationCompat.Builder(context, channelID)       // 알림바에 띄울 알림을 만듬
             .setContentTitle("null Title Noti") // 알림의 제목
             .setSmallIcon(R.mipmap.ic_launcher_round)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)        //  Todo : 이거 아마 VISIBILITY_PRIVATE 으로 바꿔야 할지도?
             //----------------------------------------------------------------------------------------------------------\
             /**API level < 33 일 때만 적용되는 구간 **/
             .addAction(NotificationCompat.Action(icons.loopingImage(isLooping), "REPEAT", PendingIntent.getBroadcast(context,0,repeatIntent,FLAG_IMMUTABLE)))
