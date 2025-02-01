@@ -18,13 +18,13 @@ class CustomPlayerNewWrapper @Inject constructor(
 
     fun repeatAction(context: Context){
         isLooping = !isLooping
-        noti(context)
+        notification(context)
     }
 
     fun prevAction(context: Context){
         val prevMusic = getPrevMusic()
         launchMusic(context,prevMusic)
-        noti(context)
+        notification(context)
     }
 
     fun pausePlayAction(context: Context){
@@ -33,23 +33,22 @@ class CustomPlayerNewWrapper @Inject constructor(
         }else{
             start()
         }
-        noti(context)
+        notification(context)
     }
 
     fun nextAction(context: Context){
         val nextMusic = getNextMusic()
         launchMusic(context,nextMusic)
-        noti(context)
+        notification(context)
     }
 
     fun shuffleAction(context: Context){
         applyShuffle()
-        noti(context)
+        notification(context)
     }
 
-    private fun noti(context: Context){
+    override fun notification(context: Context) {
         requestUpdateNoti(mediaSession,{context.startForegroundService(serviceIntent)})
     }
-
 
 }

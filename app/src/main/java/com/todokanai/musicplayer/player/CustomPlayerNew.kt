@@ -37,6 +37,7 @@ abstract class CustomPlayerNew(
                         .build()
                 )
                 onInitAttributes(context)
+                notification(context)
             }
         }
     }
@@ -118,6 +119,8 @@ abstract class CustomPlayerNew(
             .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         this.setPlaybackState(playbackState.build())
     }
+
+    abstract fun notification(context: Context)
 
     fun startForeground(context: Context){
         context.startForegroundService(serviceIntent)

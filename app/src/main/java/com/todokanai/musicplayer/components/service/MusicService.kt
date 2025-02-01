@@ -96,6 +96,7 @@ class MusicService : MediaBrowserServiceCompat(){
 
         player.apply{
             initAttributes(this@MusicService)
+
             /** case 1**/
          //   beginObserve({startForegroundService(serviceIntent)})
 
