@@ -63,6 +63,7 @@ abstract class CustomPlayerNew(
     fun launchMusic(context: Context, music:Music){
         setMusic(context,music,isLooping)
         start()
+        notification(context)
     }
 
     fun applyShuffle(){

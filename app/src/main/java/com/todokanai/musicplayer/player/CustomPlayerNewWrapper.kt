@@ -24,7 +24,6 @@ class CustomPlayerNewWrapper @Inject constructor(
     fun prevAction(context: Context){
         val prevMusic = getPrevMusic()
         launchMusic(context,prevMusic)
-        notification(context)
     }
 
     fun pausePlayAction(context: Context){
@@ -39,7 +38,6 @@ class CustomPlayerNewWrapper @Inject constructor(
     fun nextAction(context: Context){
         val nextMusic = getNextMusic()
         launchMusic(context,nextMusic)
-        notification(context)
     }
 
     fun shuffleAction(context: Context){
@@ -50,5 +48,4 @@ class CustomPlayerNewWrapper @Inject constructor(
     override fun notification(context: Context) {
         requestUpdateNoti(mediaSession,{context.startForegroundService(serviceIntent)})
     }
-
 }
