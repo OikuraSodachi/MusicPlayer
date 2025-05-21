@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.todokanai.musicplayer.base.MyDataStore
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,23 +29,23 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     val sortBy = DATASTORE_SORT_BY.flow()
 
     suspend fun saveIsShuffled(isShuffled:Boolean) = DATASTORE_IS_SHUFFLED.save(isShuffled)
-    suspend fun isShuffled() = DATASTORE_IS_SHUFFLED.value()
-    val isShuffled = DATASTORE_IS_SHUFFLED.flow()
+    suspend fun isShuffled() = DATASTORE_IS_SHUFFLED.notNullValue(defaultValue = false)
+    val isShuffled = DATASTORE_IS_SHUFFLED.notNullFlow(defaultValue = false)
 
     suspend fun saveIsLooping(isLooping:Boolean) = DATASTORE_IS_LOOPING.save(isLooping)
-    suspend fun isLooping() = DATASTORE_IS_LOOPING.value()
-    val isLooping = DATASTORE_IS_LOOPING.flow()
+    suspend fun isLooping() = DATASTORE_IS_LOOPING.notNullValue(defaultValue = false)
+    val isLooping = DATASTORE_IS_LOOPING.notNullFlow(defaultValue = false)
 
-    suspend fun getSeed() = DATASTORE_RANDOM_SEED.value() ?:0.0
     suspend fun saveRandomSeed(seed:Double) = DATASTORE_RANDOM_SEED.save(seed)
-    val seed = DATASTORE_RANDOM_SEED.flow()
+    suspend fun getSeed() = DATASTORE_RANDOM_SEED.notNullValue(defaultValue = 0.0)
+    val seed = DATASTORE_RANDOM_SEED.notNullFlow(defaultValue = 0.0)
 
     suspend fun saveEnableMediaButton(enabled:Boolean) = DATASTORE_MEDIA_BUTTON_ENABLED.save(enabled)
-    suspend fun isMediaButtonEnabled() = DATASTORE_MEDIA_BUTTON_ENABLED.value()
-    val isMediaButtonEnabled = DATASTORE_MEDIA_BUTTON_ENABLED.flow()
+    suspend fun isMediaButtonEnabled() = DATASTORE_MEDIA_BUTTON_ENABLED.notNullValue(defaultValue = true)
+    val isMediaButtonEnabled = DATASTORE_MEDIA_BUTTON_ENABLED.notNullFlow(true)
 
     suspend fun saveCurrentMusic(absolutePath:String) = DATASTORE_CURRENT_MUSIC.save(absolutePath)
-    suspend fun currentMusic() = DATASTORE_CURRENT_MUSIC.value()
-    val currentMusic = DATASTORE_CURRENT_MUSIC.flow()
+    suspend fun currentMusic() = DATASTORE_CURRENT_MUSIC.notNullValue(defaultValue = dummyMusic.fileDir)
+    val currentMusic = DATASTORE_CURRENT_MUSIC.notNullFlow(defaultValue = dummyMusic.fileDir)
 
 }
