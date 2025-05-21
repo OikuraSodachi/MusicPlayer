@@ -43,4 +43,16 @@ data class CurrentMusic(
     fun toMusic():Music{
         return Music(id, title, artist, albumId, duration, fileDir)
     }
+//    companion object{
+//        fun fromMusic(music:Music):CurrentMusic{
+//            return CurrentMusic(
+//                id = music.id,
+//                title = music.title,
+//                artist = music.artist,
+//                albumId = music.albumId,
+//                duration = music.duration,
+//                fileDir = music.fileDir
+//            )
+//        }
+//    }
 }

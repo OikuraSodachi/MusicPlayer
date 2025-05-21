@@ -43,9 +43,9 @@ data class Music(
         )
     }
 
-    fun toCurrentMusic():CurrentMusic{
-        return CurrentMusic(id, title, artist, albumId, duration, fileDir)
-    }
+//    fun toCurrentMusic():CurrentMusic{
+//        return CurrentMusic(id, title, artist, albumId, duration, fileDir)
+//    }
 
     fun toMusicHolderItem():MusicHolderItem{
         return MusicHolderItem(

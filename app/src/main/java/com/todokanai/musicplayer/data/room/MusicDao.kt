@@ -18,6 +18,9 @@ interface MusicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(music: Music)
 
+    @Query("select * from room_music where fileDir=:fileDir")
+    suspend fun getMusicFromPath(fileDir:String):Music
+
     @Delete
     suspend fun delete(music: Music)
 

@@ -129,14 +129,21 @@ abstract class MediaInterfaceNew(
         setPlayingHolder()
     }
     suspend fun onInitAttributes(context: Context){
-        setSeed(dataStoreRepository.getSeed())
-        setShuffle(dataStoreRepository.isShuffled() ?: false)
+        CoroutineScope(Dispatchers.IO).launch {
+            musicRepository.musicState.collect{
+                setShuffle(it.isShuffled)
+                setMusic(context,it.currentMusic ?: dummyMusic,it.isLooping)
+            }
+        }
+
+       // setSeed(dataStoreRepository.getSeed())
+       // setShuffle(dataStoreRepository.isShuffled() ?: false)
        // println("ds: ${dataStoreRepository.isLooping()}")
         val loop = dataStoreRepository.isLooping() ?:false
         setLooping(loop)
       //  musicArray = musicRepository.getAllNonFlow()
         // init values
-        setMusic(context,musicRepository.currentMusicNonFlow(),loop)
+        //setMusic(context,musicRepository.currentMusicNonFlow(),loop)
     }
 
     /** shuffled 적용된 List<Music> **/
