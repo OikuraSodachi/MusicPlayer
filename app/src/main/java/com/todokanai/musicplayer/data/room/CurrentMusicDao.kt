@@ -18,9 +18,6 @@ interface CurrentMusicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(music: CurrentMusic)
 
-    @Query("insert into room_currentmusic values")
-    suspend fun upsert(music: CurrentMusic)
-
     @Delete
     suspend fun delete(music: CurrentMusic)
 

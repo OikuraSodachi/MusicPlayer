@@ -50,8 +50,12 @@ abstract class MediaInterfaceNew(
         get() = _seedHolder
 
     private val _currentMusicHolder = MutableStateFlow<Music>(initialMusic)
-    val currentMusicHolder : StateFlow<Music>
-        get() = _currentMusicHolder
+
+    val currentMusicHolderNew = musicRepository.currentMusic.stateIn(
+        scope = CoroutineScope(Dispatchers.IO),
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = initialMusic
+    )
 
     private val _isLoopingHolder = MutableStateFlow<Boolean>(initialLoop)
     /** for view layer Only **/
@@ -59,9 +63,12 @@ abstract class MediaInterfaceNew(
         get() = _isLoopingHolder
 
     private val _isShuffledHolder = MutableStateFlow<Boolean>(initialShuffle)
-    /** for view layer Only **/
-    val isShuffledHolder : StateFlow<Boolean>
-        get() = _isShuffledHolder
+
+    val isShuffledHolder = dataStoreRepository.isShuffled.stateIn(
+        scope = CoroutineScope(Dispatchers.IO),
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = initialShuffle
+    )
 
     /** setter for isLoopingHolder **/
     override fun setLooping(isLooping: Boolean) {
@@ -91,7 +98,7 @@ abstract class MediaInterfaceNew(
 
     /** setter for currentMusicHolder **/
     fun setCurrentMusic(music: Music){
-        _currentMusicHolder.value = music
+       // _currentMusicHolder.value = music
         CoroutineScope(Dispatchers.IO).launch {
             musicRepository.upsertCurrentMusic(music)
         }
@@ -129,13 +136,7 @@ abstract class MediaInterfaceNew(
         setPlayingHolder()
     }
     suspend fun onInitAttributes(context: Context){
-        CoroutineScope(Dispatchers.IO).launch {
-            musicRepository.musicState.collect{
-                setShuffle(it.isShuffled)
-                setMusic(context,it.currentMusic ?: dummyMusic,it.isLooping)
-            }
-        }
-
+        setShuffle(dataStoreRepository.isShuffled())
        // setSeed(dataStoreRepository.getSeed())
        // setShuffle(dataStoreRepository.isShuffled() ?: false)
        // println("ds: ${dataStoreRepository.isLooping()}")

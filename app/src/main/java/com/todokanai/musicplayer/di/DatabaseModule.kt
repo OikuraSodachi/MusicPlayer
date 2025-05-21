@@ -46,6 +46,7 @@ class DatabaseModule {
         return myDatabase.currentMusicDao()
     }
 
+    @Singleton
     @Provides
     fun provideDataStoreRepository(@ApplicationContext context: Context):DataStoreRepository{
         return DataStoreRepository(context)
@@ -53,8 +54,8 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideMusicRepository(musicDao: MusicDao,currentMusicDao: CurrentMusicDao):MusicRepository{
-        return MusicRepository(musicDao,currentMusicDao)
+    fun provideMusicRepository(musicDao: MusicDao,dataStoreRepository: DataStoreRepository):MusicRepository{
+        return MusicRepository(musicDao,dataStoreRepository)
     }
 
     @Singleton

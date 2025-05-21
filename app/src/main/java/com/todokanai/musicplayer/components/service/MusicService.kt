@@ -31,8 +31,6 @@ class MusicService : MediaBrowserServiceCompat(){
     companion object{
         val serviceIntent = Intent(appContext,MusicService::class.java)
     }
-   /// @Inject
-  //  lateinit var player3:CustomPlayer
 
     @Inject
     lateinit var player: CustomPlayerNewWrapper
