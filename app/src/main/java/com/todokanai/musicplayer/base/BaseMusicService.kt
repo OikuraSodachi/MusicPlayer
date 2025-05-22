@@ -1,6 +1,5 @@
 package com.todokanai.musicplayer.base
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import androidx.media.MediaBrowserServiceCompat
@@ -15,10 +14,6 @@ abstract class BaseMusicService : MediaBrowserServiceCompat(){
 
         prepareMediaSession()
         registerReceivers()
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onGetRoot(
@@ -48,3 +43,4 @@ abstract class BaseMusicService : MediaBrowserServiceCompat(){
     abstract fun registerReceivers()
 
 }
+

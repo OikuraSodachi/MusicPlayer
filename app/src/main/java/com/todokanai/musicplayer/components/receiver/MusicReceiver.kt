@@ -16,12 +16,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MusicReceiver  : BroadcastReceiver() {
 
-    //@Inject
- //   lateinit var player2:CustomPlayer
-
     @Inject
     lateinit var player:CustomPlayerNewWrapper
-    //private val player by lazy{getPlayer}
 
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {

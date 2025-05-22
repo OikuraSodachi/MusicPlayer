@@ -58,32 +58,7 @@ class MusicService : BaseMusicService(){
 
     override fun onCreate() {
         super.onCreate()
-        //Variables.isServiceOn = true
-        /*
-        sessionToken = mediaSession.sessionToken
-        val mediaButtonEnabled = dsRepo.isMediaButtonEnabled.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = true
-        )
 
-        val mediaSessionCallback = MediaSessionCallback(
-            this@MusicService,
-            audioManager,
-            audioFocusChangeListener,
-            {mediaButtonEnabled.value}
-        )
-
-        mediaSession.apply {
-            setCallback(mediaSessionCallback)
-            isActive = true
-        }
-
-         */
-
-        player.apply{
-            initAttributes(this@MusicService)
-        }       // observe LiveData
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -103,7 +78,6 @@ class MusicService : BaseMusicService(){
         player.stop()
         audioManager.abandonAudioFocus(audioFocusChangeListener)
         mediaSession.release()
-        //Variables.isServiceOn = false
         super.onDestroy()
     }
 
@@ -135,4 +109,5 @@ class MusicService : BaseMusicService(){
             isActive = true
         }
     }
+
 }

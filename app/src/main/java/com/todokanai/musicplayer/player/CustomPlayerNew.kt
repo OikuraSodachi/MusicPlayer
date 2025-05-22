@@ -23,9 +23,6 @@ abstract class CustomPlayerNew(
     val iconsRepo:IconsRepository
 ):MediaInterfaceNew(dsRepo,musicRepo){
 
-    override fun start(){
-        super.start()
-    }
 
     fun initAttributes(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
