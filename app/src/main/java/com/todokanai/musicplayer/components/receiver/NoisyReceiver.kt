@@ -14,12 +14,12 @@ class NoisyReceiver : BroadcastReceiver() {
     //lateinit var player:CustomPlayer
 
     @Inject
-    lateinit var player2:NewPlayer
+    lateinit var player:NewPlayer
     //private val player by lazy{getPlayer}
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-            if(player2.isPlaying) {
-                player2.pause()
+            if(player.isPlaying()) {
+                player.pause()
             }
         }
     }

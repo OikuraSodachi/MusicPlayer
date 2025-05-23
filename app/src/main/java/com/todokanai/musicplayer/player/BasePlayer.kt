@@ -5,9 +5,14 @@ import android.media.MediaPlayer
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
 abstract class BasePlayer(val mediaPlayer: MediaPlayer, val mediaSession: MediaSessionCompat) {
 
@@ -28,7 +33,16 @@ abstract class BasePlayer(val mediaPlayer: MediaPlayer, val mediaSession: MediaS
                 isShuffled = isShuffled,
                 currentMusic = currentMusic
             )
-        }
+        }.stateIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = MusicState(
+                isPlaying = false,
+                isLooping = false,
+                isShuffled = false,
+                currentMusic = dummyMusic
+            )
+        )
     }
 
     fun activate(context: Context){

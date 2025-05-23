@@ -62,15 +62,26 @@ class MusicService : BaseMusicService(){
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+//        notifications.updateNotification(
+//            service = this,
+//            intent = intent,
+//            serviceChannel = serviceChannel,
+//            isPlaying = player.isPlaying,
+//            isLooping = player.isLooping,
+//            isShuffled = player.isShuffled(),
+//            currentMusic = player.currentMusic()
+//        )
+        val state = player.musicStateFlow.value
         notifications.updateNotification(
             service = this,
             intent = intent,
             serviceChannel = serviceChannel,
-            isPlaying = player.isPlaying,
-            isLooping = player.isLooping,
-            isShuffled = player.isShuffled(),
-            currentMusic = player.currentMusic()
+            isPlaying = state.isPlaying,
+            isLooping = state.isLooping,
+            isShuffled = state.isShuffled,
+            currentMusic = state.currentMusic
         )
+
         return super.onStartCommand(intent, flags, startId)
     }
 

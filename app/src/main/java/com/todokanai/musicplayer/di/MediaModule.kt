@@ -8,6 +8,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.NewPlayer
+import com.todokanai.musicplayer.repository.PlayListRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import dagger.Module
@@ -38,8 +39,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideNewPlayer():NewPlayer{
-        return NewPlayer()
+    fun provideNewPlayer(mediaPlayer:MediaPlayer,playListRepository: PlayListRepository):NewPlayer{
+        return NewPlayer(mediaPlayer,playListRepository)
     }
 
     @Singleton

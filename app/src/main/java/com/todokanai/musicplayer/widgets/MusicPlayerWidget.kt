@@ -17,6 +17,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
+import com.todokanai.musicplayer.player.MusicState
 import com.todokanai.musicplayer.player.NewPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -41,6 +42,8 @@ class MusicPlayerWidget : AppWidgetProvider() {
     @Inject
     lateinit var player:NewPlayer
 
+    val musicState by lazy { player.musicStateFlow }
+
     private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
 
     override fun onUpdate(
@@ -52,18 +55,19 @@ class MusicPlayerWidget : AppWidgetProvider() {
         println("widget onUpdate")
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
-            updateMyAppWidget_td(appWidgetManager, it,widgetViews,player)
+            updateMyAppWidget_td(appWidgetManager, it,widgetViews,musicState.value)
         }
     }
 
     /** stable **/
     override fun onEnabled(context: Context) {
+        val state = musicState.value
         widgetViews.run {
-            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(player.isLooping))
+            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(state.isLooping))
             setImageViewResource(R.id.widget_prevBtn,icons.prev)
-            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(player.isPlaying))
+            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(state.isPlaying))
             setImageViewResource(R.id.widget_nextBtn,icons.next)
-            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(player.isShuffled()))
+            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(state.isShuffled))
 
             setOnClickPendingIntent(R.id.widget_repeatBtn, PendingIntent.getBroadcast(context,0, repeatIntent,FLAG_IMMUTABLE))
             setOnClickPendingIntent(R.id.widget_prevBtn, PendingIntent.getBroadcast(context,0, prevIntent,FLAG_IMMUTABLE))
@@ -85,15 +89,15 @@ class MusicPlayerWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         views: RemoteViews,
-        player: NewPlayer
+        state:MusicState
     ) {
-        val currentMusic = player.currentMusic()
+        val currentMusic = state.currentMusic
         val albumUri = currentMusic.getAlbumUri()
         views.run {
             setTextViewText(R.id.widget_titleText,currentMusic.title)
-            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(player.isLooping))
-            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(player.isPlaying))
-            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(player.isShuffled()))
+            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(state.isLooping))
+            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(state.isPlaying))
+            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(state.isShuffled))
           //  println("albumUri: $albumUri")
         //    Toast.makeText(appContext,"${albumUri?.path}",Toast.LENGTH_SHORT).show()
             setImageViewUri(R.id.widget_imageView, albumUri)   // Todo: updateMyAppWidget의 매 실행마다 이미지가 직전 이미지로 바뀌고 있음
