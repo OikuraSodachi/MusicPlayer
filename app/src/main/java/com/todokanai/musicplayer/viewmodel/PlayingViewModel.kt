@@ -11,6 +11,7 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.player.NewPlayer
+import com.todokanai.musicplayer.repository.PlayerStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,12 +19,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayingViewModel @Inject constructor(
-    customPlayer:NewPlayer
+    customPlayer:NewPlayer,
+    val stateRepo:PlayerStateRepository
 ) : ViewModel(){
 
+
+
+    //-----------
     private val mediaPlayer = customPlayer
 
-    val isPlayingHolder: StateFlow<Boolean> = MutableStateFlow(false)
+    val isPlayingHolder: StateFlow<Boolean> =customPlayer.isPlayingHolder
 
 //    val isShuffledHolder: StateFlow<Boolean> = customPlayer.isShuffledHolder.stateIn(
 //        scope = viewModelScope,
@@ -39,7 +44,7 @@ class PlayingViewModel @Inject constructor(
 //        initialValue = false
 //    )
 
-    val isRepeatingHolder: StateFlow<Boolean> = MutableStateFlow(false)
+    val isRepeatingHolder: StateFlow<Boolean> = customPlayer.isLoopingHolder
 //    val currentMusicHolder: StateFlow<Music> = customPlayer.currentMusicHolderNew.stateIn(
 //        scope = viewModelScope,
 //        started = SharingStarted.WhileSubscribed(5000),

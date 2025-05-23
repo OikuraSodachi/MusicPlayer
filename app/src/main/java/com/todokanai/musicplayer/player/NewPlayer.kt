@@ -28,6 +28,26 @@ class NewPlayer @Inject constructor(
     private val _currentMusicHolder = MutableStateFlow<Music>(dummyMusic)
     val currentMusicHolder = _currentMusicHolder.asStateFlow()
 
+    override fun start(){
+        super.start()
+        _isPlayingHolder.value = isPlaying
+    }
+
+    override fun pause() {
+        super.pause()
+        _isPlayingHolder.value = isPlaying
+    }
+
+    override fun stop() {
+        super.stop()
+        _isPlayingHolder.value = isPlaying
+    }
+
+    override fun setLooping(p0: Boolean) {
+        super.setLooping(p0)
+        _isLoopingHolder.value = isLooping
+    }
+
     override fun onMusicListScan(context: Context) {
         TODO("Not yet implemented")
     }
