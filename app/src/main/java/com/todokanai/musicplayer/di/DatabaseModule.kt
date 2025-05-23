@@ -9,6 +9,7 @@ import com.todokanai.musicplayer.data.room.MyDatabase
 import com.todokanai.musicplayer.data.room.ScanPathDao
 import com.todokanai.musicplayer.data.room.UserDao
 import com.todokanai.musicplayer.repository.MusicRepository
+import com.todokanai.musicplayer.repository.PlayListRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,6 +57,12 @@ class DatabaseModule {
     @Provides
     fun provideMusicRepository(musicDao: MusicDao,dataStoreRepository: DataStoreRepository):MusicRepository{
         return MusicRepository(musicDao,dataStoreRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providePlayListRepository(dsRepo:DataStoreRepository,musicRepo:MusicRepository):PlayListRepository{
+        return PlayListRepository(dsRepo,musicRepo)
     }
 
     @Singleton

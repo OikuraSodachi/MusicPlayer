@@ -9,7 +9,7 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
-import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
+import com.todokanai.musicplayer.player.NewPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class MusicReceiver  : BroadcastReceiver() {
 
     @Inject
-    lateinit var player:CustomPlayerNewWrapper
+    lateinit var player:NewPlayer
 
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {

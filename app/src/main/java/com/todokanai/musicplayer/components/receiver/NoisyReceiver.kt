@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
-import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
+import com.todokanai.musicplayer.player.NewPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ class NoisyReceiver : BroadcastReceiver() {
     //lateinit var player:CustomPlayer
 
     @Inject
-    lateinit var player2: CustomPlayerNewWrapper
+    lateinit var player2:NewPlayer
     //private val player by lazy{getPlayer}
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {

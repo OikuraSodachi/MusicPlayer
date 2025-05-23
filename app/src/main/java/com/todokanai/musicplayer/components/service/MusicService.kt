@@ -11,7 +11,7 @@ import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.player.CustomPlayerNewWrapper
+import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -30,7 +30,7 @@ class MusicService : BaseMusicService(){
     }
 
     @Inject
-    lateinit var player: CustomPlayerNewWrapper
+    lateinit var player: NewPlayer
 
     private val receiver by lazy{MusicReceiver()}
     private val serviceChannel by lazy {
