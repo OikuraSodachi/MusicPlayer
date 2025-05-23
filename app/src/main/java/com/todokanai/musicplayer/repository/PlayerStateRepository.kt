@@ -9,6 +9,7 @@ import com.todokanai.musicplayer.player.NewPlayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -22,12 +23,16 @@ class PlayerStateRepository @Inject constructor(
     val playListRepository: PlayListRepository
 ) {
     val isPlayingFlow: Flow<Boolean>
-        get() = TODO()
+ //       get() = TODO()
+        get() = MutableStateFlow(false)
+
     val isLoopingFlow: Flow<Boolean>
-        get() = TODO()
+        //       get() = TODO()
+        get() = MutableStateFlow(false)
 
     val isShuffledFlow: Flow<Boolean>
-        get() = TODO()
+        //       get() = TODO()
+        get() = MutableStateFlow(false)
 
     val currentMusicFlow: Flow<Music>
         get() = playListRepository.currentMusic

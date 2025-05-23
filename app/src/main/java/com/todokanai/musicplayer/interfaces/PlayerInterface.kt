@@ -29,9 +29,9 @@ interface PlayerInterface {
 
     fun shuffleAction(context: Context)
 
-    fun isShuffled():Boolean
+   // fun isShuffled():Boolean
 
-    fun isLooping():Boolean
+    //fun isLooping():Boolean
 
-    fun currentMusic():Music
+    //fun currentMusic():Music
 }

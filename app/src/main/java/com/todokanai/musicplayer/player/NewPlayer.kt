@@ -14,7 +14,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSessionCompat, val playListRepo:PlayListRepository):BasePlayer(mediaPlayer,mediaSession), PlayerInterface {
+class NewPlayer @Inject constructor(
+    mediaPlayer:MediaPlayer,
+    mediaSession:MediaSessionCompat,
+    val playListRepo:PlayListRepository
+):BasePlayer(mediaPlayer), PlayerInterface {
 
     private val _isLoopingHolder = MutableStateFlow<Boolean>(false)
     val isLoopingHolder = _isLoopingHolder.asStateFlow()
@@ -34,7 +38,7 @@ class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSe
 
     override fun repeatAction(context: Context) {
         mediaPlayer.isLooping = !mediaPlayer.isLooping
-        _isLoopingHolder.value = mediaPlayer.isLooping
+       // _isLoopingHolder.value = mediaPlayer.isLooping
     }
 
     override fun prevAction(context: Context) {
@@ -57,32 +61,12 @@ class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSe
         TODO("Not yet implemented")
     }
 
-    override fun isShuffled(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun isLooping(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun currentMusic(): Music {
-        TODO("Not yet implemented")
-    }
-
-    override fun setLooping(isLooping: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setShuffled(isShuffled: Boolean) {
-        TODO("Not yet implemented")
-    }
-
     override fun play() {
-        TODO("Not yet implemented")
+        mediaPlayer.start()
     }
 
     override fun pause() {
-        TODO("Not yet implemented")
+        mediaPlayer.pause()
     }
 
     override fun updateViewLayer(
@@ -94,8 +78,14 @@ class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSe
         TODO("Not yet implemented")
     }
 
+    override fun launchMusic(context: Context,music: Music){
+        mediaPlayer.run{
+            setMusic_td(context, music)
+            start()
+        }
+    }
 
-    private fun MediaPlayer.setMusic(context: Context, music: Music) {
+    fun MediaPlayer.setMusic_td(context: Context, music: Music){
         val isMusicValid = music.fileDir != "empty"
 
         if (isMusicValid) {
