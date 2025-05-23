@@ -1,15 +1,21 @@
 package com.todokanai.musicplayer.player
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.MediaPlayer
+import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
+import com.todokanai.musicplayer.repository.MusicRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 /** 값 적용 먼저 하고, holder 에 결과를 반영하는 구조 **/
-abstract class BasicPlayer : MediaPlayer() {
+abstract class BasicPlayer(val musicRepo:MusicRepository,val dsRepo:DataStoreRepository) : MediaPlayer() {
 
     private val _isLoopingHolder = MutableStateFlow<Boolean>(false)
     val isLoopingHolder = _isLoopingHolder.asStateFlow()
@@ -38,6 +44,9 @@ abstract class BasicPlayer : MediaPlayer() {
     override fun setLooping(p0: Boolean) {
         super.setLooping(p0)
         _isLoopingHolder.value = isLooping
+        CoroutineScope(Dispatchers.IO).launch {
+            dsRepo.saveIsLooping(p0)
+        }
     }
 
     override fun release() {
@@ -61,6 +70,18 @@ abstract class BasicPlayer : MediaPlayer() {
             }
             prepare()
             _currentMusicHolder.value = music
+            CoroutineScope(Dispatchers.IO).launch {
+                dsRepo.saveCurrentMusic(music.fileDir)
+            }
         }
+    }
+
+    fun onInit(){
+        setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build()
+        )
     }
 }

@@ -27,10 +27,6 @@ class MusicRepository @Inject constructor(private val musicDao:MusicDao,val dsRe
 
     suspend fun delete(music: Music) = musicDao.delete(music)
 
-    suspend fun upsertCurrentMusic(currentMusic: Music){
-        dsRepo.saveCurrentMusic(currentMusic.fileDir)
-    }
-
     suspend fun updateMusicList(newList:Array<Music>){
         musicDao.deleteAll()
         newList.forEach {  music ->

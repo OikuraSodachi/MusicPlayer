@@ -1,14 +1,13 @@
 package com.todokanai.musicplayer.di
 
 import android.content.Context
-import android.media.AudioAttributes
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.NewPlayer
-import com.todokanai.musicplayer.repository.PlayListRepository
+import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.PlayerStateRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -23,31 +22,11 @@ import javax.inject.Singleton
 @Module
 class MediaModule {
 
-//    @Singleton
-//    @Provides
-//    fun provideMediaPlayer():MediaPlayer{
-//        return MediaPlayer().apply {
-//            this.apply {
-//                setAudioAttributes(
-//                    AudioAttributes.Builder()
-//                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                        .setUsage(AudioAttributes.USAGE_MEDIA)
-//                        .build()
-//                )
-//            }
-//        }
-//    }
-
     @Singleton
     @Provides
-    fun provideNewPlayer(mediaSession:MediaSessionCompat,playListRepository: PlayListRepository):NewPlayer{
-        return NewPlayer(mediaSession,playListRepository).apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
-            )
+    fun provideNewPlayer(mediaSession:MediaSessionCompat,musicRepository: MusicRepository,icons: IconsRepository,dsRepo:DataStoreRepository):NewPlayer{
+        return NewPlayer(mediaSession,musicRepository,icons,dsRepo).apply {
+            onInit()
         }
     }
 

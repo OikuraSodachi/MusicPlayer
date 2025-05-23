@@ -20,6 +20,11 @@ import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
 import com.todokanai.musicplayer.repository.MusicState
 import com.todokanai.musicplayer.repository.PlayerStateRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -39,8 +44,6 @@ class MusicPlayerWidget : AppWidgetProvider() {
     @Inject
     lateinit var stateRepository: PlayerStateRepository
 
-    val musicState by lazy { stateRepository.musicStateFlow }
-
     private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
 
     override fun onUpdate(
@@ -52,26 +55,50 @@ class MusicPlayerWidget : AppWidgetProvider() {
         println("widget onUpdate")
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
-            updateMyAppWidget_td(appWidgetManager, it,widgetViews,musicState.value)
+            CoroutineScope(Dispatchers.Default).launch {
+                updateMyAppWidget_td(appWidgetManager, it, widgetViews, stateRepository.musicStateFlow.first())
+            }
         }
     }
 
     /** stable **/
     override fun onEnabled(context: Context) {
-        val state = musicState.value
-        widgetViews.run {
-            setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(state.isLooping))
-            setImageViewResource(R.id.widget_prevBtn,icons.prev)
-            setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(state.isPlaying))
-            setImageViewResource(R.id.widget_nextBtn,icons.next)
-            setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(state.isShuffled))
+        CoroutineScope(Dispatchers.IO).launch {
+            val state = stateRepository.musicStateFlow.first()
+            withContext(Dispatchers.Main) {
+                widgetViews.run {
+                    setImageViewResource(R.id.widget_repeatBtn, icons.loopingImage(state.isLooping))
+                    setImageViewResource(R.id.widget_prevBtn, icons.prev)
+                    setImageViewResource(R.id.widget_pausePlayBtn, icons.pausePlay(state.isPlaying))
+                    setImageViewResource(R.id.widget_nextBtn, icons.next)
+                    setImageViewResource(
+                        R.id.widget_shuffleBtn,
+                        icons.shuffledImage(state.isShuffled)
+                    )
 
-            setOnClickPendingIntent(R.id.widget_repeatBtn, PendingIntent.getBroadcast(context,0, repeatIntent,FLAG_IMMUTABLE))
-            setOnClickPendingIntent(R.id.widget_prevBtn, PendingIntent.getBroadcast(context,0, prevIntent,FLAG_IMMUTABLE))
-            setOnClickPendingIntent(R.id.widget_pausePlayBtn, PendingIntent.getBroadcast(context,0, pausePlayIntent,FLAG_IMMUTABLE))
-            setOnClickPendingIntent(R.id.widget_nextBtn, PendingIntent.getBroadcast(context,0, nextIntent,FLAG_IMMUTABLE))
-            setOnClickPendingIntent(R.id.widget_shuffleBtn, PendingIntent.getBroadcast(context,0,shuffleIntent,FLAG_IMMUTABLE))
-            setOnClickPendingIntent(R.id.widget_background, mainIntent)
+                    setOnClickPendingIntent(
+                        R.id.widget_repeatBtn,
+                        PendingIntent.getBroadcast(context, 0, repeatIntent, FLAG_IMMUTABLE)
+                    )
+                    setOnClickPendingIntent(
+                        R.id.widget_prevBtn,
+                        PendingIntent.getBroadcast(context, 0, prevIntent, FLAG_IMMUTABLE)
+                    )
+                    setOnClickPendingIntent(
+                        R.id.widget_pausePlayBtn,
+                        PendingIntent.getBroadcast(context, 0, pausePlayIntent, FLAG_IMMUTABLE)
+                    )
+                    setOnClickPendingIntent(
+                        R.id.widget_nextBtn,
+                        PendingIntent.getBroadcast(context, 0, nextIntent, FLAG_IMMUTABLE)
+                    )
+                    setOnClickPendingIntent(
+                        R.id.widget_shuffleBtn,
+                        PendingIntent.getBroadcast(context, 0, shuffleIntent, FLAG_IMMUTABLE)
+                    )
+                    setOnClickPendingIntent(R.id.widget_background, mainIntent)
+                }
+            }
         }
     }
 
@@ -82,12 +109,12 @@ class MusicPlayerWidget : AppWidgetProvider() {
         }
     }
 
-    private fun updateMyAppWidget_td(
+    private suspend fun updateMyAppWidget_td(
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         views: RemoteViews,
         state: MusicState
-    ) {
+    ) = withContext(Dispatchers.Main){
         val currentMusic = state.currentMusic
         val albumUri = currentMusic.getAlbumUri()
         views.run {
