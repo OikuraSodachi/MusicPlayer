@@ -53,21 +53,46 @@ class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSe
         TODO("Not yet implemented")
     }
 
+    override fun setLooping(isLooping: Boolean) {
+        TODO("Not yet implemented")
+    }
 
-//    private fun MediaPlayer.setMusic(context: Context, music: Music){
-//        val isMusicValid = music.fileDir != "empty"
-//
-//        if (isMusicValid) {
-//            mediaPlayer.run {
-//                reset()
-//                setDataSource(context, music.getUri())
-//                setOnCompletionListener {
-//                    if (!isLooping) {
-//                        context.sendBroadcast(nextIntent)
-//                    }
-//                }
-//                prepare()
-//            }
-//        }
-//    }
+    override fun setShuffled(isShuffled: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun play() {
+        TODO("Not yet implemented")
+    }
+
+    override fun pause() {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateViewLayer(
+        isPlaying: Boolean,
+        isLooping: Boolean,
+        isShuffled: Boolean,
+        currentMusic: Music
+    ) {
+        TODO("Not yet implemented")
+    }
+
+
+    private fun MediaPlayer.setMusic(context: Context, music: Music){
+        val isMusicValid = music.fileDir != "empty"
+
+        if (isMusicValid) {
+            mediaPlayer.run {
+                reset()
+                setDataSource(context, music.getUri())
+                setOnCompletionListener {
+                    if (!isLooping) {
+                        context.sendBroadcast(nextIntent)
+                    }
+                }
+                prepare()
+            }
+        }
+    }
 }

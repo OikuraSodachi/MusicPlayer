@@ -12,6 +12,7 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.NewPlayer
+import com.todokanai.musicplayer.repository.PlayerStateRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -56,6 +57,9 @@ class MusicService : BaseMusicService(){
     @Inject
     lateinit var notifications:Notifications
 
+    @Inject
+    lateinit var playerStateRepo:PlayerStateRepository
+
     override fun onCreate() {
         super.onCreate()
 
@@ -71,7 +75,7 @@ class MusicService : BaseMusicService(){
 //            isShuffled = player.isShuffled(),
 //            currentMusic = player.currentMusic()
 //        )
-        val state = player.musicStateFlow.value
+        val state = playerStateRepo.musicStateFlow.value
         notifications.updateNotification(
             service = this,
             intent = intent,

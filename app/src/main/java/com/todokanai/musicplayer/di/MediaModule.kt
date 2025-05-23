@@ -6,9 +6,11 @@ import android.media.MediaPlayer
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import com.todokanai.musicplayer.compose.IconsRepository
+import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.repository.PlayListRepository
+import com.todokanai.musicplayer.repository.PlayerStateRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import dagger.Module
@@ -39,8 +41,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideNewPlayer(mediaPlayer:MediaPlayer,playListRepository: PlayListRepository):NewPlayer{
-        return NewPlayer(mediaPlayer,playListRepository)
+    fun provideNewPlayer(mediaPlayer:MediaPlayer,mediaSession:MediaSessionCompat,playListRepository: PlayListRepository):NewPlayer{
+        return NewPlayer(mediaPlayer,mediaSession,playListRepository)
     }
 
     @Singleton
@@ -53,6 +55,12 @@ class MediaModule {
     @Provides
     fun provideMediaSession(@ApplicationContext context:Context):MediaSessionCompat{
         return MediaSessionCompat(context, Constants.MEDIA_SESSION_TAG)
+    }
+
+    @Singleton
+    @Provides
+    fun providePlayerStateRepository(dataStoreRepository: DataStoreRepository, playListRepository: PlayListRepository):PlayerStateRepository{
+        return PlayerStateRepository(dataStoreRepository,playListRepository)
     }
 
     @Singleton

@@ -16,45 +16,45 @@ import kotlinx.coroutines.flow.stateIn
 
 abstract class BasePlayer(val mediaPlayer: MediaPlayer, val mediaSession: MediaSessionCompat) {
 
-    abstract val isPlayingFlow:StateFlow<Boolean>
-    abstract val isLoopingFlow: StateFlow<Boolean>
-    abstract val isShuffledFlow: StateFlow<Boolean>
-    abstract val currentMusicFlow: StateFlow<Music>
-    val musicStateFlow by lazy {
-        combine(
-            isPlayingFlow,
-            isLoopingFlow,
-            isShuffledFlow,
-            currentMusicFlow
-        ) { isPlaying, isLooping, isShuffled, currentMusic ->
-            MusicState(
-                isPlaying = isPlaying,
-                isLooping = isLooping,
-                isShuffled = isShuffled,
-                currentMusic = currentMusic
-            )
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = MusicState(
-                isPlaying = false,
-                isLooping = false,
-                isShuffled = false,
-                currentMusic = dummyMusic
-            )
-        )
-    }
+//    abstract val isPlayingFlow:StateFlow<Boolean>
+//    abstract val isLoopingFlow: StateFlow<Boolean>
+//    abstract val isShuffledFlow: StateFlow<Boolean>
+//    abstract val currentMusicFlow: StateFlow<Music>
+//    val musicStateFlow by lazy {
+//        combine(
+//            isPlayingFlow,
+//            isLoopingFlow,
+//            isShuffledFlow,
+//            currentMusicFlow
+//        ) { isPlaying, isLooping, isShuffled, currentMusic ->
+//            MusicState(
+//                isPlaying = isPlaying,
+//                isLooping = isLooping,
+//                isShuffled = isShuffled,
+//                currentMusic = currentMusic
+//            )
+//        }.stateIn(
+//            scope = CoroutineScope(Dispatchers.IO),
+//            started = SharingStarted.WhileSubscribed(5000),
+//            initialValue = MusicState(
+//                isPlaying = false,
+//                isLooping = false,
+//                isShuffled = false,
+//                currentMusic = dummyMusic
+//            )
+//        )
+//    }
 
-    fun activate(context: Context){
-        musicStateFlow.asLiveData().observeForever{
-            updateViewLayer(
-                isPlaying = it.isPlaying,
-                isLooping = it.isLooping,
-                isShuffled = it.isShuffled,
-                currentMusic = it.currentMusic
-            )
-        }
-    }
+//    fun activate(context: Context){
+//        musicStateFlow.asLiveData().observeForever{
+//            updateViewLayer(
+//                isPlaying = it.isPlaying,
+//                isLooping = it.isLooping,
+//                isShuffled = it.isShuffled,
+//                currentMusic = it.currentMusic
+//            )
+//        }
+//    }
 
 
     abstract fun setLooping(isLooping: Boolean)
@@ -71,22 +71,7 @@ abstract class BasePlayer(val mediaPlayer: MediaPlayer, val mediaSession: MediaS
 
     abstract fun updateViewLayer(isPlaying:Boolean,isLooping:Boolean,isShuffled:Boolean,currentMusic: Music)
 
-    private fun MediaPlayer.setMusic_td(context: Context, music: Music){
-        val isMusicValid = music.fileDir != "empty"
 
-        if (isMusicValid) {
-            this.run {
-                reset()
-                setDataSource(context, music.getUri())
-                setOnCompletionListener {
-                    if (!isLooping) {
-                        context.sendBroadcast(nextIntent)
-                    }
-                }
-                prepare()
-            }
-        }
-    }
 }
 data class MusicState(
     val isPlaying:Boolean,
