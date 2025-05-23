@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-/** 값 적용 먼저 하고, holder 에 결과를 반영하는 구조 **/
+/** 값 적용 먼저 하고, holder 에 결과를 반영하는 구조
+ *
+ *  Todo: start, pause, reset 등 메소드에 MediaPlaybackState setter 를 포함시켜야 할지도? **/
 abstract class BasicPlayer(val musicRepo:MusicRepository,val dsRepo:DataStoreRepository) : MediaPlayer() {
 
     private val _isLoopingHolder = MutableStateFlow<Boolean>(false)
@@ -67,8 +69,8 @@ abstract class BasicPlayer(val musicRepo:MusicRepository,val dsRepo:DataStoreRep
                 }
             }
             prepare()
-            _currentMusicHolder.value = music
             isLooping = wasLooping
+            _currentMusicHolder.value = music
             CoroutineScope(Dispatchers.IO).launch {
                 dsRepo.saveCurrentMusic(music.fileDir)
             }
