@@ -14,7 +14,6 @@ abstract class BaseMusicService : MediaBrowserServiceCompat(){
 
         prepareMediaSession()
         registerReceivers()
-        setInitialValues()
     }
 
     override fun onGetRoot(
@@ -42,6 +41,4 @@ abstract class BaseMusicService : MediaBrowserServiceCompat(){
 
     abstract fun prepareMediaSession()
     abstract fun registerReceivers()
-    /** player 의 최초 값 ( looping, currentMusic ) setter **/
-    abstract fun setInitialValues()
 }

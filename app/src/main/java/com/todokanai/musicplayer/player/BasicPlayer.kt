@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /** 값 적용 먼저 하고, holder 에 결과를 반영하는 구조 **/
@@ -49,15 +50,12 @@ abstract class BasicPlayer(val musicRepo:MusicRepository,val dsRepo:DataStoreRep
         }
     }
 
-    override fun release() {
-        super.release()
-    }
-
     override fun reset() {
         super.reset()
     }
 
     fun setMusic_td(context: Context, music: Music){
+        val wasLooping = isLooping
         val isMusicValid = music.fileDir != "empty"
 
         if (isMusicValid) {
@@ -70,18 +68,23 @@ abstract class BasicPlayer(val musicRepo:MusicRepository,val dsRepo:DataStoreRep
             }
             prepare()
             _currentMusicHolder.value = music
+            isLooping = wasLooping
             CoroutineScope(Dispatchers.IO).launch {
                 dsRepo.saveCurrentMusic(music.fileDir)
             }
         }
     }
 
-    fun onInit(){
+    fun onInit(context: Context){
         setAudioAttributes(
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .build()
         )
+        CoroutineScope(Dispatchers.IO).launch {
+            setMusic_td( context, musicRepo.currentMusic.first())
+            isLooping = dsRepo.isLooping()
+        }
     }
 }

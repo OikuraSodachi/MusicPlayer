@@ -14,13 +14,11 @@ class PlayerStateRepository @Inject constructor(
     val dsRepo: DataStoreRepository
 ) {
 
-    val isShuffledHolder = dsRepo.isShuffled
-
     val musicStateFlow by lazy {
         combine(
             player.isPlayingHolder,
             player.isLoopingHolder,
-            isShuffledHolder,
+            dsRepo.isShuffled,
             player.currentMusicHolder
         ) { isPlaying, isLooping, isShuffled, currentMusic ->
             MusicState(

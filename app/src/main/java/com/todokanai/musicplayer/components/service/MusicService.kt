@@ -22,7 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -133,14 +132,4 @@ class MusicService : BaseMusicService(){
             isActive = true
         }
     }
-
-    override fun setInitialValues() {
-        CoroutineScope(Dispatchers.IO).launch {
-            player.run {
-                setMusic_td(this@MusicService, musicRepo.currentMusic.first())
-                isLooping = dsRepo.isLooping()
-            }
-        }
-    }
-
 }
