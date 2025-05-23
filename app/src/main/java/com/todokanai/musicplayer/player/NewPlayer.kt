@@ -22,10 +22,6 @@ class NewPlayer @Inject constructor(
         isLooping = !isLooping
     }
 
-    override fun prevAction(context: Context) {
-        TODO("Not yet implemented")
-    }
-
     override fun pausePlayAction(context: Context) {
         if(!isPlaying){
             start()
@@ -34,41 +30,20 @@ class NewPlayer @Inject constructor(
         }
     }
 
-    override fun nextAction(context: Context) {
-        TODO("Not yet implemented")
-    }
-
-    override fun shuffleAction(context: Context) {
-
-    }
-
-//    override fun updateViewLayer(
-//        isPlaying: Boolean,
-//        isLooping: Boolean,
-//        isShuffled: Boolean,
-//        currentMusic: Music
-//    ) {
-//        TODO("Not yet implemented")
-//    }
-
     override fun launchMusic(context: Context,music: Music){
         setMusic_td(context, music)
         start()
     }
 
-//    private fun setMusic_td(context: Context, music: Music){
-//        val isMusicValid = music.fileDir != "empty"
-//
-//        if (isMusicValid) {
-//            reset()
-//            setDataSource(context, music.getUri())
-//            setOnCompletionListener {
-//                if (!isLooping) {
-//                    context.sendBroadcast(nextIntent)
-//                }
-//            }
-//            prepare()
-//            _currentMusicHolder.value = music
-//        }
-//    }
+    //---------------
+    // 이 세개는 player 의 외부에 배치해야 할지도?
+    override fun prevAction(context: Context) {
+        TODO("Not yet implemented")
+    }
+    override fun nextAction(context: Context) {
+        TODO("Not yet implemented")
+    }
+    override fun shuffleAction(context: Context) {
+        TODO("Not yet implemented")
+    }
 }

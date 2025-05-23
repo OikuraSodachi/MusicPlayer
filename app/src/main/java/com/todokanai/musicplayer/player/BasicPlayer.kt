@@ -8,6 +8,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+/** 값 적용 먼저 하고, holder 에 결과를 반영하는 구조 **/
 abstract class BasicPlayer : MediaPlayer() {
 
     private val _isLoopingHolder = MutableStateFlow<Boolean>(false)

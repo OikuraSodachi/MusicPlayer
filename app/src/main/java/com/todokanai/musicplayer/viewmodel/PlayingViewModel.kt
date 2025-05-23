@@ -30,30 +30,13 @@ class PlayingViewModel @Inject constructor(
 
     val isPlayingHolder: StateFlow<Boolean> =customPlayer.isPlayingHolder
 
-//    val isShuffledHolder: StateFlow<Boolean> = customPlayer.isShuffledHolder.stateIn(
-//        scope = viewModelScope,
-//        started = SharingStarted.WhileSubscribed(5000),
-//        initialValue = false
-//    )
-
     val isShuffledHolder: StateFlow<Boolean> = stateRepo.isShuffledHolder.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = false
     )
 
-//    val isRepeatingHolder: StateFlow<Boolean> = customPlayer.isLoopingHolder.stateIn(
-//        scope = viewModelScope,
-//        started = SharingStarted.WhileSubscribed(5000),
-//        initialValue = false
-//    )
-
     val isRepeatingHolder: StateFlow<Boolean> = customPlayer.isLoopingHolder
-//    val currentMusicHolder: StateFlow<Music> = customPlayer.currentMusicHolderNew.stateIn(
-//        scope = viewModelScope,
-//        started = SharingStarted.WhileSubscribed(5000),
-//        initialValue = dummyMusic
-//    )
 
     val currentMusicHolder: StateFlow<Music> = customPlayer.currentMusicHolder
     //----------------
