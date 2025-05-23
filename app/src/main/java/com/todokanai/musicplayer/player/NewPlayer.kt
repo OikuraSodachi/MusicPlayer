@@ -103,6 +103,7 @@ class NewPlayer @Inject constructor(
                 }
             }
             prepare()
+            _currentMusicHolder.value = music
         }
     }
 }
