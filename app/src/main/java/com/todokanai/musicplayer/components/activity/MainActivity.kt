@@ -1,5 +1,8 @@
 package com.todokanai.musicplayer.components.activity
 
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -23,6 +26,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    companion object{
+        fun mainIntent(context: Context) = PendingIntent.getActivity(context,0, Intent( mainOpenIntent(context)), PendingIntent.FLAG_IMMUTABLE)
+        fun mainOpenIntent(context: Context) = Intent(context, MainActivity::class.java)
+    }
+
     private val binding by lazy{ActivityMainBinding.inflate(layoutInflater)}
     private lateinit var activityResult: ActivityResultLauncher<String>
     private val viewModel : MainViewModel by viewModels()
@@ -45,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         binding.run{
             trackPager.isUserInputEnabled = false
             trackPager.adapter = adapter
-            Exitbtn.setOnClickListener { viewModel.exit(this@MainActivity, serviceIntent)}      //----Exitbtn에 대한 동작
+            Exitbtn.setOnClickListener { viewModel.exit(this@MainActivity, serviceIntent(this@MainActivity))}      //----Exitbtn에 대한 동작
             /*
             floatingBtnLayout.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -71,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.run {
             getPermission(this@MainActivity)
             if(!isServiceOn) {
-                launchForeground(this@MainActivity, serviceIntent)
+                launchForeground(this@MainActivity, serviceIntent(this@MainActivity))
             }
         }
         /** 뒤로가기 버튼 override

@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.components.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
@@ -10,7 +11,6 @@ import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.base.BaseMusicService
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
-import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.repository.MusicState
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class MusicService : BaseMusicService(){
 
     companion object{
-        val serviceIntent = Intent(appContext,MusicService::class.java)
+        fun serviceIntent(context: Context) = Intent(context, MusicService::class.java)
     }
 
     @Inject
@@ -75,7 +75,7 @@ class MusicService : BaseMusicService(){
         /** Todo: Flow collect 방식으로 바꿀 것 **/
         musicStateFlow.asLiveData().observeForever{
             CoroutineScope(Dispatchers.IO).launch {
-                player.requestUpdateNoti(mediaSession, { startService(serviceIntent) })
+                player.requestUpdateNoti(mediaSession, { startService(serviceIntent(this@MusicService)) })
             }
         }
     }

@@ -14,10 +14,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.todokanai.musicplayer.R
+import com.todokanai.musicplayer.components.activity.MainActivity.Companion.mainIntent
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants
-import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
@@ -95,14 +95,13 @@ class Notifications @Inject constructor(
     ){
         notificationManager.createNotificationChannel(serviceChannel)
         MediaButtonReceiver.handleIntent(mediaSession,intent)
-
         val notification = noti(
             context = service,
             isPlaying = isPlaying,
             isLooping = isLooping,
             isShuffled = isShuffled,
             currentMusic = currentMusic,
-            mainIntent = mainIntent,
+            mainIntent = mainIntent(service),
             repeatIntent = repeatIntent,
             prevIntent = prevIntent,
             pausePlayIntent = pausePlayIntent,

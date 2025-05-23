@@ -9,9 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.todokanai.musicplayer.R
+import com.todokanai.musicplayer.components.activity.MainActivity.Companion.mainIntent
 import com.todokanai.musicplayer.compose.IconsRepository
-import com.todokanai.musicplayer.di.MyApplication.Companion.appContext
-import com.todokanai.musicplayer.myobjects.MyObjects.mainIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
@@ -27,16 +26,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-/**
- * Implementation of App Widget functionality.
- */
+/** Implementation of App Widget functionality **/
 @AndroidEntryPoint
 class MusicPlayerWidget : AppWidgetProvider() {
-
-    companion object{
-        val widgetViews = RemoteViews(appContext.packageName, R.layout.music_player_widget)
-        val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(appContext)
-    }
 
     @Inject
     lateinit var icons:IconsRepository
@@ -44,7 +36,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
     @Inject
     lateinit var stateRepository: PlayerStateRepository
 
-    private fun getWidgetIds(context: Context) = appWidgetManager.getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
+    private fun getWidgetIds(context: Context) = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
 
     override fun onUpdate(
         context: Context,
@@ -52,6 +44,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         appWidgetIds: IntArray,
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+        val widgetViews = RemoteViews(context.packageName, R.layout.music_player_widget)
         println("widget onUpdate")
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
@@ -63,6 +56,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
 
     /** stable **/
     override fun onEnabled(context: Context) {
+        val widgetViews = RemoteViews(context.packageName, R.layout.music_player_widget)
         CoroutineScope(Dispatchers.IO).launch {
             val state = stateRepository.musicStateFlow.first()
             withContext(Dispatchers.Main) {
@@ -96,7 +90,10 @@ class MusicPlayerWidget : AppWidgetProvider() {
                         R.id.widget_shuffleBtn,
                         PendingIntent.getBroadcast(context, 0, shuffleIntent, FLAG_IMMUTABLE)
                     )
-                    setOnClickPendingIntent(R.id.widget_background, mainIntent)
+                    setOnClickPendingIntent(
+                        R.id.widget_background,
+                        mainIntent(context)
+                    )
                 }
             }
         }
@@ -105,7 +102,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         context?.let {
-            onUpdate(context, appWidgetManager,getWidgetIds(context))
+            onUpdate(context, AppWidgetManager.getInstance(context),getWidgetIds(context))
         }
     }
 
