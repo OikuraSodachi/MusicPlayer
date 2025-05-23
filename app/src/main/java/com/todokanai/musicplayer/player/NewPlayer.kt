@@ -5,13 +5,28 @@ import android.media.MediaPlayer
 import android.support.v4.media.session.MediaSessionCompat
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.PlayerInterface
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.PlayListRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSessionCompat, val playListRepo:PlayListRepository):BasePlayer(mediaPlayer,mediaSession), PlayerInterface {
+
+    private val _isLoopingHolder = MutableStateFlow<Boolean>(false)
+    val isLoopingHolder = _isLoopingHolder.asStateFlow()
+
+    private val _isPlayingHolder = MutableStateFlow<Boolean>(false)
+    val isPlayingHolder = _isPlayingHolder.asStateFlow()
+
+    private val _isShuffledHolder = MutableStateFlow<Boolean>(false)
+    val isShuffledHolder = _isShuffledHolder.asStateFlow()
+
+    private val _currentMusicHolder = MutableStateFlow<Music>(dummyMusic)
+    val currentMusicHolder = _currentMusicHolder.asStateFlow()
 
     override fun onMusicListScan(context: Context) {
         TODO("Not yet implemented")
@@ -19,6 +34,7 @@ class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSe
 
     override fun repeatAction(context: Context) {
         mediaPlayer.isLooping = !mediaPlayer.isLooping
+        _isLoopingHolder.value = mediaPlayer.isLooping
     }
 
     override fun prevAction(context: Context) {
@@ -79,7 +95,7 @@ class NewPlayer @Inject constructor(mediaPlayer:MediaPlayer,mediaSession:MediaSe
     }
 
 
-    private fun MediaPlayer.setMusic(context: Context, music: Music){
+    private fun MediaPlayer.setMusic(context: Context, music: Music) {
         val isMusicValid = music.fileDir != "empty"
 
         if (isMusicValid) {

@@ -17,7 +17,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
-import com.todokanai.musicplayer.repository.MusicState
+import com.todokanai.musicplayer.player.MusicState
 import com.todokanai.musicplayer.repository.PlayerStateRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -95,8 +95,6 @@ class MusicPlayerWidget : AppWidgetProvider() {
             setImageViewResource(R.id.widget_repeatBtn,icons.loopingImage(state.isLooping))
             setImageViewResource(R.id.widget_pausePlayBtn,icons.pausePlay(state.isPlaying))
             setImageViewResource(R.id.widget_shuffleBtn,icons.shuffledImage(state.isShuffled))
-          //  println("albumUri: $albumUri")
-        //    Toast.makeText(appContext,"${albumUri?.path}",Toast.LENGTH_SHORT).show()
             setImageViewUri(R.id.widget_imageView, albumUri)   // Todo: updateMyAppWidget의 매 실행마다 이미지가 직전 이미지로 바뀌고 있음
         }
         appWidgetManager.updateAppWidget(appWidgetId, views)
