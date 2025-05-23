@@ -5,7 +5,6 @@ import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
-import com.todokanai.musicplayer.player.NewPlayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +17,6 @@ import javax.inject.Singleton
 
 @Singleton
 class PlayerStateRepository @Inject constructor(
-    val player:NewPlayer,
     val dsRepo: DataStoreRepository,
     val playListRepository: PlayListRepository
 ) {

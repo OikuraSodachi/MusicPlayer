@@ -5,10 +5,11 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PlayListRepository( dsRepo:DataStoreRepository,musicRepo:MusicRepository) {
+class PlayListRepository @Inject constructor(dsRepo:DataStoreRepository, musicRepo:MusicRepository) {
 
     val playList = combine(
         musicRepo.getAll,

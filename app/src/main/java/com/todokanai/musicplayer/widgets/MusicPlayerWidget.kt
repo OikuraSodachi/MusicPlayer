@@ -17,7 +17,7 @@ import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
-import com.todokanai.musicplayer.player.MusicState
+import com.todokanai.musicplayer.repository.MusicState
 import com.todokanai.musicplayer.repository.PlayerStateRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

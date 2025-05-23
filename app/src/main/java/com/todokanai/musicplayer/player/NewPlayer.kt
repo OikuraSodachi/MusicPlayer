@@ -15,10 +15,9 @@ import javax.inject.Singleton
 
 @Singleton
 class NewPlayer @Inject constructor(
-    mediaPlayer:MediaPlayer,
     mediaSession:MediaSessionCompat,
     val playListRepo:PlayListRepository
-):BasePlayer(mediaPlayer), PlayerInterface {
+):MediaPlayer(), PlayerInterface {
 
     private val _isLoopingHolder = MutableStateFlow<Boolean>(false)
     val isLoopingHolder = _isLoopingHolder.asStateFlow()
@@ -37,7 +36,7 @@ class NewPlayer @Inject constructor(
     }
 
     override fun repeatAction(context: Context) {
-        mediaPlayer.isLooping = !mediaPlayer.isLooping
+        isLooping = !isLooping
        // _isLoopingHolder.value = mediaPlayer.isLooping
     }
 
@@ -46,10 +45,10 @@ class NewPlayer @Inject constructor(
     }
 
     override fun pausePlayAction(context: Context) {
-        if(mediaPlayer.isPlaying){
-            mediaPlayer.start()
+        if(!isPlaying){
+            start()
         }else{
-            mediaPlayer.pause()
+            pause()
         }
     }
 
@@ -61,44 +60,32 @@ class NewPlayer @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun play() {
-        mediaPlayer.start()
-    }
-
-    override fun pause() {
-        mediaPlayer.pause()
-    }
-
-    override fun updateViewLayer(
-        isPlaying: Boolean,
-        isLooping: Boolean,
-        isShuffled: Boolean,
-        currentMusic: Music
-    ) {
-        TODO("Not yet implemented")
-    }
+//    override fun updateViewLayer(
+//        isPlaying: Boolean,
+//        isLooping: Boolean,
+//        isShuffled: Boolean,
+//        currentMusic: Music
+//    ) {
+//        TODO("Not yet implemented")
+//    }
 
     override fun launchMusic(context: Context,music: Music){
-        mediaPlayer.run{
-            setMusic_td(context, music)
-            start()
-        }
+        setMusic_td(context, music)
+        start()
     }
 
-    fun MediaPlayer.setMusic_td(context: Context, music: Music){
+    private fun setMusic_td(context: Context, music: Music){
         val isMusicValid = music.fileDir != "empty"
 
         if (isMusicValid) {
-            mediaPlayer.run {
-                reset()
-                setDataSource(context, music.getUri())
-                setOnCompletionListener {
-                    if (!isLooping) {
-                        context.sendBroadcast(nextIntent)
-                    }
+            reset()
+            setDataSource(context, music.getUri())
+            setOnCompletionListener {
+                if (!isLooping) {
+                    context.sendBroadcast(nextIntent)
                 }
-                prepare()
             }
+            prepare()
         }
     }
 }

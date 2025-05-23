@@ -2,7 +2,6 @@ package com.todokanai.musicplayer.di
 
 import android.content.Context
 import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import com.todokanai.musicplayer.compose.IconsRepository
@@ -24,25 +23,32 @@ import javax.inject.Singleton
 @Module
 class MediaModule {
 
-    @Singleton
-    @Provides
-    fun provideMediaPlayer():MediaPlayer{
-        return MediaPlayer().apply {
-            this.apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-            }
-        }
-    }
+//    @Singleton
+//    @Provides
+//    fun provideMediaPlayer():MediaPlayer{
+//        return MediaPlayer().apply {
+//            this.apply {
+//                setAudioAttributes(
+//                    AudioAttributes.Builder()
+//                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                        .setUsage(AudioAttributes.USAGE_MEDIA)
+//                        .build()
+//                )
+//            }
+//        }
+//    }
 
     @Singleton
     @Provides
-    fun provideNewPlayer(mediaPlayer:MediaPlayer,mediaSession:MediaSessionCompat,playListRepository: PlayListRepository):NewPlayer{
-        return NewPlayer(mediaPlayer,mediaSession,playListRepository)
+    fun provideNewPlayer(mediaSession:MediaSessionCompat,playListRepository: PlayListRepository):NewPlayer{
+        return NewPlayer(mediaSession,playListRepository).apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+        }
     }
 
     @Singleton
