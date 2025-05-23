@@ -25,9 +25,6 @@ class NewPlayer @Inject constructor(
     private val _isPlayingHolder = MutableStateFlow<Boolean>(false)
     val isPlayingHolder = _isPlayingHolder.asStateFlow()
 
-    private val _isShuffledHolder = MutableStateFlow<Boolean>(false)
-    val isShuffledHolder = _isShuffledHolder.asStateFlow()
-
     private val _currentMusicHolder = MutableStateFlow<Music>(dummyMusic)
     val currentMusicHolder = _currentMusicHolder.asStateFlow()
 
@@ -37,7 +34,7 @@ class NewPlayer @Inject constructor(
 
     override fun repeatAction(context: Context) {
         isLooping = !isLooping
-       // _isLoopingHolder.value = mediaPlayer.isLooping
+        _isLoopingHolder.value = isLooping
     }
 
     override fun prevAction(context: Context) {
@@ -57,7 +54,7 @@ class NewPlayer @Inject constructor(
     }
 
     override fun shuffleAction(context: Context) {
-        TODO("Not yet implemented")
+
     }
 
 //    override fun updateViewLayer(

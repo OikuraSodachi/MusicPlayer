@@ -5,10 +5,9 @@ import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
+import com.todokanai.musicplayer.player.NewPlayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -17,31 +16,18 @@ import javax.inject.Singleton
 
 @Singleton
 class PlayerStateRepository @Inject constructor(
-    val dsRepo: DataStoreRepository,
-    val playListRepository: PlayListRepository
+    val player: NewPlayer,
+    val dsRepo: DataStoreRepository
 ) {
-    val isPlayingFlow: Flow<Boolean>
- //       get() = TODO()
-        get() = MutableStateFlow(false)
 
-    val isLoopingFlow: Flow<Boolean>
-        //       get() = TODO()
-        get() = MutableStateFlow(false)
-
-    val isShuffledFlow: Flow<Boolean>
-        //       get() = TODO()
-        get() = MutableStateFlow(false)
-
-    val currentMusicFlow: Flow<Music>
-        get() = playListRepository.currentMusic
-
+    val isShuffledHolder = dsRepo.isShuffled
 
     val musicStateFlow by lazy {
         combine(
-            isPlayingFlow,
-            isLoopingFlow,
-            isShuffledFlow,
-            currentMusicFlow
+            player.isPlayingHolder,
+            player.isLoopingHolder,
+            isShuffledHolder,
+            player.currentMusicHolder
         ) { isPlaying, isLooping, isShuffled, currentMusic ->
             MusicState(
                 isPlaying = isPlaying,

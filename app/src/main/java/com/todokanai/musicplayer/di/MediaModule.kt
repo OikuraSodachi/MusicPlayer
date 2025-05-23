@@ -65,8 +65,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun providePlayerStateRepository(dataStoreRepository: DataStoreRepository, playListRepository: PlayListRepository):PlayerStateRepository{
-        return PlayerStateRepository(dataStoreRepository,playListRepository)
+    fun providePlayerStateRepository(player: NewPlayer,dataStoreRepository: DataStoreRepository):PlayerStateRepository{
+        return PlayerStateRepository(player,dataStoreRepository)
     }
 
     @Singleton
