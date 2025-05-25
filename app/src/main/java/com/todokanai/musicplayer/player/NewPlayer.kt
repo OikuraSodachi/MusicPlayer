@@ -14,15 +14,10 @@ import javax.inject.Singleton
 
 @Singleton
 class NewPlayer @Inject constructor(
-    val mediaSession:MediaSessionCompat,
     musicRepo:MusicRepository,
     val iconsRepo: IconsRepository,
     dsRepo: DataStoreRepository
 ):BasicPlayer(musicRepo,dsRepo), PlayerInterface {
-
-    override fun onMusicListScan(context: Context) {
-        TODO("Not yet implemented")
-    }
 
     override fun repeatAction(context: Context) {
         isLooping = !isLooping
@@ -40,21 +35,6 @@ class NewPlayer @Inject constructor(
         setMusic_td(context, music)
         start()
     }
-
-    //---------------
-    // 이 세개는 player 의 외부에 배치해야 할지도?
-    override fun prevAction(context: Context) {
-        TODO("Not yet implemented")
-    }
-    override fun nextAction(context: Context) {
-        TODO("Not yet implemented")
-    }
-    override fun shuffleAction(context: Context) {
-        TODO("Not yet implemented")
-    }
-
-    //----------------------
-
 
     suspend fun requestUpdateNoti(mediaSession: MediaSessionCompat, startForegroundService:()->Unit){
         mediaSession.setMediaPlaybackState_td(iconsRepo.loopingImage(isLooping), isPlaying, iconsRepo.shuffledImage(dsRepo.isShuffled()))

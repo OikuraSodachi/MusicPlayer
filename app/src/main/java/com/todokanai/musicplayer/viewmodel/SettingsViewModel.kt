@@ -32,7 +32,7 @@ class SettingsViewModel @Inject constructor(
             val dirsToScan = spRepository.getPathNonFlow()
             val newList  = scanMusicList(dirsToScan,context).toTypedArray()
             musicRepo.updateMusicList(newList)
-            player.onMusicListScan(context)
+        //    player.onMusicListScan(context)
         }.invokeOnCompletion {
             button.isClickable = true
         }

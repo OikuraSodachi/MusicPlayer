@@ -2,7 +2,7 @@ package com.todokanai.musicplayer.data.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.todokanai.musicplayer.base.MyDataStore
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
@@ -16,7 +16,7 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
 
         val DATASTORE_IS_SHUFFLED = booleanPreferencesKey("datastore_is_shuffled")
         val DATASTORE_IS_LOOPING = booleanPreferencesKey("datastore_is_looping")
-        val DATASTORE_RANDOM_SEED = doublePreferencesKey("datastore_random_seed")
+        val DATASTORE_RANDOM_SEED = longPreferencesKey("datastore_random_seed")
 
         val DATASTORE_CURRENT_MUSIC = stringPreferencesKey("datastore_current_music")
 
@@ -36,9 +36,9 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     suspend fun isLooping() = DATASTORE_IS_LOOPING.notNullValue(defaultValue = false)
     val isLooping = DATASTORE_IS_LOOPING.notNullFlow(defaultValue = false)
 
-    suspend fun saveRandomSeed(seed:Double) = DATASTORE_RANDOM_SEED.save(seed)
-    suspend fun getSeed() = DATASTORE_RANDOM_SEED.notNullValue(defaultValue = 0.0)
-    val seed = DATASTORE_RANDOM_SEED.notNullFlow(defaultValue = 0.0)
+    suspend fun saveRandomSeed(seed:Long) = DATASTORE_RANDOM_SEED.save(seed)
+    suspend fun getSeed() = DATASTORE_RANDOM_SEED.notNullValue(defaultValue = 2L)
+    val seed = DATASTORE_RANDOM_SEED.notNullFlow(defaultValue = 2L)
 
     suspend fun saveEnableMediaButton(enabled:Boolean) = DATASTORE_MEDIA_BUTTON_ENABLED.save(enabled)
     suspend fun isMediaButtonEnabled() = DATASTORE_MEDIA_BUTTON_ENABLED.notNullValue(defaultValue = true)
