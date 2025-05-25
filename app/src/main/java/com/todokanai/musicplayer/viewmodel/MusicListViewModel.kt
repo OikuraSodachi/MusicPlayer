@@ -26,7 +26,11 @@ class MusicListViewModel @Inject constructor(
 //        }
 //    }
     /** list of music ( not playList ) **/
-    private val sortedList: Flow<List<Music>> = playListRepo.playList
+    private val sortedList: Flow<List<Music>> = playListRepo.playList.map {
+        it.sortedBy { music ->
+            music.title
+        }
+    }
 
     val itemList: Flow<List<MusicHolderItem>> = sortedList.map{
         it.map{ music ->

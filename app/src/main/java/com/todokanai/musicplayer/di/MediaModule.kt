@@ -8,6 +8,7 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
+import com.todokanai.musicplayer.repository.PlayListRepository
 import com.todokanai.musicplayer.repository.PlayerStateRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -44,8 +45,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun providePlayerStateRepository(player: NewPlayer,dataStoreRepository: DataStoreRepository):PlayerStateRepository{
-        return PlayerStateRepository(player,dataStoreRepository)
+    fun providePlayerStateRepository(player: NewPlayer,playListRepository: PlayListRepository):PlayerStateRepository{
+        return PlayerStateRepository(player,playListRepository)
     }
 
     @Singleton

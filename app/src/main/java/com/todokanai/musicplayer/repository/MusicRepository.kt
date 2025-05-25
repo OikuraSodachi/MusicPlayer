@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MusicRepository @Inject constructor(private val musicDao:MusicDao,val dsRepo: DataStoreRepository){
+class MusicRepository @Inject constructor(private val musicDao:MusicDao,dsRepo: DataStoreRepository){
 
     val getAll = musicDao.getAll()
 

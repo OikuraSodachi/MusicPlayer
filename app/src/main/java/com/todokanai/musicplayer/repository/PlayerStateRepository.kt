@@ -1,6 +1,5 @@
 package com.todokanai.musicplayer.repository
 
-import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.player.NewPlayer
@@ -10,15 +9,15 @@ import javax.inject.Singleton
 
 @Singleton
 class PlayerStateRepository @Inject constructor(
-    val player: NewPlayer,
-    val dsRepo: DataStoreRepository
+    private val player: NewPlayer,
+    private val playListRepo:PlayListRepository
 ) {
 
     val musicStateFlow by lazy {
         combine(
             player.isPlayingHolder,
             player.isLoopingHolder,
-            dsRepo.isShuffled,
+            playListRepo.isShuffledHolder,
             player.currentMusicHolder
         ) { isPlaying, isLooping, isShuffled, currentMusic ->
             MusicState(

@@ -13,9 +13,6 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
 import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.repository.PlayListRepository
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,9 +46,7 @@ class MusicReceiver  : BroadcastReceiver() {
 
                 ACTION_SHUFFLE -> {
                     //player.shuffleAction(context)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        playListRepo.toggleShuffle()
-                    }
+                    playListRepo.toggleShuffle()
                 }
             }
             if (isWidgetActive()) {
