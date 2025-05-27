@@ -52,10 +52,6 @@ abstract class BasicPlayer(val musicRepo:MusicRepository,val dsRepo:DataStoreRep
         }
     }
 
-    override fun reset() {
-        super.reset()
-    }
-
     fun setMusic_td(context: Context, music: Music){
         val wasLooping = isLooping
         val isMusicValid = music.fileDir != "empty"
