@@ -23,7 +23,10 @@ class PlayListRepository @Inject constructor(private val dsRepo:DataStoreReposit
     // 상태 값 실시간 동기화를 위한 holder
     // StateHolder 값 적용 -> db 에 저장 순으로 진행 ---->>>>  Todo: SavableStateFlow 다시 만들기
 
-    private val _isShuffledHolder = MutableStateFlow<Boolean>(false)
+//    private val _isShuffledHolder = MutableStateFlow<Boolean>(false)
+//    val isShuffledHolder = _isShuffledHolder.asStateFlow()
+
+    private val _isShuffledHolder = dsRepo.isShuffledSavable
     val isShuffledHolder = _isShuffledHolder.asStateFlow()
 
     private val _seedHolder = MutableStateFlow<Long>(0)
@@ -39,7 +42,7 @@ class PlayListRepository @Inject constructor(private val dsRepo:DataStoreReposit
     }
 
     private suspend fun initHolderValues(){
-        _isShuffledHolder.value = dsRepo.isShuffled()
+       // _isShuffledHolder.value = dsRepo.isShuffled()
         _seedHolder.value = dsRepo.getSeed()
     }
 
@@ -74,9 +77,9 @@ class PlayListRepository @Inject constructor(private val dsRepo:DataStoreReposit
     fun toggleShuffle() {
         val wasShuffled = isShuffledHolder.value
         _isShuffledHolder.value = !wasShuffled
-        CoroutineScope(Dispatchers.IO).launch {
-            dsRepo.saveIsShuffled(!wasShuffled)
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            dsRepo.saveIsShuffled(!wasShuffled)
+//        }
     }
 
     fun prevMusic() = musicCache.value.first
