@@ -7,8 +7,8 @@ package com.todokanai.musicplayer.tools.independent
 fun <Type:Any> getCircularNext_td(list:List<Type>, currentItem:Type):Type{
     return when (list.indexOf(currentItem)){
         -1 -> throw Exception("item not found in list")
-        0 -> list.last()
-        else -> list[list.indexOf(currentItem)-1]
+        list.size - 1 -> list.first()
+        else -> list[list.indexOf(currentItem)+1]
     }
 }
 

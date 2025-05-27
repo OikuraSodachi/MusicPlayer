@@ -91,7 +91,7 @@ class MusicService : BaseMusicService(){
             isShuffled = state.isShuffled,
             currentMusic = state.currentMusic
         )
-        println("onStartCommand: ${state.currentMusic.title}, isPlaying: ${state.isPlaying}, isLooping: ${state.isLooping}")
+//        println("onStartCommand: ${state.currentMusic.title}, isPlaying: ${state.isPlaying}, isLooping: ${state.isLooping}")
         return super.onStartCommand(intent, flags, startId)
     }
 

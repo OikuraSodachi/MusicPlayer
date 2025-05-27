@@ -61,7 +61,7 @@ class PlayListRepository @Inject constructor(private val dsRepo:DataStoreReposit
             }catch (e:Exception){
                 dummyMusic
             }
-
+        println("prev: ${prevMusic.title}, current: ${currentMusic.title}, next: ${nextMusic.title}")
         Triple(prevMusic,currentMusic,nextMusic)
     }.stateIn(
         scope = CoroutineScope(Dispatchers.IO),
