@@ -6,6 +6,10 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.todokanai.musicplayer.base.MyDataStore
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
+import com.todokanai.musicplayer.tools.independent.SavableStateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,6 +36,15 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     suspend fun isShuffled() = DATASTORE_IS_SHUFFLED.notNullValue(defaultValue = false)
     val isShuffled = DATASTORE_IS_SHUFFLED.notNullFlow(defaultValue = false)
 
+    val isShuffledSavable = SavableStateFlow<Boolean>(
+        initialValue = false,
+        saveValue = { CoroutineScope(Dispatchers.IO).launch { saveIsShuffled(it) }}
+    ).apply {
+        CoroutineScope(Dispatchers.IO).launch {
+            value = isShuffled()
+        }
+    }
+
     suspend fun saveIsLooping(isLooping:Boolean) = DATASTORE_IS_LOOPING.save(isLooping)
     suspend fun isLooping() = DATASTORE_IS_LOOPING.notNullValue(defaultValue = false)
     val isLooping = DATASTORE_IS_LOOPING.notNullFlow(defaultValue = false)
@@ -39,6 +52,15 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     suspend fun saveRandomSeed(seed:Long) = DATASTORE_RANDOM_SEED.save(seed)
     suspend fun getSeed() = DATASTORE_RANDOM_SEED.notNullValue(defaultValue = 2L)
     val seed = DATASTORE_RANDOM_SEED.notNullFlow(defaultValue = 2L)
+
+    val seedSavable = SavableStateFlow<Long>(
+        initialValue = 2L,
+        saveValue = { CoroutineScope(Dispatchers.IO).launch { saveRandomSeed(it) }}
+    ).apply {
+        CoroutineScope(Dispatchers.IO).launch {
+            value = getSeed()
+        }
+    }
 
     suspend fun saveEnableMediaButton(enabled:Boolean) = DATASTORE_MEDIA_BUTTON_ENABLED.save(enabled)
     suspend fun isMediaButtonEnabled() = DATASTORE_MEDIA_BUTTON_ENABLED.notNullValue(defaultValue = true)
