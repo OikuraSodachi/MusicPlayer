@@ -75,7 +75,13 @@ class MusicService : BaseMusicService(){
         /** Todo: Flow collect 방식으로 바꿀 것 **/
         musicStateFlow.asLiveData().observeForever{
             CoroutineScope(Dispatchers.IO).launch {
-                player.requestUpdateNoti(mediaSession, { startService(serviceIntent(this@MusicService)) })
+                player.requestUpdateNoti(
+                    mediaSession,
+                    { startService(serviceIntent(this@MusicService)) },
+                    it.isLooping,
+                    it.isPlaying,
+                    it.isShuffled
+                )
             }
         }
     }

@@ -1,24 +1,34 @@
 package com.todokanai.musicplayer.repository
 
+import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
-import com.todokanai.musicplayer.player.NewPlayer
+import com.todokanai.musicplayer.tools.independent.SavableStateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** NewPlayer 의 상태 변화를 observe ( 적용 X ) **/
 @Singleton
 class PlayerStateRepository @Inject constructor(
-    private val player: NewPlayer,      // Todo: PlayerStateRepository 에서 NewPlayer 제거 할 것. ( data 흐름 역방향임 )
-    private val playListRepo:PlayListRepository
+    private val playListRepo:PlayListRepository,
+    private val dsRepo: DataStoreRepository,
+    private val musicRepo: MusicRepository
 ) {
+
+    val isPlayingHolder = MutableStateFlow<Boolean>(false)
+
+    val isLoopingHolder : SavableStateFlow<Boolean> = dsRepo.isLoopingSavable
+
+    val currentMusicHolder : SavableStateFlow<Music> = musicRepo.currentMusic
 
     val musicStateFlow by lazy {
         combine(
-            player.isPlayingHolder,
-            player.isLoopingHolder,
+            isPlayingHolder,
+            isLoopingHolder,
             playListRepo.isShuffledHolder,
-            player.currentMusicHolder
+            currentMusicHolder
         ) { isPlaying, isLooping, isShuffled, currentMusic ->
             MusicState(
                 isPlaying = isPlaying,

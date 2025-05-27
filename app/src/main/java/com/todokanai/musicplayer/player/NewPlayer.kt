@@ -1,6 +1,7 @@
 package com.todokanai.musicplayer.player
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.todokanai.musicplayer.compose.IconsRepository
@@ -8,16 +9,23 @@ import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.PlayerInterface
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
+import com.todokanai.musicplayer.repository.PlayerStateRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class NewPlayer @Inject constructor(
-    musicRepo:MusicRepository,
+    val musicRepo:MusicRepository,
     val iconsRepo: IconsRepository,
-    dsRepo: DataStoreRepository
-):BasicPlayer(musicRepo,dsRepo), PlayerInterface {
+    val dsRepo: DataStoreRepository,
+    playerStateRepo: PlayerStateRepository
+):BasicPlayer(playerStateRepo), PlayerInterface {
 
     override fun repeatAction(context: Context) {
         isLooping = !isLooping
@@ -36,16 +44,18 @@ class NewPlayer @Inject constructor(
         start()
     }
 
-    suspend fun requestUpdateNoti(mediaSession: MediaSessionCompat, startForegroundService:()->Unit){
-        mediaSession.setMediaPlaybackState_td(iconsRepo.loopingImage(isLooping), isPlaying, iconsRepo.shuffledImage(dsRepo.isShuffled()))
+    fun requestUpdateNoti(
+        mediaSession: MediaSessionCompat,
+        startForegroundService:()->Unit,
+        isLooping:Boolean,
+        isPlaying:Boolean,
+        isShuffled:Boolean
+    ){
+        mediaSession.setMediaPlaybackState_td(iconsRepo.loopingImage(isLooping), isPlaying, iconsRepo.shuffledImage(isShuffled))
         startForegroundService()
     }
 
-    /**
-     *  MediaSessionCompat의 PlaybackState Setter
-     *
-     *  playback position 관련해서는 미검증 상태
-     */
+    /** MediaSessionCompat의 PlaybackState Setter. playback position 관련해서는 미검증 상태 **/
     fun MediaSessionCompat.setMediaPlaybackState_td(
         repeatIcon:Int,
         isPlaying:Boolean,
@@ -80,5 +90,45 @@ class NewPlayer @Inject constructor(
             }
             .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
         this.setPlaybackState(playbackState.build())
+    }
+
+    //---------------------------
+
+//    private val _currentMusicHolder = MutableStateFlow<Music>(dummyMusic)
+//    val currentMusicHolder = _currentMusicHolder.asStateFlow()
+
+    fun setMusic_td(context: Context, music: Music){
+        val wasLooping = isLooping
+        val isMusicValid = true
+
+        if (isMusicValid) {
+            reset()
+            setDataSource(context, music.getUri())
+            setOnCompletionListener {
+                if (!isLooping) {
+                    context.sendBroadcast(nextIntent)
+                }
+            }
+            prepare()
+            isLooping = wasLooping
+//            _currentMusicHolder.value = music
+            playerStateRepo.currentMusicHolder.value = music
+//            CoroutineScope(Dispatchers.IO).launch {
+//                dsRepo.saveCurrentMusic(music.fileDir)
+//            }
+        }
+    }
+
+    fun onInit(context: Context){
+        setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build()
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            setMusic_td( context, musicRepo.currentMusic.first())
+            isLooping = dsRepo.isLooping()
+        }
     }
 }

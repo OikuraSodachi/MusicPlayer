@@ -19,7 +19,7 @@ class PlayListRepository @Inject constructor(private val dsRepo:DataStoreReposit
 
     //----------------
     // 상태 값 실시간 동기화를 위한 holder
-    // StateHolder 값 적용 -> db 에 저장 순으로 진행 ---->>>>  Todo: SavableStateFlow 다시 만들기
+    // StateHolder 값 적용 -> db 에 저장 순으로 진행
 
     private val _isShuffledHolder = dsRepo.isShuffledSavable
     val isShuffledHolder = _isShuffledHolder.asStateFlow()

@@ -49,6 +49,15 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     suspend fun isLooping() = DATASTORE_IS_LOOPING.notNullValue(defaultValue = false)
     val isLooping = DATASTORE_IS_LOOPING.notNullFlow(defaultValue = false)
 
+    val isLoopingSavable = SavableStateFlow<Boolean>(
+        initialValue = false,
+        saveValue = { CoroutineScope(Dispatchers.IO).launch { saveIsLooping(it) }}
+    ).apply {
+        CoroutineScope(Dispatchers.IO).launch {
+            value = isLooping()
+        }
+    }
+
     suspend fun saveRandomSeed(seed:Long) = DATASTORE_RANDOM_SEED.save(seed)
     suspend fun getSeed() = DATASTORE_RANDOM_SEED.notNullValue(defaultValue = 2L)
     val seed = DATASTORE_RANDOM_SEED.notNullFlow(defaultValue = 2L)
@@ -69,5 +78,14 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     suspend fun saveCurrentMusic(absolutePath:String) = DATASTORE_CURRENT_MUSIC.save(absolutePath)
     suspend fun currentMusic() = DATASTORE_CURRENT_MUSIC.notNullValue(defaultValue = dummyMusic.fileDir)
     val currentMusic = DATASTORE_CURRENT_MUSIC.notNullFlow(defaultValue = dummyMusic.fileDir)
+
+    val currentMusicSavable = SavableStateFlow<String>(
+        initialValue = dummyMusic.fileDir,
+        saveValue = { CoroutineScope(Dispatchers.IO).launch { saveCurrentMusic(it) }}
+    ).apply {
+        CoroutineScope(Dispatchers.IO).launch {
+            value = currentMusic()
+        }
+    }
 
 }
