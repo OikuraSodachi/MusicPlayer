@@ -1,12 +1,12 @@
 package com.todokanai.musicplayer.servicemodel
 
 import android.media.AudioManager
-import android.media.MediaPlayer
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.player.NewPlayer
 import javax.inject.Inject
 
 class MyAudioFocusChangeListener @Inject constructor(
-    val player: MediaPlayer
+    val player: NewPlayer
 ) : AudioManager.OnAudioFocusChangeListener{
 
     override fun onAudioFocusChange(focusChange: Int) {

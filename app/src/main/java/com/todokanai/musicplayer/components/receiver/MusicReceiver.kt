@@ -11,7 +11,7 @@ import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
 import com.todokanai.musicplayer.player.NewPlayer
-import com.todokanai.musicplayer.repository.PlayerStateRepository
+import com.todokanai.musicplayer.repository.PlayListRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ class MusicReceiver  : BroadcastReceiver() {
     lateinit var player:NewPlayer
 
     @Inject
-    lateinit var playerStateRepo:PlayerStateRepository
+    lateinit var playListRepo:PlayListRepository
 
     override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
@@ -46,7 +46,7 @@ class MusicReceiver  : BroadcastReceiver() {
 
                 ACTION_SHUFFLE -> {
                     //player.shuffleAction(context)
-                    playerStateRepo.toggleShuffle()  // Todo: playerStateRepo 가 아니라, player 에서 해야 할 듯?
+                    playListRepo.toggleShuffle()
                 }
             }
             if (isWidgetActive()) {
@@ -59,6 +59,6 @@ class MusicReceiver  : BroadcastReceiver() {
         return true
     }
 
-    fun getPrev(): Music = playerStateRepo.prevMusic()
-    fun getNext(): Music = playerStateRepo.nextMusic()
+    fun getPrev(): Music = playListRepo.prevMusic()
+    fun getNext(): Music = playListRepo.nextMusic()
 }

@@ -78,9 +78,6 @@ class MusicService : BaseMusicService(){
                 player.requestUpdateNoti(mediaSession, { startService(serviceIntent(this@MusicService)) })
             }
         }
-        dsRepo.isShuffled.asLiveData().observeForever{
-            println("dsRepo: $it")
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
