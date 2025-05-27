@@ -20,11 +20,13 @@ import kotlinx.coroutines.launch
  *  Todo: start, pause, reset 등 메소드에 MediaPlaybackState setter 를 포함시켜야 할지도? **/
 abstract class BasicPlayer(val musicRepo:MusicRepository,val dsRepo:DataStoreRepository) : MediaPlayer() {
 
+    private val _isPlayingHolder = MutableStateFlow<Boolean>(false)
+    val isPlayingHolder = _isPlayingHolder.asStateFlow()
+
     private val _isLoopingHolder = MutableStateFlow<Boolean>(false)
     val isLoopingHolder = _isLoopingHolder.asStateFlow()
 
-    private val _isPlayingHolder = MutableStateFlow<Boolean>(false)
-    val isPlayingHolder = _isPlayingHolder.asStateFlow()
+
 
     private val _currentMusicHolder = MutableStateFlow<Music>(dummyMusic)
     val currentMusicHolder = _currentMusicHolder.asStateFlow()
