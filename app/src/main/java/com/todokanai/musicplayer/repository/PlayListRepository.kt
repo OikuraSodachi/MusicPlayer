@@ -58,7 +58,7 @@ class PlayListRepository @Inject constructor(private val dsRepo:DataStoreReposit
     }
 
     /** flow of prev, current, next music **/
-    val musicCache = combine(
+    private val musicCache = combine(
         playList,
         musicRepo.currentMusic
     ){ playList, currentMusic ->
