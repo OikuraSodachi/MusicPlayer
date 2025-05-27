@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.PlayerInterface
@@ -22,7 +21,6 @@ import javax.inject.Singleton
 @Singleton
 class NewPlayer @Inject constructor(
     val musicRepo:MusicRepository,
-    val iconsRepo: IconsRepository,
     val dsRepo: DataStoreRepository,
     playerStateRepo: PlayerStateRepository
 ):BasicPlayer(playerStateRepo), PlayerInterface {
@@ -47,11 +45,11 @@ class NewPlayer @Inject constructor(
     fun requestUpdateNoti(
         mediaSession: MediaSessionCompat,
         startForegroundService:()->Unit,
-        isLooping:Boolean,
+        isLoopingImage:Int,
         isPlaying:Boolean,
-        isShuffled:Boolean
+        isShuffledImage:Int
     ){
-        mediaSession.setMediaPlaybackState_td(iconsRepo.loopingImage(isLooping), isPlaying, iconsRepo.shuffledImage(isShuffled))
+        mediaSession.setMediaPlaybackState_td(isLoopingImage, isPlaying, isShuffledImage)
         startForegroundService()
     }
 
@@ -111,11 +109,7 @@ class NewPlayer @Inject constructor(
             }
             prepare()
             isLooping = wasLooping
-//            _currentMusicHolder.value = music
             playerStateRepo.currentMusicHolder.value = music
-//            CoroutineScope(Dispatchers.IO).launch {
-//                dsRepo.saveCurrentMusic(music.fileDir)
-//            }
         }
     }
 

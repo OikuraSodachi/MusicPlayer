@@ -25,8 +25,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideNewPlayer(@ApplicationContext context: Context,musicRepository: MusicRepository,icons: IconsRepository,dsRepo:DataStoreRepository,playerStateRepository: PlayerStateRepository):NewPlayer{
-        return NewPlayer(musicRepository,icons,dsRepo,playerStateRepository).apply {
+    fun provideNewPlayer(@ApplicationContext context: Context,musicRepository: MusicRepository,dsRepo:DataStoreRepository,playerStateRepository: PlayerStateRepository):NewPlayer{
+        return NewPlayer(musicRepository,dsRepo,playerStateRepository).apply {
             onInit(context)
         }
     }

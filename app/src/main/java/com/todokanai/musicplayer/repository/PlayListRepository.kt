@@ -14,6 +14,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
 
+/** Todo: PlayerStateRepository 쪽으로 통합해야 할지도? **/
 @Singleton
 class PlayListRepository @Inject constructor(private val dsRepo:DataStoreRepository, musicRepo:MusicRepository) {
 

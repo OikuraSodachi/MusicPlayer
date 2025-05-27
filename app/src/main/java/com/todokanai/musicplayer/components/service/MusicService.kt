@@ -10,6 +10,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.base.BaseMusicService
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
+import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
 import com.todokanai.musicplayer.player.NewPlayer
@@ -63,6 +64,9 @@ class MusicService : BaseMusicService(){
     @Inject
     lateinit var playerStateRepo:PlayerStateRepository
 
+    @Inject
+    lateinit var iconsRepo:IconsRepository
+
     private val musicStateFlow by lazy{
         playerStateRepo.musicStateFlow.stateIn(
             scope = CoroutineScope(Dispatchers.IO),
@@ -78,9 +82,10 @@ class MusicService : BaseMusicService(){
                 player.requestUpdateNoti(
                     mediaSession,
                     { startService(serviceIntent(this@MusicService)) },
-                    it.isLooping,
+//                    it.isLooping,
+                    iconsRepo.loopingImage(it.isLooping),
                     it.isPlaying,
-                    it.isShuffled
+                    iconsRepo.shuffledImage(it.isShuffled)
                 )
             }
         }
