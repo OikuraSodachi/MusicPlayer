@@ -49,9 +49,27 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     suspend fun isLooping() = DATASTORE_IS_LOOPING.notNullValue(defaultValue = false)
     val isLooping = DATASTORE_IS_LOOPING.notNullFlow(defaultValue = false)
 
+    val isLoopingSavable = SavableStateFlow<Boolean>(
+        initialValue = false,
+        saveValue = { CoroutineScope(Dispatchers.IO).launch { saveIsLooping(it) }}
+    ).apply {
+        CoroutineScope(Dispatchers.IO).launch {
+            value = isLooping()
+        }
+    }
+
     suspend fun saveRandomSeed(seed:Long) = DATASTORE_RANDOM_SEED.save(seed)
     suspend fun getSeed() = DATASTORE_RANDOM_SEED.notNullValue(defaultValue = 2L)
     val seed = DATASTORE_RANDOM_SEED.notNullFlow(defaultValue = 2L)
+
+    val seedSavable = SavableStateFlow<Long>(
+        initialValue = 2L,
+        saveValue = { CoroutineScope(Dispatchers.IO).launch { saveRandomSeed(it) }}
+    ).apply {
+        CoroutineScope(Dispatchers.IO).launch {
+            value = getSeed()
+        }
+    }
 
     suspend fun saveEnableMediaButton(enabled:Boolean) = DATASTORE_MEDIA_BUTTON_ENABLED.save(enabled)
     suspend fun isMediaButtonEnabled() = DATASTORE_MEDIA_BUTTON_ENABLED.notNullValue(defaultValue = true)
