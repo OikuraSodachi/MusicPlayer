@@ -130,14 +130,13 @@ class MusicService : BaseMusicService(){
             initialValue = true
         )
 
-        val mediaSessionCallback = MediaSessionCallback(
-            this@MusicService,
-            audioManager,
-            audioFocusChangeListener,
-            {mediaButtonEnabled.value}
-        )
-
         mediaSession.apply {
+            val mediaSessionCallback = MediaSessionCallback(
+                this@MusicService,
+                audioManager,
+                audioFocusChangeListener,
+                {mediaButtonEnabled.value}
+            )
             setCallback(mediaSessionCallback)
             isActive = true
         }
