@@ -6,8 +6,6 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
-import android.media.MediaMetadata
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -45,15 +43,6 @@ class Notifications @Inject constructor(
         shuffleIntent:Intent,
         mediaSession: MediaSessionCompat
     ): Notification {
-        mediaSession.apply{
-            setMetadata(
-                MediaMetadataCompat.Builder()
-                    .putString(MediaMetadata.METADATA_KEY_TITLE, currentMusic?.title ?: context.getString(R.string.null_title))
-                    .putString(MediaMetadata.METADATA_KEY_ARTIST, currentMusic?.artist ?: context.getString(R.string.null_artist))
-                    .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, currentMusic?.getAlbumUri().toString())
-                    .build()
-            )
-        }       // title,artist,albumArt
 
         if(isTestBuild) {
             println("current: ${currentMusic?.title ?: context.getString(R.string.null_title)}")
@@ -110,8 +99,5 @@ class Notifications @Inject constructor(
             shuffleIntent = shuffleIntent,
             mediaSession = mediaSession
         )
-
-//        notificationManager.notify(1,notification)
-//        service.startForeground(1, notification)
     }
 }

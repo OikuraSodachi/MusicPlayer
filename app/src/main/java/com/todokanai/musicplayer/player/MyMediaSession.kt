@@ -10,9 +10,9 @@ class MyMediaSession(context: Context, tag: String):MediaSessionCompat(context,t
     companion object{
         private var instance:MyMediaSession? = null
         @Synchronized
-        fun getInstance(context: Context, tag: String):MyMediaSession{
+        fun getInstance(context: Context, tag: String = Constants.MEDIA_SESSION_TAG):MyMediaSession{
             if(instance == null){
-                instance = MyMediaSession(context,tag)
+                instance = MyMediaSession(context, tag)
             }
             return instance!!
         }

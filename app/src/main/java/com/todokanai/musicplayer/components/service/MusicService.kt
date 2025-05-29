@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.base.BaseMusicService
@@ -69,7 +71,7 @@ class MusicService : BaseMusicService(){
     @Inject
     override lateinit var notificationManager:NotificationManagerCompat
 
-    private val mediaSession by lazy{ MyMediaSession.getInstance(this, Constants.MEDIA_SESSION_TAG) }
+    private val mediaSession by lazy{ MyMediaSession.getInstance(this) }
 
     private val musicStateFlow by lazy{
         playerStateRepo.musicStateFlow.stateIn(
@@ -79,40 +81,58 @@ class MusicService : BaseMusicService(){
         )
     }
 
+    fun MediaSessionCompat.setMediaPlaybackState_td(
+        repeatIcon:Int,
+        isPlaying:Boolean,
+        shuffleIcon:Int
+    ){
+        fun state() = if(isPlaying){
+            PlaybackStateCompat.STATE_PLAYING
+        }else{
+            PlaybackStateCompat.STATE_PAUSED
+        }
+        val state = state()
+        val playbackState = PlaybackStateCompat.Builder()
+            .apply {
+                val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                            PlaybackStateCompat.ACTION_PAUSE or
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                } else {
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                            PlaybackStateCompat.ACTION_PLAY or
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                }
+                addCustomAction(Constants.ACTION_REPLAY,"Repeat", repeatIcon)
+                addCustomAction(Constants.ACTION_SHUFFLE,"Shuffle",shuffleIcon)
+                setActions(actions)
+            }
+            .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0f)
+        this.setPlaybackState(playbackState.build())
+    }
+
 
     override fun onCreate() {
         super.onCreate()
         /** Todo: Flow collect 방식으로 바꿀 것 **/
         musicStateFlow.asLiveData().observeForever{
             CoroutineScope(Dispatchers.IO).launch {
-                player.requestUpdateNoti(
-                    mediaSession,
-                    { startService(serviceIntent(this@MusicService)) },
-//                    it.isLooping,
+                mediaSession.setMediaPlaybackState_td(
                     iconsRepo.loopingImage(it.isLooping),
                     it.isPlaying,
                     iconsRepo.shuffledImage(it.isShuffled)
-                )
+                )         // notification 에 업데이트 할 값들 준비
+
+                startService(serviceIntent(this@MusicService))     // onStartCommand 호출 유발 지점
             }
         }
-      //  println("active: ${myMediaSession.isActive}")
     }
-
-//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        val state = musicStateFlow.value
-//        notifications.updateNotification(
-//            service = this,
-//            intent = intent,
-//            serviceChannel = serviceChannel,
-//            isPlaying = state.isPlaying,
-//            isLooping = state.isLooping,
-//            isShuffled = state.isShuffled,
-//            currentMusic = state.currentMusic,
-//            mediaSession = mediaSession,
-//            notificationManager = notificationManager
-//        )
-//        return super.onStartCommand(intent, flags, startId)
-//    }
 
     override fun onDestroy() {
         player.stop()
