@@ -1,11 +1,13 @@
 package com.todokanai.musicplayer.components.service
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.base.BaseMusicService
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
@@ -64,6 +66,9 @@ class MusicService : BaseMusicService(){
     @Inject
     lateinit var iconsRepo:IconsRepository
 
+    @Inject
+    override lateinit var notificationManager:NotificationManagerCompat
+
     private val mediaSession by lazy{ MyMediaSession.getInstance(this, Constants.MEDIA_SESSION_TAG) }
 
     private val musicStateFlow by lazy{
@@ -73,6 +78,8 @@ class MusicService : BaseMusicService(){
             initialValue = MusicState()
         )
     }
+
+
     override fun onCreate() {
         super.onCreate()
         /** Todo: Flow collect 방식으로 바꿀 것 **/
@@ -119,6 +126,20 @@ class MusicService : BaseMusicService(){
         registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_NOT_EXPORTED)
         registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
+    }
+
+    override fun updateNotification(notificationManager: NotificationManagerCompat, intent: Intent?): Notification {
+        val state = musicStateFlow.value
+        return notifications.updateNotification(
+            service = this,
+            intent = intent,
+            serviceChannel = serviceChannel,
+            isPlaying = state.isPlaying,
+            isLooping = state.isLooping,
+            isShuffled = state.isShuffled,
+            currentMusic = state.currentMusic,
+            mediaSession = mediaSession
+        )
     }
 
     /** Todo: parameter 로 mediaSessionCallback 을 주입하는 방식 고려해볼 것 **/

@@ -93,10 +93,10 @@ class Notifications @Inject constructor(
         isShuffled:Boolean,
         currentMusic:Music,
         mediaSession: MediaSessionCompat
-    ){
+    ): Notification {
         notificationManager.createNotificationChannel(serviceChannel)
         MediaButtonReceiver.handleIntent(mediaSession,intent)
-        val notification = noti(
+        return noti(
             context = service,
             isPlaying = isPlaying,
             isLooping = isLooping,
@@ -111,7 +111,7 @@ class Notifications @Inject constructor(
             mediaSession = mediaSession
         )
 
-        notificationManager.notify(1,notification)
-        service.startForeground(1, notification)
+//        notificationManager.notify(1,notification)
+//        service.startForeground(1, notification)
     }
 }
