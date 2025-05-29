@@ -28,12 +28,11 @@ import javax.inject.Inject
 
 class Notifications @Inject constructor(
     private val notificationManager: NotificationManagerCompat,
-    val mediaSession: MediaSessionCompat,
     private val icons : IconsRepository,
     private val channelID:String = Constants.CHANNEL_ID
-    ) {
+) {
 
-    fun noti(
+    private fun noti(
         context: Context,
         isPlaying:Boolean,
         isLooping:Boolean,
@@ -44,7 +43,8 @@ class Notifications @Inject constructor(
         prevIntent: Intent,
         pausePlayIntent:Intent,
         nextIntent:Intent,
-        shuffleIntent:Intent
+        shuffleIntent:Intent,
+        mediaSession: MediaSessionCompat
     ): Notification {
         mediaSession.apply{
             setMetadata(
@@ -91,7 +91,8 @@ class Notifications @Inject constructor(
         isPlaying:Boolean,
         isLooping:Boolean,
         isShuffled:Boolean,
-        currentMusic:Music
+        currentMusic:Music,
+        mediaSession: MediaSessionCompat
     ){
         notificationManager.createNotificationChannel(serviceChannel)
         MediaButtonReceiver.handleIntent(mediaSession,intent)
@@ -106,7 +107,8 @@ class Notifications @Inject constructor(
             prevIntent = prevIntent,
             pausePlayIntent = pausePlayIntent,
             nextIntent = nextIntent,
-            shuffleIntent = shuffleIntent
+            shuffleIntent = shuffleIntent,
+            mediaSession = mediaSession
         )
 
         notificationManager.notify(1,notification)

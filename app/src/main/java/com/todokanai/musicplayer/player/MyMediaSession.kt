@@ -7,6 +7,16 @@ import com.todokanai.musicplayer.myobjects.Constants
 
 class MyMediaSession(context: Context, tag: String):MediaSessionCompat(context,tag) {
 
+    companion object{
+        private var instance:MyMediaSession? = null
+        @Synchronized
+        fun getInstance(context: Context, tag: String):MyMediaSession{
+            if(instance == null){
+                instance = MyMediaSession(context,tag)
+            }
+            return instance!!
+        }
+    }
 
     /**
      *  MediaSessionCompat의 PlaybackState Setter

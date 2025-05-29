@@ -51,7 +51,7 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideNotifications(notificationManager:NotificationManagerCompat,mediaSession:MediaSessionCompat,icons:IconsRepository):Notifications{
-        return Notifications(notificationManager,mediaSession,icons)
+    fun provideNotifications(notificationManager:NotificationManagerCompat,icons:IconsRepository):Notifications{
+        return Notifications(notificationManager,icons)
     }
 }

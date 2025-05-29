@@ -13,6 +13,7 @@ import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.player.MyMediaSession
 import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.repository.MusicState
 import com.todokanai.musicplayer.repository.PlayerStateRepository
@@ -67,6 +68,8 @@ class MusicService : BaseMusicService(){
     @Inject
     lateinit var iconsRepo:IconsRepository
 
+    private val myMediaSession by lazy{ MyMediaSession(this,Constants.MEDIA_SESSION_TAG) }
+
     private val musicStateFlow by lazy{
         playerStateRepo.musicStateFlow.stateIn(
             scope = CoroutineScope(Dispatchers.IO),
@@ -89,6 +92,7 @@ class MusicService : BaseMusicService(){
                 )
             }
         }
+        println("active: ${myMediaSession.isActive}")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -100,7 +104,8 @@ class MusicService : BaseMusicService(){
             isPlaying = state.isPlaying,
             isLooping = state.isLooping,
             isShuffled = state.isShuffled,
-            currentMusic = state.currentMusic
+            currentMusic = state.currentMusic,
+            mediaSession = mediaSession
         )
         return super.onStartCommand(intent, flags, startId)
     }
