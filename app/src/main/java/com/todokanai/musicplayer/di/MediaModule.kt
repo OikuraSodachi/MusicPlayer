@@ -1,7 +1,6 @@
 package com.todokanai.musicplayer.di
 
 import android.content.Context
-import androidx.core.app.NotificationManagerCompat
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.player.NewPlayer
@@ -35,12 +34,6 @@ class MediaModule {
         return MyAudioFocusChangeListener(player)
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideMediaSession(@ApplicationContext context:Context):MediaSessionCompat{
-//        return MediaSessionCompat(context, Constants.MEDIA_SESSION_TAG)
-//    }
-
     @Singleton
     @Provides
     fun providePlayerStateRepository(playListRepository: PlayListRepository,dataStoreRepository: DataStoreRepository,musicRepository: MusicRepository):PlayerStateRepository{
@@ -49,7 +42,7 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideNotifications(notificationManager:NotificationManagerCompat,icons:IconsRepository):Notifications{
-        return Notifications(notificationManager,icons)
+    fun provideNotifications(icons:IconsRepository):Notifications{
+        return Notifications(icons)
     }
 }

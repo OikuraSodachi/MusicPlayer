@@ -27,7 +27,6 @@ import com.todokanai.musicplayer.variables.Variables.Companion.isTestBuild
 import javax.inject.Inject
 
 class Notifications @Inject constructor(
-    private val notificationManager: NotificationManagerCompat,
     private val icons : IconsRepository,
     private val channelID:String = Constants.CHANNEL_ID
 ) {
@@ -92,7 +91,8 @@ class Notifications @Inject constructor(
         isLooping:Boolean,
         isShuffled:Boolean,
         currentMusic:Music,
-        mediaSession: MediaSessionCompat
+        mediaSession: MediaSessionCompat,
+        notificationManager: NotificationManagerCompat
     ): Notification {
         notificationManager.createNotificationChannel(serviceChannel)
         MediaButtonReceiver.handleIntent(mediaSession,intent)

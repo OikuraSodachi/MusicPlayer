@@ -98,20 +98,21 @@ class MusicService : BaseMusicService(){
       //  println("active: ${myMediaSession.isActive}")
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val state = musicStateFlow.value
-        notifications.updateNotification(
-            service = this,
-            intent = intent,
-            serviceChannel = serviceChannel,
-            isPlaying = state.isPlaying,
-            isLooping = state.isLooping,
-            isShuffled = state.isShuffled,
-            currentMusic = state.currentMusic,
-            mediaSession = mediaSession
-        )
-        return super.onStartCommand(intent, flags, startId)
-    }
+//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+//        val state = musicStateFlow.value
+//        notifications.updateNotification(
+//            service = this,
+//            intent = intent,
+//            serviceChannel = serviceChannel,
+//            isPlaying = state.isPlaying,
+//            isLooping = state.isLooping,
+//            isShuffled = state.isShuffled,
+//            currentMusic = state.currentMusic,
+//            mediaSession = mediaSession,
+//            notificationManager = notificationManager
+//        )
+//        return super.onStartCommand(intent, flags, startId)
+//    }
 
     override fun onDestroy() {
         player.stop()
@@ -138,7 +139,8 @@ class MusicService : BaseMusicService(){
             isLooping = state.isLooping,
             isShuffled = state.isShuffled,
             currentMusic = state.currentMusic,
-            mediaSession = mediaSession
+            mediaSession = mediaSession,
+            notificationManager = notificationManager
         )
     }
 
