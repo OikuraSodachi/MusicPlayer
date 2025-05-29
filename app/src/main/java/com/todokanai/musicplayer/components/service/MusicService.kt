@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.support.v4.media.session.MediaSessionCompat
 import androidx.lifecycle.asLiveData
 import com.todokanai.musicplayer.base.BaseMusicService
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
@@ -53,8 +52,8 @@ class MusicService : BaseMusicService(){
     @Inject
     lateinit var audioFocusChangeListener: MyAudioFocusChangeListener
 
-    @Inject
-    lateinit var mediaSession:MediaSessionCompat
+//    @Inject
+//    lateinit var mediaSession:MediaSessionCompat
 
     @Inject
     lateinit var dsRepo:DataStoreRepository
@@ -68,7 +67,7 @@ class MusicService : BaseMusicService(){
     @Inject
     lateinit var iconsRepo:IconsRepository
 
-    private val myMediaSession by lazy{ MyMediaSession(this,Constants.MEDIA_SESSION_TAG) }
+    private val mediaSession by lazy{ MyMediaSession.getInstance(this, Constants.MEDIA_SESSION_TAG) }
 
     private val musicStateFlow by lazy{
         playerStateRepo.musicStateFlow.stateIn(
@@ -92,7 +91,7 @@ class MusicService : BaseMusicService(){
                 )
             }
         }
-        println("active: ${myMediaSession.isActive}")
+      //  println("active: ${myMediaSession.isActive}")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
