@@ -52,9 +52,6 @@ class MusicService : BaseMusicService(){
     @Inject
     lateinit var audioFocusChangeListener: MyAudioFocusChangeListener
 
-//    @Inject
-//    lateinit var mediaSession:MediaSessionCompat
-
     @Inject
     lateinit var dsRepo:DataStoreRepository
 
