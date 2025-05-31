@@ -25,6 +25,6 @@ abstract class BasicPlayer(val playerStateRepo: PlayerStateRepository) : MediaPl
 
     override fun setLooping(p0: Boolean) {
         super.setLooping(p0)
-        playerStateRepo.setLooping(isLooping)
+        playerStateRepo.onSetLooping(isLooping)
     }
 }

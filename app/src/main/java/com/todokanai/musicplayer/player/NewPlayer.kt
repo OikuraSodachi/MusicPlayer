@@ -54,10 +54,8 @@ class NewPlayer @Inject constructor(
     }
 
     override fun toggleShuffle(){
-        playerStateRepo.toggleShuffle()
+        playerStateRepo.onToggleShuffle()
     }
-
-//    fun toggleShuffle() = playListRepo.toggleShuffle()
 
     //---------------------------
 
@@ -94,7 +92,7 @@ class NewPlayer @Inject constructor(
 
             prepare()
             isLooping = wasLooping
-            playerStateRepo.setCurrentMusic(music)
+            playerStateRepo.onSetCurrentMusic(music)
         }
     }
 

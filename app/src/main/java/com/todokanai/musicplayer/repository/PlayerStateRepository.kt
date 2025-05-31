@@ -61,15 +61,15 @@ class PlayerStateRepository @Inject constructor(
         isPlayingHolder.value = isPlaying
     }
 
-    fun setLooping(isLooping: Boolean) {
+    fun onSetLooping(isLooping: Boolean) {
         isLoopingHolder.value = isLooping
     }
 
-    fun setCurrentMusic(music: Music) {
+    fun onSetCurrentMusic(music: Music) {
         currentMusicHolder.value = music
     }
 
-    fun toggleShuffle(){
+    fun onToggleShuffle(){
         val wasShuffled = isShuffledHolder.value
         isShuffledHolder.value = !wasShuffled
     }
