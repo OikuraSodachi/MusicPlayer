@@ -14,8 +14,8 @@ import javax.inject.Singleton
 @Singleton
 class PlayerStateRepository @Inject constructor(
     private val playListRepo:PlayListRepository,
-    private val dsRepo: DataStoreRepository,
-    private val musicRepo: MusicRepository
+    dsRepo: DataStoreRepository,
+    musicRepo: MusicRepository
 ) : PlayerInterface {
 
     private val isPlayingHolder = MutableStateFlow<Boolean>(false)
