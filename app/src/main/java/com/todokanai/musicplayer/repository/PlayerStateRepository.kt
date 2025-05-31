@@ -2,7 +2,6 @@ package com.todokanai.musicplayer.repository
 
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.interfaces.PlayerInterface
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.tools.independent.getCircularNext_td
 import com.todokanai.musicplayer.tools.independent.getCircularPrev_td
@@ -21,7 +20,7 @@ import kotlin.random.Random
 class PlayerStateRepository @Inject constructor(
     dsRepo: DataStoreRepository,
     musicRepo: MusicRepository
-) : PlayerInterface {
+)  {
 
     private val isShuffledHolder = dsRepo.isShuffledSavable
 
@@ -50,27 +49,27 @@ class PlayerStateRepository @Inject constructor(
         }
     }
 
-    override fun onStart(isPlaying: Boolean) {
+    fun onStart(isPlaying: Boolean) {
         isPlayingHolder.value = isPlaying
     }
 
-    override fun onPause(isPlaying: Boolean) {
+    fun onPause(isPlaying: Boolean) {
         isPlayingHolder.value = isPlaying
     }
 
-    override fun onStop(isPlaying: Boolean) {
+    fun onStop(isPlaying: Boolean) {
         isPlayingHolder.value = isPlaying
     }
 
-    override fun setLooping(isLooping: Boolean) {
+    fun setLooping(isLooping: Boolean) {
         isLoopingHolder.value = isLooping
     }
 
-    override fun setCurrentMusic(music: Music) {
+    fun setCurrentMusic(music: Music) {
         currentMusicHolder.value = music
     }
 
-    override fun toggleShuffle(){
+    fun toggleShuffle(){
         val wasShuffled = isShuffledHolder.value
         isShuffledHolder.value = !wasShuffled
     }

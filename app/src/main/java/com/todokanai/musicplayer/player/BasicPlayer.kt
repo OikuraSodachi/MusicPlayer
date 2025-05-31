@@ -27,8 +27,4 @@ abstract class BasicPlayer(val playerStateRepo: PlayerStateRepository) : MediaPl
         super.setLooping(p0)
         playerStateRepo.setLooping(isLooping)
     }
-
-    fun toggleShuffle(){
-        playerStateRepo.toggleShuffle()
-    }
 }

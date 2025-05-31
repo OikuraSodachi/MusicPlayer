@@ -8,6 +8,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.interfaces.PlayerInterface
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.PlayerStateRepository
@@ -23,13 +24,13 @@ class NewPlayer @Inject constructor(
     val musicRepo:MusicRepository,
     val dsRepo: DataStoreRepository,
     playerStateRepo: PlayerStateRepository
-):BasicPlayer(playerStateRepo) {
+):BasicPlayer(playerStateRepo), PlayerInterface {
 
-    fun repeatAction() {
+    override fun repeatAction() {
         isLooping = !isLooping
     }
 
-    fun pausePlayAction() {
+    override fun pausePlayAction() {
         if(!isPlaying){
             start()
         }else{
@@ -37,19 +38,23 @@ class NewPlayer @Inject constructor(
         }
     }
 
-    fun launchMusic(context: Context,music: Music){
+    override fun launchMusic(context: Context, music: Music){
         setMusic_td(context, music)
         start()
     }
 
-    fun toNextMusic(context: Context){
+    override fun toNextMusic(context: Context){
         launchMusic(context,playerStateRepo.nextMusic())
         start()
     }
 
-    fun toPrevMusic(context: Context){
+    override fun toPrevMusic(context: Context){
         launchMusic(context,playerStateRepo.prevMusic())
         start()
+    }
+
+    override fun toggleShuffle(){
+        playerStateRepo.toggleShuffle()
     }
 
 //    fun toggleShuffle() = playListRepo.toggleShuffle()

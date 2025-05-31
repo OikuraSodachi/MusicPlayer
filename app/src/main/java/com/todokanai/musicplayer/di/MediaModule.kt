@@ -3,6 +3,7 @@ package com.todokanai.musicplayer.di
 import android.content.Context
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
+import com.todokanai.musicplayer.interfaces.PlayerInterface
 import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
 import com.todokanai.musicplayer.repository.PlayerStateRepository
@@ -43,5 +44,12 @@ class MediaModule {
     @Provides
     fun provideNotifications(icons:IconsRepository):Notifications{
         return Notifications(icons)
+    }
+
+    /** experimental feature **/
+    @Singleton
+    @Provides
+    fun providePlayerInterface(newPlayer: NewPlayer):PlayerInterface{
+        return newPlayer
     }
 }
