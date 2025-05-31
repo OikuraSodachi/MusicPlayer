@@ -23,7 +23,7 @@ import javax.inject.Singleton
 class NewPlayer @Inject constructor(
     val musicRepo:MusicRepository,
     val dsRepo: DataStoreRepository,
-    val playListRepo:PlayListRepository,
+    private val playListRepo:PlayListRepository,
     playerStateRepo: PlayerInterface
 ):BasicPlayer(playerStateRepo) {
 
@@ -44,8 +44,16 @@ class NewPlayer @Inject constructor(
         start()
     }
 
-    fun getPrev():Music = playListRepo.prevMusic()
-    fun getNext():Music = playListRepo.nextMusic()
+    fun toNextMusic(context: Context){
+        launchMusic(context,playListRepo.nextMusic())
+        start()
+    }
+
+    fun toPrevMusic(context: Context){
+        launchMusic(context,playListRepo.prevMusic())
+        start()
+    }
+
     fun toggleShuffle() = playListRepo.toggleShuffle()
 
     //---------------------------

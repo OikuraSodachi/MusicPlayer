@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** NewPlayer 의 상태 변화를 observe ( 적용 X ) **/
+/** NewPlayer 의 상태 변화를 UI 로 전달  **/
 @Singleton
 class PlayerStateRepository @Inject constructor(
     private val playListRepo:PlayListRepository,
@@ -18,11 +18,11 @@ class PlayerStateRepository @Inject constructor(
     private val musicRepo: MusicRepository
 ) : PlayerInterface {
 
-    val isPlayingHolder = MutableStateFlow<Boolean>(false)
+    private val isPlayingHolder = MutableStateFlow<Boolean>(false)
 
-    val isLoopingHolder : SavableStateFlow<Boolean> = dsRepo.isLoopingSavable
+    private val isLoopingHolder : SavableStateFlow<Boolean> = dsRepo.isLoopingSavable
 
-    val currentMusicHolder : SavableStateFlow<Music> = musicRepo.currentMusic
+    private val currentMusicHolder : SavableStateFlow<Music> = musicRepo.currentMusic
 
     val musicStateFlow by lazy {
         combine(

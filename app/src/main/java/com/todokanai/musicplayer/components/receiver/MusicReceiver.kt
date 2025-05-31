@@ -26,8 +26,7 @@ class MusicReceiver  : BroadcastReceiver() {
                 }
 
                 ACTION_SKIP_TO_PREVIOUS -> {
-                    // player.prevAction(context)
-                    player.launchMusic(context, player.getPrev())
+                    player.toPrevMusic(context)
                 }
 
                 ACTION_PAUSE_PLAY -> {
@@ -35,12 +34,10 @@ class MusicReceiver  : BroadcastReceiver() {
                 }
 
                 ACTION_SKIP_TO_NEXT -> {
-                    //player.nextAction(context)
-                    player.launchMusic(context, player.getNext())
+                    player.toNextMusic(context)
                 }
 
                 ACTION_SHUFFLE -> {
-                    //player.shuffleAction(context)
                     player.toggleShuffle()
                 }
             }
