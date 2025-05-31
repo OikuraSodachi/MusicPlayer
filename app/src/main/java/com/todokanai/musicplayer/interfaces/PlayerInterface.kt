@@ -14,4 +14,6 @@ interface PlayerInterface {
 
     fun setCurrentMusic(music:Music)
 
+    fun toggleShuffle()
+
 }

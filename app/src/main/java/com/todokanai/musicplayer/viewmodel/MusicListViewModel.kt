@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.data.dataclass.MusicHolderItem
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.player.NewPlayer
-import com.todokanai.musicplayer.repository.PlayListRepository
+import com.todokanai.musicplayer.repository.PlayerStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MusicListViewModel @Inject constructor(
     val player:NewPlayer,
-    val playListRepo:PlayListRepository
+    playerStateRepo: PlayerStateRepository
 ) : ViewModel(){
 
 //    /** list of music ( not playList ) **/
@@ -26,7 +26,7 @@ class MusicListViewModel @Inject constructor(
 //        }
 //    }
     /** list of music ( not playList ) **/
-    private val sortedList: Flow<List<Music>> = playListRepo.playList.map {
+    private val sortedList: Flow<List<Music>> = playerStateRepo.playList.map {
         it.sortedBy { music ->
             music.title
         }

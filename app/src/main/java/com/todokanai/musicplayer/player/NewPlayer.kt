@@ -8,10 +8,9 @@ import android.support.v4.media.session.MediaSessionCompat
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
-import com.todokanai.musicplayer.interfaces.PlayerInterface
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
-import com.todokanai.musicplayer.repository.PlayListRepository
+import com.todokanai.musicplayer.repository.PlayerStateRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -23,8 +22,7 @@ import javax.inject.Singleton
 class NewPlayer @Inject constructor(
     val musicRepo:MusicRepository,
     val dsRepo: DataStoreRepository,
-    private val playListRepo:PlayListRepository,
-    playerStateRepo: PlayerInterface
+    playerStateRepo: PlayerStateRepository
 ):BasicPlayer(playerStateRepo) {
 
     fun repeatAction() {
@@ -45,16 +43,16 @@ class NewPlayer @Inject constructor(
     }
 
     fun toNextMusic(context: Context){
-        launchMusic(context,playListRepo.nextMusic())
+        launchMusic(context,playerStateRepo.nextMusic())
         start()
     }
 
     fun toPrevMusic(context: Context){
-        launchMusic(context,playListRepo.prevMusic())
+        launchMusic(context,playerStateRepo.prevMusic())
         start()
     }
 
-    fun toggleShuffle() = playListRepo.toggleShuffle()
+//    fun toggleShuffle() = playListRepo.toggleShuffle()
 
     //---------------------------
 
