@@ -11,7 +11,7 @@ import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.PlayerInterface
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
-import com.todokanai.musicplayer.repository.PlayerStateRepository
+import com.todokanai.musicplayer.repository.PlayListRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -23,14 +23,15 @@ import javax.inject.Singleton
 class NewPlayer @Inject constructor(
     val musicRepo:MusicRepository,
     val dsRepo: DataStoreRepository,
-    playerStateRepo: PlayerStateRepository
-):BasicPlayer(playerStateRepo), PlayerInterface {
+    val playListRepo:PlayListRepository,
+    playerStateRepo: PlayerInterface
+):BasicPlayer(playerStateRepo) {
 
-    override fun repeatAction(context: Context) {
+    fun repeatAction() {
         isLooping = !isLooping
     }
 
-    override fun pausePlayAction(context: Context) {
+    fun pausePlayAction() {
         if(!isPlaying){
             start()
         }else{
@@ -38,10 +39,14 @@ class NewPlayer @Inject constructor(
         }
     }
 
-    override fun launchMusic(context: Context,music: Music){
+    fun launchMusic(context: Context,music: Music){
         setMusic_td(context, music)
         start()
     }
+
+    fun getPrev():Music = playListRepo.prevMusic()
+    fun getNext():Music = playListRepo.nextMusic()
+    fun toggleShuffle() = playListRepo.toggleShuffle()
 
     //---------------------------
 
@@ -78,7 +83,7 @@ class NewPlayer @Inject constructor(
 
             prepare()
             isLooping = wasLooping
-            playerStateRepo.currentMusicHolder.value = music
+            playerStateRepo.setCurrentMusic(music)
         }
     }
 

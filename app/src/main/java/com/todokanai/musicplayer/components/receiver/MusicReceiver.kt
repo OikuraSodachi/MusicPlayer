@@ -4,14 +4,12 @@ import android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_PAUSE_PLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
 import com.todokanai.musicplayer.player.NewPlayer
-import com.todokanai.musicplayer.repository.PlayListRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,32 +19,29 @@ class MusicReceiver  : BroadcastReceiver() {
     @Inject
     lateinit var player:NewPlayer
 
-    @Inject
-    lateinit var playListRepo:PlayListRepository
-
     override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 ACTION_REPLAY -> {
-                    player.repeatAction(context)
+                    player.repeatAction()
                 }
 
                 ACTION_SKIP_TO_PREVIOUS -> {
                     // player.prevAction(context)
-                    player.launchMusic(context, getPrev())
+                    player.launchMusic(context, player.getPrev())
                 }
 
                 ACTION_PAUSE_PLAY -> {
-                    player.pausePlayAction(context)
+                    player.pausePlayAction()
                 }
 
                 ACTION_SKIP_TO_NEXT -> {
                     //player.nextAction(context)
-                    player.launchMusic(context, getNext())
+                    player.launchMusic(context, player.getNext())
                 }
 
                 ACTION_SHUFFLE -> {
                     //player.shuffleAction(context)
-                    playListRepo.toggleShuffle()
+                    player.toggleShuffle()
                 }
             }
             if (isWidgetActive()) {
@@ -58,7 +53,4 @@ class MusicReceiver  : BroadcastReceiver() {
     fun isWidgetActive():Boolean{
         return true
     }
-
-    fun getPrev(): Music = playListRepo.prevMusic()
-    fun getNext(): Music = playListRepo.nextMusic()
 }

@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.repository
 
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.interfaces.PlayerInterface
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.tools.independent.SavableStateFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ class PlayerStateRepository @Inject constructor(
     private val playListRepo:PlayListRepository,
     private val dsRepo: DataStoreRepository,
     private val musicRepo: MusicRepository
-) {
+) : PlayerInterface {
 
     val isPlayingHolder = MutableStateFlow<Boolean>(false)
 
@@ -38,6 +39,27 @@ class PlayerStateRepository @Inject constructor(
             )
         }
     }
+
+    override fun onStart(isPlaying: Boolean) {
+        isPlayingHolder.value = isPlaying
+    }
+
+    override fun onPause(isPlaying: Boolean) {
+        isPlayingHolder.value = isPlaying
+    }
+
+    override fun onStop(isPlaying: Boolean) {
+        isPlayingHolder.value = isPlaying
+    }
+
+    override fun setLooping(isLooping: Boolean) {
+        isLoopingHolder.value = isLooping
+    }
+
+    override fun setCurrentMusic(music: Music) {
+        currentMusicHolder.value = music
+    }
+
 
 }
 

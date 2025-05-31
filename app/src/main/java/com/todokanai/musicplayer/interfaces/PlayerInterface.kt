@@ -1,13 +1,17 @@
 package com.todokanai.musicplayer.interfaces
 
-import android.content.Context
 import com.todokanai.musicplayer.data.room.Music
 
 interface PlayerInterface {
 
-    fun launchMusic(context: Context, music: Music)
+    fun onStart(isPlaying:Boolean)
 
-    fun repeatAction(context: Context)
+    fun onPause(isPlaying:Boolean)
 
-    fun pausePlayAction(context: Context)
+    fun onStop(isPlaying: Boolean)
+
+    fun setLooping(isLooping:Boolean)
+
+    fun setCurrentMusic(music:Music)
+
 }
