@@ -5,7 +5,6 @@ import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.player.NewPlayer
 import com.todokanai.musicplayer.repository.MusicRepository
-import com.todokanai.musicplayer.repository.PlayerStateRepository
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
 import dagger.Module
@@ -21,8 +20,8 @@ class MediaModule {
 
     @Singleton
     @Provides
-    fun provideNewPlayer(@ApplicationContext context: Context,musicRepository: MusicRepository,dsRepo:DataStoreRepository,playerStateRepository: PlayerStateRepository):NewPlayer{
-        return NewPlayer(musicRepository,dsRepo,playerStateRepository).apply {
+    fun provideNewPlayer(@ApplicationContext context: Context,musicRepository: MusicRepository,dsRepo:DataStoreRepository):NewPlayer{
+        return NewPlayer(musicRepository,dsRepo).apply {
             onInit(context)
         }
     }
@@ -31,12 +30,6 @@ class MediaModule {
     @Provides
     fun provideMyAudioFocusChangeListener(player: NewPlayer):MyAudioFocusChangeListener{
         return MyAudioFocusChangeListener(player)
-    }
-
-    @Singleton
-    @Provides
-    fun providePlayerStateRepository(dataStoreRepository: DataStoreRepository,musicRepository: MusicRepository):PlayerStateRepository{
-        return PlayerStateRepository(dataStoreRepository,musicRepository)
     }
 
     @Singleton

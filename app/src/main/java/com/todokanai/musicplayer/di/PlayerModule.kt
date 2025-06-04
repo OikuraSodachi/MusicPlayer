@@ -2,6 +2,7 @@ package com.todokanai.musicplayer.di
 
 import android.media.MediaPlayer
 import com.todokanai.musicplayer.interfaces.PlayerInterface
+import com.todokanai.musicplayer.interfaces.PlayerStateInterface
 import com.todokanai.musicplayer.player.NewPlayer
 import dagger.Module
 import dagger.Provides
@@ -17,6 +18,12 @@ class PlayerModule {
     @Singleton
     @Provides
     fun providePlayerInterface(newPlayer: NewPlayer): PlayerInterface {
+        return newPlayer
+    }
+
+    @Singleton
+    @Provides
+    fun providePlayerStateInterface(newPlayer: NewPlayer): PlayerStateInterface {
         return newPlayer
     }
 

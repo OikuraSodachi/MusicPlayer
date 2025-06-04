@@ -11,13 +11,13 @@ import android.widget.RemoteViews
 import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.components.activity.MainActivity.Companion.mainIntent
 import com.todokanai.musicplayer.compose.IconsRepository
+import com.todokanai.musicplayer.interfaces.PlayerStateInterface
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.pausePlayIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.prevIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.repeatIntent
 import com.todokanai.musicplayer.myobjects.MyObjects.shuffleIntent
-import com.todokanai.musicplayer.repository.MusicState
-import com.todokanai.musicplayer.repository.PlayerStateRepository
+import com.todokanai.musicplayer.player.MusicState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
     lateinit var icons:IconsRepository
 
     @Inject
-    lateinit var stateRepository: PlayerStateRepository
+    lateinit var playerState: PlayerStateInterface
 
     private fun getWidgetIds(context: Context) = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, MusicPlayerWidget::class.java))
 
@@ -49,7 +49,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
         // There may be multiple widgets active, so update all of them
         appWidgetIds.forEach {
             CoroutineScope(Dispatchers.Default).launch {
-                updateMyAppWidget_td(appWidgetManager, it, widgetViews, stateRepository.musicStateFlow.first())
+                updateMyAppWidget_td(appWidgetManager, it, widgetViews, playerState.musicStateFlow.first())
             }
         }
     }
@@ -58,7 +58,7 @@ class MusicPlayerWidget : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
         val widgetViews = RemoteViews(context.packageName, R.layout.music_player_widget)
         CoroutineScope(Dispatchers.IO).launch {
-            val state = stateRepository.musicStateFlow.first()
+            val state = playerState.musicStateFlow.first()
             withContext(Dispatchers.Main) {
                 widgetViews.run {
                     setImageViewResource(R.id.widget_repeatBtn, icons.loopingImage(state.isLooping))

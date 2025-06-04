@@ -6,13 +6,13 @@ import android.media.MediaPlayer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.musicplayer.data.room.Music
+import com.todokanai.musicplayer.interfaces.PlayerStateInterface
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_PAUSE_PLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_REPLAY
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SHUFFLE
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_NEXT
 import com.todokanai.musicplayer.myobjects.Constants.ACTION_SKIP_TO_PREVIOUS
 import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
-import com.todokanai.musicplayer.repository.PlayerStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayingViewModel @Inject constructor(
     private val mediaPlayer: MediaPlayer,
-    stateRepo:PlayerStateRepository
+    stateRepo:PlayerStateInterface
 ) : ViewModel(){
 
     private val state = stateRepo.musicStateFlow

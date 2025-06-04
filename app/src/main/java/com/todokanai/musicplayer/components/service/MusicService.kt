@@ -15,11 +15,11 @@ import com.todokanai.musicplayer.base.BaseMusicService
 import com.todokanai.musicplayer.components.receiver.MusicReceiver
 import com.todokanai.musicplayer.compose.IconsRepository
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
+import com.todokanai.musicplayer.interfaces.PlayerStateInterface
 import com.todokanai.musicplayer.myobjects.Constants
+import com.todokanai.musicplayer.player.MusicState
 import com.todokanai.musicplayer.player.MyMediaSession
 import com.todokanai.musicplayer.player.NewPlayer
-import com.todokanai.musicplayer.repository.MusicState
-import com.todokanai.musicplayer.repository.PlayerStateRepository
 import com.todokanai.musicplayer.servicemodel.MediaSessionCallback
 import com.todokanai.musicplayer.servicemodel.MyAudioFocusChangeListener
 import com.todokanai.musicplayer.tools.Notifications
@@ -63,7 +63,7 @@ class MusicService : BaseMusicService(){
     lateinit var notifications:Notifications
 
     @Inject
-    lateinit var playerStateRepo:PlayerStateRepository
+    lateinit var playerState: PlayerStateInterface
 
     @Inject
     lateinit var iconsRepo:IconsRepository
@@ -74,7 +74,7 @@ class MusicService : BaseMusicService(){
     private val mediaSession by lazy{ MyMediaSession.getInstance(this) }
 
     private val musicStateFlow by lazy{
-        playerStateRepo.musicStateFlow.stateIn(
+        playerState.musicStateFlow.stateIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = MusicState()
