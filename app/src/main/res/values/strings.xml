@@ -12,7 +12,7 @@
     <string name="scan">Scan</string>
     <string name="clear">Clear</string>
     <string name="exit">Exit</string>
-    <string name="permission_message">Storage permission is requires,please allow from settings</string>
+    <string name="permission_message">Storage permission is required</string>
     <string name="scanPath_empty">Scans all directories if empty</string>
     <string name="not_accessible">Directory not accessible</string>
     <string name="all_item_failure">playing failed on all items</string>

@@ -20,7 +20,6 @@ import kotlin.random.Random
  * Todo: 값 저장은 여기서는 다루지 말 것.
  *  Todo: start, pause, reset 등 메소드에 MediaPlaybackState setter 를 포함시켜야 할지도? **/
 abstract class BasicPlayer(
-//    val playerStateRepo: PlayerStateRepository,
     val dsRepo: DataStoreRepository,
     val musicRepo: MusicRepository
 ) : MediaPlayer(),PlayerStateInterface {

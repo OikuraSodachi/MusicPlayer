@@ -2,12 +2,15 @@ package com.todokanai.musicplayer.components.activity
 
 import android.app.PendingIntent
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.tabs.TabLayoutMediator
@@ -39,7 +42,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        requestStorageManageAccess_td(this)
+        if(!Environment.isExternalStorageManager()){
+            permissionDialog()
+        }
+
+       // requestStorageManageAccess_td(this)
         activityResult =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (!isGranted)
@@ -89,5 +96,24 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback {
             finish()
         }
+    }
+
+    fun permissionDialog(){
+        AlertDialog.Builder(this)
+            .setMessage(
+                "Storage permission is required"
+            )
+            .setPositiveButton(
+                "go to settings",
+                object: DialogInterface.OnClickListener{
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                     //   requestStorageManageAccess_td(this@MainActivity)
+                    }
+                }
+            )
+            .setOnDismissListener {
+                requestStorageManageAccess_td(this)
+            }
+            .show()
     }
 }

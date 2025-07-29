@@ -9,6 +9,7 @@ import com.todokanai.musicplayer.R
 import com.todokanai.musicplayer.data.datastore.DataStoreRepository
 import com.todokanai.musicplayer.data.room.Music
 import com.todokanai.musicplayer.interfaces.PlayerInterface
+import com.todokanai.musicplayer.myobjects.MyObjects.dummyMusic
 import com.todokanai.musicplayer.myobjects.MyObjects.nextIntent
 import com.todokanai.musicplayer.repository.MusicRepository
 import kotlinx.coroutines.CoroutineScope
@@ -102,8 +103,11 @@ class NewPlayer @Inject constructor(
                 .build()
         )
         CoroutineScope(Dispatchers.IO).launch {
-            setMusic_td( context, musicRepo.currentMusic.first())
-            isLooping = dsRepo.isLooping()
+            val tempMusic = musicRepo.currentMusic.first()
+            if(tempMusic != dummyMusic) {
+                setMusic_td(context, musicRepo.currentMusic.first())
+                isLooping = dsRepo.isLooping()
+            }
         }
     }
 

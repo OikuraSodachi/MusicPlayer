@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.todokanai.musicplayer"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.todokanai.musicplayer"
         minSdk = 30
-        targetSdk = 33
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -41,7 +41,7 @@ android {
         viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     packaging {
         resources {
