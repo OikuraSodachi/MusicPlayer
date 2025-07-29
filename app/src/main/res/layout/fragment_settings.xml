@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="select directories" />
+                android:text="select directories (scans all if empty)" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -51,6 +51,6 @@
             android:id="@+id/applyBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="apply" />
+            android:text="apply and scan" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
