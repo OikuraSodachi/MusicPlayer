@@ -40,17 +40,3 @@ fun MyProgressBar(
         )
     }
 }
-
-@Preview
-@Composable
-private fun MyProgressBarPreview(){
-    Surface {
-        MyProgressBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp),
-            progress = 0.7f
-        )
-    }
-
-}

@@ -2,11 +2,9 @@ package com.todokanai.musicplayer.compose.presets.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BooleanDialog(
@@ -43,18 +41,4 @@ fun BooleanDialog(
         }
     )
 
-}
-
-@Preview
-@Composable
-private fun BooleanDialogPreview(){
-    Surface() {
-        BooleanDialog(
-            modifier = Modifier,
-            title = "BooleanDialog",
-            message = "Message",
-            onConfirm = {  },
-            onCancel = { }
-        )
-    }
 }

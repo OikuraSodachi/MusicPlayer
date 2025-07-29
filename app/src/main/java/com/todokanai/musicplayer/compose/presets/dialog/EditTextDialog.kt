@@ -11,7 +11,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun EditTextDialog(
@@ -56,19 +55,5 @@ fun EditTextDialog(
                 Text(text = cancelText)
             }
         }
-    )
-}
-
-@Preview
-@Composable
-private fun EditTextDialogPreview(){
-    EditTextDialog(
-        modifier = Modifier,
-        title = "title",
-        defaultText = "default text",
-        confirmText = "Confirm",
-        cancelText = "Cancel",
-        onConfirm = {},
-        onCancel = {}
     )
 }
