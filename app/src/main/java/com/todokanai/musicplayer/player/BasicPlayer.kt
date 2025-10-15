@@ -95,31 +95,21 @@ abstract class BasicPlayer(
             musicList.sortedBy{it.title}
         }
     }
+
     /** flow of prev, current, next music **/
-    private val musicCache by lazy {
-        combine(
-            playList,
-            musicRepo.currentMusic
-        ){ playList, currentMusic ->
-            val prevMusic =
-                try {
-                    getCircularPrev_td(playList, currentMusic)
-                }catch (e:Exception){
-                    dummyMusic
-                }
-            val nextMusic =
-                try{
-                    getCircularNext_td(playList,currentMusic)
-                }catch (e:Exception){
-                    dummyMusic
-                }
-            Triple(prevMusic,currentMusic,nextMusic)
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = Triple(dummyMusic, dummyMusic, dummyMusic)
-        )
-    }
+    private val musicCache = combine(
+        playList,
+        musicRepo.currentMusic
+    ){ playList, currentMusic ->
+        println("list: ${playList.map{it.title}}")
+        val prevMusic = getCircularPrev_td(playList, currentMusic)
+        val nextMusic = getCircularNext_td(playList,currentMusic)
+        Triple(prevMusic,currentMusic,nextMusic)
+    }.stateIn(
+        scope = CoroutineScope(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = Triple(dummyMusic, dummyMusic, dummyMusic)
+    )
 
     fun prevMusic() = musicCache.value.first
     fun nextMusic() = musicCache.value.third

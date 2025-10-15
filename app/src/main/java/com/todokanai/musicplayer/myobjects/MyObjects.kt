@@ -7,7 +7,7 @@ object MyObjects {
 
     /** AsyncImage 적용할 확장자 목록 **/
     val asyncImageExtension = arrayOf("jpg","mp4","m4a")
-    val dummyMusic = Music("none","dummyMusic",null,null, 360000,"empty")
+    val dummyMusic = Music("dummyMusic","dummyMusic",null,null, 360000,"empty")
 
 //    val mainOpenIntent = Intent(appContext, MainActivity::class.java)
 //    val mainIntent = PendingIntent.getActivity(appContext,0, Intent( Intent(appContext, MainActivity::class.java)), PendingIntent.FLAG_IMMUTABLE)
