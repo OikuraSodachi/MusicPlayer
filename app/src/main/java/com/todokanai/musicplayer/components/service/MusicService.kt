@@ -142,11 +142,11 @@ class MusicService : BaseMusicService(){
     }
 
     override fun registerReceivers() {
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_NOT_EXPORTED)
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_NOT_EXPORTED)
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY), RECEIVER_NOT_EXPORTED)
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_NOT_EXPORTED)
-        registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_NOT_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_REPLAY), RECEIVER_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_PREVIOUS), RECEIVER_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_PAUSE_PLAY), RECEIVER_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SKIP_TO_NEXT), RECEIVER_EXPORTED)
+        registerReceiver(receiver, IntentFilter(Constants.ACTION_SHUFFLE), RECEIVER_EXPORTED)
     }
 
     override fun updateNotification(notificationManager: NotificationManagerCompat, intent: Intent?): Notification {
