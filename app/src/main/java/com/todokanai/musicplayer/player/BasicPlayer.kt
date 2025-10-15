@@ -101,7 +101,6 @@ abstract class BasicPlayer(
         playList,
         musicRepo.currentMusic
     ){ playList, currentMusic ->
-        println("list: ${playList.map{it.title}}")
         val prevMusic = getCircularPrev_td(playList, currentMusic)
         val nextMusic = getCircularNext_td(playList,currentMusic)
         Triple(prevMusic,currentMusic,nextMusic)
